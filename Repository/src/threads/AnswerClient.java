@@ -8,8 +8,8 @@ import java.net.Socket;
 public class AnswerClient extends Thread{
     Socket socketToClient;
 
-    public AnswerClient(Socket s){
-        socketToClient = s;
+    public AnswerClient(Socket socketToClient){
+        socketToClient = socketToClient;
     }
 
 
