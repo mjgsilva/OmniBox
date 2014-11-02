@@ -1,7 +1,7 @@
 import java.io.IOException;
 
 /**
- * Created by mario on 02/11/14.
+ * Created by OmniBox on 02/11/14.
  */
 public class Main {
     public static void main(String[] args) {
@@ -21,6 +21,7 @@ public class Main {
             usersDB.deserializeDB();
 
             OmniServer omniServer = new OmniServer(port, usersDB);
+            omniServer.omniServerStart();
         } catch (NumberFormatException e) {
             System.out.println("Invalid port");
         } catch (ClassNotFoundException e) {
