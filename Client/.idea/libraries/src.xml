@@ -3,7 +3,9 @@
     <CLASSES />
     <JAVADOC />
     <SOURCES>
-      <root url="file://$PROJECT_DIR$/../Communication/src" />
+      <root url="file://$PROJECT_DIR$/../OmniBoxShared/src" />
+      <root url="file://$PROJECT_DIR$/../OmniBoxShared/src" />
+      <root url="file://$PROJECT_DIR$/../OmniBoxShared/src" />
     </SOURCES>
   </library>
 </component>
