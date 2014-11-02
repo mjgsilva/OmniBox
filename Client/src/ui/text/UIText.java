@@ -17,8 +17,10 @@ public class UIText {
      */
     public static void main (String[] args) {
         if (args.length < 1) {
-            System.out.println("Missing arguments! Should be something like this...\njava UIText port [ServerIP] [LocalDirectory]");
+            System.out.println("Missing arguments! Should be something like this...\n>java UIText port [ServerIP] [LocalDirectory]");
             System.exit(0);
         }
+
+
     }
 }
