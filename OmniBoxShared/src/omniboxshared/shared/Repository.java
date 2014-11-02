@@ -2,7 +2,6 @@ package omniboxshared.shared;
 
 import omniboxshared.communication.TCP;
 import omniboxshared.communication.UDP;
-import omniboxshared.file.OmniFile;
 
 import java.io.File;
 import java.io.IOException;
