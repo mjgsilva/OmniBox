@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-import omniboxshared.shared.OmniFile;
+//import omniboxshared.shared.OmniFile;
 
 /**
  * This class represents the client program itself.
