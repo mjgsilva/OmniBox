@@ -17,7 +17,7 @@ public class OmniRepository implements UDP, TCP{
     private final int port;
     private final String address;
 
-    private final HashSet<OmniFile> fileList = new HashSet<>();
+    private final HashSet<OmniFile> fileList = new HashSet();
 
     private final int oppNum = 0;
 
