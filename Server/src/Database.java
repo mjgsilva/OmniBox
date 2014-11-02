@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 /**
- * Created by mario on 02/11/14.
+ * Created by OmniBox on 02/11/14.
  */
 public class Database {
     private ArrayList<User> usersDB;
@@ -16,21 +16,14 @@ public class Database {
     }
 
     public void insertUser(User user) {
+
         usersDB.add(user);
     }
 
     public boolean login(final User user) {
-        boolean isValid = false;
-
-        for (User userTemp : usersDB) {
-            if (userTemp.getUsername().equals(user.getUsername())) {
-                if (userTemp.getPassword().equals(user.getPassword())) {
-                    isValid = true;
-                }
-                break;
-            }
-        }
-        return isValid;
+        if(usersDB.contains(user))
+            return true;
+        return false;
     }
 
     public int getNumberOfRegisteredUsers() {
