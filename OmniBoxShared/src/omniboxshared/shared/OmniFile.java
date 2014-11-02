@@ -1,7 +1,6 @@
-package omniboxshared.file;
+package omniboxshared.shared;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Date;
 
 /**
