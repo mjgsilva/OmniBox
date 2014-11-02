@@ -1,7 +1,8 @@
-package omniboxshared.shared;
+package shared;
 
-import omniboxshared.communication.TCP;
-import omniboxshared.communication.UDP;
+
+import communication.TCP;
+import communication.UDP;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +14,7 @@ import java.util.NoSuchElementException;
 /**
  * Created by OmniBox on 02/11/14.
  */
-public class OmniRepository implements UDP, TCP{
+public class OmniRepository implements UDP, TCP {
     private final int port;
     private final String address;
 

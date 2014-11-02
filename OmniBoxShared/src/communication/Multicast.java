@@ -1,11 +1,11 @@
-package omniboxshared.communication;
+package communication;
+
+import shared.Constants;
 
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-
-import omniboxshared.shared.Constants;
 
 /**
  * Multicast method implementation

@@ -1,4 +1,4 @@
-package omniboxshared.communication;
+package communication;
 
 import java.io.File;
 import java.io.IOException;

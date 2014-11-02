@@ -1,10 +1,7 @@
-import omniboxshared.communication.TCP;
-import omniboxshared.communication.TCPAdapter;
-import omniboxshared.communication.UDP;
-import omniboxshared.communication.UDPAdapter;
-import omniboxshared.shared.Constants;
-import omniboxshared.shared.OmniRepository;
-import org.omg.CORBA.TIMEOUT;
+
+import communication.TCPAdapter;
+import shared.Constants;
+import shared.OmniRepository;
 import threads.ProcessClient;
 
 import java.io.IOException;

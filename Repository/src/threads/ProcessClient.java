@@ -1,8 +1,7 @@
 package threads;
 
-import omniboxshared.shared.OmniFile;
-import omniboxshared.shared.Constants;
-
+import shared.Constants;
+import shared.OmniFile;
 import java.io.*;
 import java.net.Socket;
 

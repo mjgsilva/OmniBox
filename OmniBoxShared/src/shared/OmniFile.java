@@ -1,4 +1,4 @@
-package omniboxshared.shared;
+package shared;
 
 import java.io.File;
 import java.util.Date;

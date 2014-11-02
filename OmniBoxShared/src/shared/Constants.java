@@ -1,4 +1,4 @@
-package omniboxshared.shared;
+package shared;
 
 /**
  * Created by mario on 02/11/14.

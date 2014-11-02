@@ -1,4 +1,4 @@
-package omniboxshared.communication;
+package communication;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
