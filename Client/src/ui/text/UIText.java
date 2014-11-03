@@ -82,19 +82,45 @@ public class UIText {
      * Prints available files to the user.
      *
      * Defined return values:
+     *  -2: Send File
      *  -1: exit
      *   0: refresh file list
      *
      * @return the selected option
      */
     private int printMenu() {
-        printHeader("Choose an option");
-        System.out.println("");
-        System.out.println("R - Refresh\tE - Exit");
-        System.out.println("File List: ");
-        client.getFileListToString();
+        String selectedOption;
+        int valueToReturn;
+        while (true) {
+            printHeader("Choose an option");
+            System.out.println("");
+            System.out.println("S - Send File\tR - Refresh\tE - Exit");
+            System.out.println("Server file list: ");
+            client.getFileListToString();
 
-        return sc.nextInt();
+            selectedOption = sc.next();
+
+            // Convert to default values if necessary
+            if (selectedOption.equalsIgnoreCase("s"))
+                selectedOption = "-2";
+            else if (selectedOption.equalsIgnoreCase("r"))
+                selectedOption = "0";
+            else if (selectedOption.equalsIgnoreCase("e"))
+                selectedOption = "-1";
+
+            try {
+                valueToReturn = Integer.parseInt(selectedOption);
+            } catch (NumberFormatException e) {
+                // If option selected is not a number
+                System.out.println("Selected option is invalid.");
+                continue;
+            }
+
+            // If valueToReturn is in this range, then it's valid so break.
+            if(valueToReturn <= client.getFileListSize() && valueToReturn >= -2)
+                break;
+        }
+        return valueToReturn;
     }
 
     private void waitAuthentication() {
@@ -109,8 +135,35 @@ public class UIText {
     }
 
     private void waitRequest() {
-        switch (printMenu()) {
+        int fileIndex;
 
+        switch ((fileIndex = printMenu())) {
+            case -2:
+                break;
+            case -1:
+                break;
+            case 0:
+                break;
+            default:
+                while (true) {
+                    System.out.println("\n1 - Get File number \"" + fileIndex + "\"\n"
+                            + "2 - Remove File number \"" + fileIndex + "\"\n"
+                            + "0 - Go back");
+                    int option = sc.nextInt();
+                    if (option == 1)
+                        client.defineGetRequest(client.getFile(fileIndex - 1));
+                    else if (option == 2)
+                        client.defineRemoveRequest(client.getFile(fileIndex - 1));
+                    else if (option == 0)
+                        break;
+                    else {
+                        System.out.println("Invalid option");
+                        continue;
+                    }
+                    // Only breaks if selected option is valid
+                    break;
+                }
+                break;
         }
     }
 

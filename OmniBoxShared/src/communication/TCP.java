@@ -58,7 +58,7 @@ public interface TCP {
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendMessage(String messageToSend) throws InterruptedException, IOException;
+    public void sendTCPMessage(String messageToSend) throws InterruptedException, IOException;
 
     // [QUESTION] What is this method supposed to do?
     public String toString(String s);

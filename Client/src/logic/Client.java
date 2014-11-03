@@ -174,4 +174,12 @@ public class Client implements ClientInterface {
 
         return list;
     }
+
+    public int getFileListSize() {
+        return fileList.size();
+    }
+
+    public File getFile(int index) {
+        return new File(fileList.get(index));
+    }
 }

@@ -35,5 +35,5 @@ public interface UDP {
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendMessage(String messageToSend) throws InterruptedException, IOException;
+    public void sendUDPMessage(String messageToSend) throws InterruptedException, IOException;
 }
