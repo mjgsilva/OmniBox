@@ -9,10 +9,6 @@ import java.util.NoSuchElementException;
  * Created by OmniBox on 02-11-2014.
  */
 public abstract class TCPAdapter implements TCP {
-    @Override
-    public void connect(Socket destinySocket) throws InterruptedException, IOException {
-
-    }
 
     @Override
     public File getFile(File fileToGet) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException {
@@ -25,7 +21,7 @@ public abstract class TCPAdapter implements TCP {
     }
 
     @Override
-    public void sendMessage(String messageToSend) throws InterruptedException, IOException {
+    public void sendTCPMessage(String messageToSend) throws InterruptedException, IOException {
 
     }
 

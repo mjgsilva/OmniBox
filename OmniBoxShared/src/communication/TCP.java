@@ -19,17 +19,6 @@ import java.util.NoSuchElementException;
 public interface TCP {
 
     /**
-     * Connects socket.
-     *
-     * @param destinySocket Socket wished to connect to
-     * @throws InterruptedException If timeout is reached
-     * @throws IOException
-     */
-    // [QUESTION] Isn't this method unnecessary?
-    // Socket socket = new Socket(host, port); // This is a connection..
-    public void connect(Socket destinySocket) throws InterruptedException, IOException;
-
-    /**
      * Retrieves file from other end of TCP socket.
      *
      * @param fileToGet Desired file to get from the other TCP socket side

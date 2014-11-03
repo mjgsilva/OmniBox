@@ -137,6 +137,7 @@ public class UIText {
     private void waitRequest() {
         int fileIndex;
 
+        // Prints menu
         switch ((fileIndex = printMenu())) {
             case -2:
                 break;

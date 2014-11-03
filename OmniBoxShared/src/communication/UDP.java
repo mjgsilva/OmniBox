@@ -18,17 +18,6 @@ import java.net.DatagramSocket;
 public interface UDP {
 
     /**
-     * Connects UDP socket.
-     *
-     * @param destinySocket DatagramSocket wished to connect to
-     * @throws InterruptedException If timeout is reached
-     * @throws IOException
-     */
-    // [QUESTION] Isn't this method unnecessary?
-    // Socket socket = new Socket(host, port); // This is a connection..
-    public void connect(DatagramSocket destinySocket) throws InterruptedException, IOException;
-
-    /**
      * Sends message via TCP socket.
      *
      * @param messageToSend

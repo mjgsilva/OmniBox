@@ -1,5 +1,6 @@
 package logic;
 
+import communication.CommunicationAdapter;
 import logic.state.StateInterface;
 import logic.state.WaitAuthentication;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  *
  * Created by ©OmniBox on 01-11-2014.
  */
-public class Client implements ClientInterface {
+public class Client extends CommunicationAdapter implements ClientInterface {
     private StateInterface currentState;
     private int port;
     private String serverIP = "127.0.0.1"; // default
@@ -25,8 +26,8 @@ public class Client implements ClientInterface {
 
 
     // PROVISORY; THIS VALUES ARE GOING TO BE ON OMNIBOXSHARED
-    private final String MULTICAST_ADDRESS = "230.30.30.30";
-    private final int MAX_SIZE = 4000;
+    //private final String MULTICAST_ADDRESS = "230.30.30.30";
+    //private final int MAX_SIZE = 4000;
     // PROVISORY: MISSING OMNIFILE ON LIBRARY
     private ArrayList<String> fileList = new ArrayList<String>();
 
@@ -137,36 +138,8 @@ public class Client implements ClientInterface {
      * @throws IOException
      */
     public void findServerIPByMulticast() throws IOException {
-        InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-        MulticastSocket multicastSocket = new MulticastSocket(port);
-        multicastSocket.joinGroup(group);
-        multicastSocket.setTimeToLive(1); //TTL
-
-        // Send object
-        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
-        ObjectOutputStream out = new ObjectOutputStream(bOut);
-        out.writeObject(new String("requestServerIPAddress")); // code as a String object
-        DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group, port);
-        multicastSocket.send(packet);
-
-        // Receive object as a response from server
-        packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE);
-        multicastSocket.receive(packet);
-        ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), 0,
-                packet.getLength()));
-
-        String response;
-        try {
-            response = (String) in.readObject();
-        } catch (ClassNotFoundException e) {
-            // Just so we don't have to handle potential inner code errors on user interface
-            throw new IOException("Internal error.");
-        }
-
-        multicastSocket.leaveGroup(group);
-
         // Save value for server IP address
-        this.serverIP = response;
+        this.serverIP = sendMulticastMessage("request_server_ip_address", this.port);
     }
 
     public String getFileListToString() {
