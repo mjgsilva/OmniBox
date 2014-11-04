@@ -1,7 +1,9 @@
 package communication;
 
-import java.io.File;
-import java.io.IOException;
+import shared.Constants;
+import shared.OmniFile;
+
+import java.io.*;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 
@@ -11,18 +13,32 @@ import java.util.NoSuchElementException;
 public abstract class TCPAdapter implements TCP {
 
     @Override
-    public File getFile(File fileToGet) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException {
-        return null;
+    public OmniFile getFile(Socket socket) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException, ClassNotFoundException {
+        // IOException my be thrown here, user of this method is supposed to handle this exceptions
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        // Read Object - May throw ClassNotFoundException
+        return (OmniFile) in.readObject();
     }
 
     @Override
-    public void sendFile(File fileToSend) throws IllegalArgumentException, InterruptedException, IOException {
-
+    public void sendFile(Socket socket, OmniFile fileToSend) throws IllegalArgumentException, InterruptedException, IOException {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        // Sends OmniFile object
+        out.writeObject(fileToSend);
+        out.flush();
     }
 
     @Override
-    public void sendTCPMessage(String messageToSend) throws InterruptedException, IOException {
+    public void sendTCPMessage(Socket socket, String messageToSend) throws InterruptedException, IOException {
+        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        out.writeObject(messageToSend);
+        out.flush();
+    }
 
+    @Override
+    public String getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException {
+        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        return (String) in.readObject();
     }
 
     @Override

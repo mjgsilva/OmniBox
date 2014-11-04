@@ -7,4 +7,11 @@ public class Constants {
     final public static String MULTICAST_ADDRESS = "230.30.30.30";
     final public static int MAX_SIZE = 1024;
     final public static int TIMEOUT = 5 * 1000;
+
+    // Shared commands ---------------------
+    // ::Multicast::
+    final public static String REQUEST_SERVER_IP_ADDRESS = "request_server_ip_address";
+    // ::TCP::
+    // concatenate the file you want to get. Example: GET_FILE + "blah.txt"
+    final public static String GET_FILE = "getFile:";
 }

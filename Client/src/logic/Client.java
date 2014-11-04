@@ -3,6 +3,8 @@ package logic;
 import communication.CommunicationAdapter;
 import logic.state.StateInterface;
 import logic.state.WaitAuthentication;
+import shared.Constants;
+import shared.OmniFile;
 
 import java.io.*;
 import java.net.*;
@@ -24,12 +26,8 @@ public class Client extends CommunicationAdapter implements ClientInterface {
     private String localDirectoryPath = System.getProperty("user.dir"); // default - current directory
     private Socket serverSocket;
 
+    private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
 
-    // PROVISORY; THIS VALUES ARE GOING TO BE ON OMNIBOXSHARED
-    //private final String MULTICAST_ADDRESS = "230.30.30.30";
-    //private final int MAX_SIZE = 4000;
-    // PROVISORY: MISSING OMNIFILE ON LIBRARY
-    private ArrayList<String> fileList = new ArrayList<String>();
 
     /**
      * Client Constructor
@@ -139,13 +137,22 @@ public class Client extends CommunicationAdapter implements ClientInterface {
      */
     public void findServerIPByMulticast() throws IOException {
         // Save value for server IP address
-        this.serverIP = sendMulticastMessage("request_server_ip_address", this.port);
+        this.serverIP = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
     }
 
+    /**
+     * Returns file list according to UIText expectancies.
+     * If fileList is empty returns "No files available on server"
+     *
+     * @return
+     */
     public String getFileListToString() {
         String list = "";
 
-        return list;
+        for (int i = 0; i < fileList.size(); i++)
+            list += (i + 1) + " - " + fileList.get(i).toString() + "\n";
+
+        return fileList.size() > 0 ? list : (list = "No files available on server");
     }
 
     public int getFileListSize() {
@@ -153,6 +160,6 @@ public class Client extends CommunicationAdapter implements ClientInterface {
     }
 
     public File getFile(int index) {
-        return new File(fileList.get(index));
+        return new File(fileList.get(index).getFileName());
     }
 }

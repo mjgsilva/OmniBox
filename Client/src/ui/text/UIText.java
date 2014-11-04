@@ -6,6 +6,7 @@ import logic.state.WaitAnswer;
 import logic.state.WaitAuthentication;
 import logic.state.WaitRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -140,10 +141,15 @@ public class UIText {
         // Prints menu
         switch ((fileIndex = printMenu())) {
             case -2:
+                // Send file
+                client.defineSendRequest(new File(getFilePathOutput()));
                 break;
             case -1:
+                // Exit client application
+                System.exit(0);
                 break;
             case 0:
+                // Refresh file list
                 break;
             default:
                 while (true) {
@@ -170,5 +176,10 @@ public class UIText {
 
     private void waitAnswer() {
 
+    }
+
+    private String getFilePathOutput() {
+        System.out.print("Write file to send path: ");
+        return sc.next();
     }
 }

@@ -1,5 +1,7 @@
 package communication;
 
+import shared.OmniFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
@@ -21,14 +23,17 @@ public interface TCP {
     /**
      * Retrieves file from other end of TCP socket.
      *
-     * @param fileToGet Desired file to get from the other TCP socket side
+     * This method is supposed to call after sending a a String requesting file name with
+     * the sendTCPMessage(String) method.
+     *
      * @throws NoSuchElementException If the file is not found
      * @throws IllegalArgumentException If the fileToGet is invalid
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any File error
-     * @return File
+     * @throws ClassNotFoundException if cast fails
+     * @return OmniFile
      */
-    public File getFile(File fileToGet) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException;
+    public OmniFile getFile(Socket socket) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException, ClassNotFoundException;
 
     /**
      * Send file to other end of TCP socket.
@@ -38,16 +43,28 @@ public interface TCP {
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any File error
      */
-    public void sendFile(File fileToSend) throws IllegalArgumentException, InterruptedException, IOException;
+    public void sendFile(Socket socket, OmniFile fileToSend) throws IllegalArgumentException, InterruptedException, IOException;
 
     /**
      * Sends message via TCP socket.
+     * It's always sended a serializable String object.
      *
      * @param messageToSend
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendTCPMessage(String messageToSend) throws InterruptedException, IOException;
+    public void sendTCPMessage(Socket socket, String messageToSend) throws InterruptedException, IOException;
+
+    /**
+     * Gets message via TCP socket. This blocks the socket.
+     * It's always sended a serializable String object.
+     *
+     * @param socket
+     * @return received message
+     * @throws InterruptedException
+     * @throws IOException
+     */
+    public String getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException;
 
     // [QUESTION] What is this method supposed to do?
     public String toString(String s);
