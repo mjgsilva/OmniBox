@@ -33,11 +33,11 @@ public class OmniRepository extends CommunicationAdapter{
         this.filesDirectory = "";
     }
 
-    public void deleteFile(String fileName){
+    public void deleteFile(OmniFile omniFile){
 
         //find file and delete
         for(OmniFile file : fileList){
-            if(file.getFileName().equals(fileName))
+            if(file.equals(omniFile))
             {
                 file.delete();
                 fileList.remove(file);
@@ -45,10 +45,10 @@ public class OmniRepository extends CommunicationAdapter{
         }
     }
 
-    public void sendFile(Socket socket,String fileName) throws IOException, InterruptedException {
+    public void sendFile(Socket socket,OmniFile omnifile) throws IOException, InterruptedException {
         //find file and send
         for(OmniFile file : fileList){
-            if(file.getFileName().equals(fileName))
+            if(file.equals(omnifile))
             {
                 sendFile(socket,file);
             }
