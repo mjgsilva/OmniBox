@@ -1,5 +1,6 @@
 package threads;
 
+import shared.Command;
 import shared.Constants;
 import shared.OmniFile;
 import shared.OmniRepository;
@@ -11,14 +12,15 @@ import java.net.Socket;
  * Created by OmniBox on 02/11/14.
  */
 public class ProcessClient extends Thread{
-    private Constants.CMD cmd;
+    private Command command= null;
     private Socket socketToClient;
     private OmniFile localDirectory;
     private OmniRepository omniRepository;
 
-    public ProcessClient(Socket socketToClient, OmniRepository omniRepository) {
+    public ProcessClient(Socket socketToClient, OmniRepository omniRepository, Command command) {
         this.omniRepository = omniRepository;
         this.socketToClient = socketToClient;
+        this.command = command;
     }
 
     private void saveFile(String fileName) throws IOException {
