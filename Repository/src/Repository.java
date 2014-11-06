@@ -1,5 +1,6 @@
 import shared.OmniRepository;
 import threads.AnswerClient;
+import threads.HeartBeat;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -31,11 +32,13 @@ public class Repository {
                 filesDirectory = args[2].trim();
                 repo = new OmniRepository(port,address,filesDirectory);
                 new AnswerClient(repo).start();
+                new HeartBeat(repo).start();
             case 1:
                 port = Integer.parseInt(args[1]);
 
                 repo = new OmniRepository(port);
                 new AnswerClient(repo).start();
+                new HeartBeat(repo).start();
             default:
                 return;
         }

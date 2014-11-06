@@ -11,6 +11,7 @@ import java.net.Socket;
  * Created by OmniBox on 02/11/14.
  */
 public class ProcessClient extends Thread{
+    private Constants.CMD cmd;
     private Socket socketToClient;
     private OmniFile localDirectory;
     private OmniRepository omniRepository;

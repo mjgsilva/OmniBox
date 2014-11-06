@@ -12,6 +12,7 @@ import java.util.HashSet;
 public class OmniRepository extends CommunicationAdapter{
     private int port;
     private String addressServer;
+    private int serverPort;
     public  ServerSocket socket;
     private String filesDirectory;
 
