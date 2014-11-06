@@ -1,9 +1,8 @@
 package threads;
 
-import shared.Command;
-import shared.Constants;
 import shared.OmniFile;
 import shared.OmniRepository;
+import shared.Request;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,39 +10,37 @@ import java.net.Socket;
 /**
  * Created by OmniBox on 02/11/14.
  */
-public class ProcessClient extends Thread{
-    private Command command= null;
+public class ProcessClient extends Thread {
+    private Request request = null;
     private Socket socketToClient;
     private OmniFile localDirectory;
     private OmniRepository omniRepository;
 
-    public ProcessClient(Socket socketToClient, OmniRepository omniRepository, Command command) {
+    public ProcessClient(Socket socketToClient, OmniRepository omniRepository, Request request) {
         this.omniRepository = omniRepository;
         this.socketToClient = socketToClient;
-        this.command = command;
+        this.request = request;
     }
-
-    private void saveFile(String fileName) throws IOException {
-        //
-    }
-
-    private void sendFile(String filename) throws IOException {
-
-    }
-
-    private void deleteFile(OmniFile file){
-        file.delete();
-    }
-
-
-    private void processMessage(){
-
-    }
-
-
 
     @Override
     public void run() {
-        super.run();
+        switch (request.getCmd()) {
+            case cmdDeleteFile:
+                omniRepository.deleteFile((String) request.getArgsList().get(0));
+            case cmdGetFile:
+                try {
+                    omniRepository.getFile(socketToClient);
+                } catch (InterruptedException e) {
+                } catch (IOException e) {
+                } catch (ClassNotFoundException e) {
+                }
+            case cmdSendFile:
+                try {
+                    omniRepository.sendFile(socketToClient, (String) request.getArgsList().get(0));
+                } catch (IOException e) {
+                } catch (InterruptedException e) {
+                }
+            default:
+        }
     }
 }

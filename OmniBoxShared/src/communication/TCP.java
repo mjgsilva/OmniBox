@@ -1,9 +1,8 @@
 package communication;
 
-import shared.Command;
 import shared.OmniFile;
+import shared.Request;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.NoSuchElementException;
@@ -54,7 +53,7 @@ public interface TCP {
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendTCPMessage(Socket socket, Command cmd) throws InterruptedException, IOException;
+    public void sendTCPMessage(Socket socket, Request cmd) throws InterruptedException, IOException;
 
     /**
      * Gets message via TCP socket. This blocks the socket.
@@ -65,7 +64,7 @@ public interface TCP {
      * @throws InterruptedException
      * @throws IOException
      */
-    public Command getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException;
+    public Request getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException;
 
     // [QUESTION] What is this method supposed to do?
     public String toString(String s);

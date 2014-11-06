@@ -1,5 +1,5 @@
 
-import communication.TCPAdapter;
+import communication.CommunicationAdapter;
 import shared.Constants;
 import shared.OmniRepository;
 import threads.ProcessClient;
@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class OmniServer extends TCPAdapter {
+public class OmniServer extends CommunicationAdapter {
     private int port;
     private Database usersDB;
     private ArrayList<OmniRepository> repoDB;
