@@ -1,5 +1,6 @@
 package communication;
 
+import shared.Command;
 import shared.OmniFile;
 
 import java.io.File;
@@ -49,11 +50,11 @@ public interface TCP {
      * Sends message via TCP socket.
      * It's always sended a serializable String object.
      *
-     * @param messageToSend
+     * @param cmd
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendTCPMessage(Socket socket, String messageToSend) throws InterruptedException, IOException;
+    public void sendTCPMessage(Socket socket, Command cmd) throws InterruptedException, IOException;
 
     /**
      * Gets message via TCP socket. This blocks the socket.
@@ -64,7 +65,7 @@ public interface TCP {
      * @throws InterruptedException
      * @throws IOException
      */
-    public String getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException;
+    public Command getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException;
 
     // [QUESTION] What is this method supposed to do?
     public String toString(String s);

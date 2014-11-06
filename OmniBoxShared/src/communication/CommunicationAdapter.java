@@ -1,5 +1,6 @@
 package communication;
 
+import shared.Command;
 import shared.Constants;
 import shared.OmniFile;
 
@@ -75,16 +76,16 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     }
 
     @Override
-    public void sendTCPMessage(Socket socket, String messageToSend) throws InterruptedException, IOException {
+    public void sendTCPMessage(Socket socket, Command cmd) throws InterruptedException, IOException {
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        out.writeObject(messageToSend);
+        out.writeObject(cmd);
         out.flush();
     }
 
     @Override
-    public String getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException {
+    public Command getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        return (String) in.readObject();
+        return (Command)in.readObject();
     }
 
     @Override
