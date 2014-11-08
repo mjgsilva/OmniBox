@@ -23,7 +23,7 @@ public class AnswerClient extends Thread{
 
             try {
                 //Accept socket to communicate
-                socketToClient = omniRepository.socket.accept();
+                socketToClient = omniRepository.getSocket().accept();
                 //Get Request to execute
                 Request request = omniRepository.getTCPMessage(socketToClient);
                 //Launch thread to process client
