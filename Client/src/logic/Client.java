@@ -9,6 +9,7 @@ import shared.OmniFile;
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
+import java.util.Observable;
 
 //import omniboxshared.shared.OmniFile;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  *
  * Created by ©OmniBox on 01-11-2014.
  */
-public class Client extends CommunicationAdapter implements ClientInterface {
+public class Client extends Observable implements ClientInterface {
     private StateInterface currentState;
     private int port;
     private String serverIP = "127.0.0.1"; // default
@@ -34,7 +35,7 @@ public class Client extends CommunicationAdapter implements ClientInterface {
      *
      * Client instances start on WaitAuthentication state.
      */
-    private Client() {
+    public Client() {
         this.currentState = new WaitAuthentication(this);
     }
 
@@ -55,7 +56,7 @@ public class Client extends CommunicationAdapter implements ClientInterface {
                 temp.localDirectoryPath = args[2];
             case 2:
                 if (args[1].equalsIgnoreCase("$multicast$"))
-                    temp.findServerIPByMulticast();
+                    temp.defineMulticastRequest();
                 else
                     temp.serverIP = args[1];
             case 1:
@@ -79,28 +80,33 @@ public class Client extends CommunicationAdapter implements ClientInterface {
     }
 
     @Override
-    public void defineAuthentication(String username, String password) {
+    public void defineAuthentication(String username, String password) throws IOException, InterruptedException {
         currentState = currentState.defineAuthentication(username, password);
     }
 
     @Override
-    public void defineGetRequest(File fileToGet) {
+    public void defineGetRequest(final OmniFile fileToGet) throws InterruptedException, IOException, ClassNotFoundException {
         currentState = currentState.defineGetRequest(fileToGet);
     }
 
     @Override
-    public void defineSendRequest(File fileToSend) {
+    public void defineSendRequest(final OmniFile fileToSend) throws InterruptedException, IOException, ClassNotFoundException {
         currentState = currentState.defineSendRequest(fileToSend);
     }
 
     @Override
-    public void defineRemoveRequest(File fileToRemove) {
+    public void defineRemoveRequest(final OmniFile fileToRemove) throws IOException, InterruptedException {
         currentState = currentState.defineRemoveRequest(fileToRemove);
     }
 
     @Override
     public void defineReturnToRequest() {
         currentState = currentState.defineReturnToRequest();
+    }
+
+    @Override
+    public void defineMulticastRequest() throws IOException {
+        currentState = currentState.defineMulticastRequest();
     }
 
     public int getPort() {
@@ -128,19 +134,6 @@ public class Client extends CommunicationAdapter implements ClientInterface {
     }
 
     /**
-     * This method only gets called, if the user does not insert a valid server IP address
-     *
-     * Is sended a String object to server, and server response is also a String.
-     * This response received is the server IP address.
-     *
-     * @throws IOException
-     */
-    public void findServerIPByMulticast() throws IOException {
-        // Save value for server IP address
-        this.serverIP = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
-    }
-
-    /**
      * Returns file list according to UIText expectancies.
      * If fileList is empty returns "No files available on server"
      *
@@ -161,5 +154,9 @@ public class Client extends CommunicationAdapter implements ClientInterface {
 
     public File getFile(int index) {
         return new File(fileList.get(index).getFileName());
+    }
+
+    public Socket getServerSocket() {
+        return serverSocket;
     }
 }

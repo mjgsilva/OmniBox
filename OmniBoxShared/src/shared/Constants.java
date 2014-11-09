@@ -15,5 +15,5 @@ public class Constants {
     // concatenate the file you want to get. Example: GET_FILE + "blah.txt"
     final public static String GET_FILE = "getFile:";
 
-    public enum CMD {cmdNone,cmdSendFile,cmdGetFile,cmdDeleteFile};
+    public enum CMD {cmdNone,cmdSendFile,cmdGetFile,cmdDeleteFile, cmdRepositoryAddress, cmdAuthenticate};
 }

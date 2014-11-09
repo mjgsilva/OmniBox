@@ -2,10 +2,20 @@ package logic.state;
 
 import communication.TCP;
 import logic.Client;
+import shared.Constants;
+import shared.FileOperations;
+import shared.OmniFile;
+import shared.Request;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
+
+import static shared.FileOperations.readFileToSocket;
+import static shared.FileOperations.saveFileFromSocket;
 
 /**
  * Waits for user to choose which operation to be performed.
@@ -22,36 +32,83 @@ public class WaitRequest extends StateAdapter implements TCP {
      *
      * @param fileToGet
      * @return next State
+
      */
     @Override
-    public StateInterface defineGetRequest(File fileToGet) {
+    public StateInterface defineGetRequest(final OmniFile fileToGet) throws IOException, InterruptedException, ClassNotFoundException {
+        ArrayList <OmniFile> filesToGet = new ArrayList<OmniFile>();
+        Socket repositorySocket = null;
 
-        return super.defineGetRequest(fileToGet);
+        // add fileToGet to request args
+        filesToGet.add(fileToGet);
+
+        // Send request to get file with fileToGet as an arg and wait for repository address to be given
+        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdGetFile, filesToGet));
+
+        try {
+            // Wait for server to retrieve repository address
+            Request repositoryAddr = getTCPMessage(client.getServerSocket());
+            if (repositoryAddr.getCmd() == Constants.CMD.cmdRepositoryAddress)
+                repositorySocket = new Socket((String) repositoryAddr.getArgsList().get(0), (Integer) repositoryAddr.getArgsList().get(1));
+            else
+                throw new ClassNotFoundException("Problem retrieving repository address.");
+
+            // Get file attributes from repository
+            OmniFile retrievedFile = getFile(repositorySocket);
+
+            // Save file on disk
+            saveFileFromSocket(repositorySocket, client.getLocalDirectoryPath()).renameTo(new File(retrievedFile.getFileName() + retrievedFile.getFileExtension()));
+        } finally {
+            if (repositorySocket != null && !repositorySocket.isClosed())
+                repositorySocket.close();
+        }
+
+        return this;
     }
 
     @Override
-    public StateInterface defineSendRequest(File fileToSend) {
-        return super.defineSendRequest(fileToSend);
+    public StateInterface defineSendRequest(final OmniFile fileToSend) throws IOException, InterruptedException, ClassNotFoundException {
+        ArrayList <OmniFile> filesToSend = new ArrayList<OmniFile>();
+        Socket repositorySocket = null;
+
+        // add fileToSend to request args
+        filesToSend.add(fileToSend);
+
+        // Send request to send file with fileToSend as an arg and wait for repository address to be given
+        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdSendFile, filesToSend));
+
+        try {
+            // Wait for server to retrieve repository address
+            Request repositoryAddr = getTCPMessage(client.getServerSocket());
+            if (repositoryAddr.getCmd() == Constants.CMD.cmdRepositoryAddress)
+                repositorySocket = new Socket((String) repositoryAddr.getArgsList().get(0), (Integer) repositoryAddr.getArgsList().get(1));
+            else
+                throw new ClassNotFoundException("Problem retrieving repository address.");
+
+            // Send file attributes to repository
+            sendFile(repositorySocket, fileToSend);
+
+            // Read file to socket
+            readFileToSocket(repositorySocket, fileToSend);
+        } finally {
+            if (repositorySocket != null && !repositorySocket.isClosed())
+                repositorySocket.close();
+        }
+
+        return this;
     }
 
     @Override
-    public StateInterface defineRemoveRequest(File fileToRemove) {
-        return super.defineRemoveRequest(fileToRemove);
-    }
+    public StateInterface defineRemoveRequest(final OmniFile fileToRemove) throws IOException, InterruptedException {
+        ArrayList <OmniFile> filesToRemove = new ArrayList<OmniFile>();
 
-    @Override
-    public File getFile(File fileToGet) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException {
-        return null;
-    }
+        // add fileToRemove to request args
+        filesToRemove.add(fileToRemove);
 
-    @Override
-    public void sendFile(File fileToSend) throws IllegalArgumentException, InterruptedException, IOException {
+        // Send request to remove file with fileToRemove as an arg
+        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdDeleteFile, filesToRemove));
 
-    }
-
-    @Override
-    public void sendTCPMessage(String messageToSend) throws InterruptedException, IOException {
-
+        return this;
     }
 
     @Override

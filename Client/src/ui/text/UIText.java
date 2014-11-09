@@ -132,7 +132,7 @@ public class UIText {
         System.out.print("Password: ");
         password = sc.next();
 
-        client.defineAuthentication(username, password);
+        //client.defineAuthentication(username, password);
     }
 
     private void waitRequest() {
@@ -142,7 +142,7 @@ public class UIText {
         switch ((fileIndex = printMenu())) {
             case -2:
                 // Send file
-                client.defineSendRequest(new File(getFilePathOutput()));
+                //client.defineSendRequest(new File(getFilePathOutput()));
                 break;
             case -1:
                 // Exit client application
@@ -157,7 +157,7 @@ public class UIText {
                             + "2 - Remove File number \"" + fileIndex + "\"\n"
                             + "0 - Go back");
                     int option = sc.nextInt();
-                    if (option == 1)
+                    /*if (option == 1)
                         client.defineGetRequest(client.getFile(fileIndex - 1));
                     else if (option == 2)
                         client.defineRemoveRequest(client.getFile(fileIndex - 1));
@@ -166,7 +166,7 @@ public class UIText {
                     else {
                         System.out.println("Invalid option");
                         continue;
-                    }
+                    }*/
                     // Only breaks if selected option is valid
                     break;
                 }
