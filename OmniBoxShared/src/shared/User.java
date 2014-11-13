@@ -3,12 +3,12 @@ package shared;
 import java.io.Serializable;
 
 /**
- * Created by mario on 02/11/14.
+ * Created by OmniBox on 02/11/14.
  */
 public class User implements Serializable {
     final private String username;
     final private String password;
-    final private static long serialVersionUID = 01L;
+    final private static long serialVersionUID = 0101L;
 
     public User(String username, String password) {
         this.username = username;
@@ -31,7 +31,6 @@ public class User implements Serializable {
         User user = (User) o;
 
         if (!password.equals(user.password)) return false;
-        if (!username.equals(user.username)) return false;
 
         return true;
     }
@@ -39,7 +38,6 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         int result = username.hashCode();
-        result = 31 * result + password.hashCode();
-        return result;
+        return result * 31;
     }
 }
