@@ -1,3 +1,5 @@
+import database.UsersDB;
+
 import java.io.IOException;
 
 /**
@@ -13,7 +15,7 @@ public class Main {
 
         try {
             int port = Integer.parseInt(args[0]);
-            Database usersDB = new Database(args[1]);
+            UsersDB usersDB = new UsersDB(args[1]);
 
             if(port < 1)
                 throw new NumberFormatException();

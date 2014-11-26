@@ -1,6 +1,5 @@
 package logic;
 
-import com.sun.nio.sctp.SendFailedNotification;
 import shared.OmniFile;
 
 import java.io.File;

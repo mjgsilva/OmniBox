@@ -14,6 +14,14 @@ public class Constants {
     // ::TCP::
     // concatenate the file you want to get. Example: GET_FILE + "blah.txt"
     final public static String GET_FILE = "getFile:";
+    final public static boolean FILEOK = true;
+    final public static boolean FILENOTOK = false;
+    final public static int OP_DOWNLOAD = 0;
+    final public static int OP_UPLOAD = 1;
+    final public static int OP_DELETE = 2;
+    final public static int OP_STARTED = 1;
+    final public static int OP_FINISHED = 0;
 
-    public enum CMD {cmdNone,cmdSendFile,cmdGetFile,cmdDeleteFile, cmdRepositoryAddress, cmdAuthenticate};
+
+    public enum CMD {cmdNone,cmdSendFile,cmdGetFile,cmdDeleteFile,cmdRepositoryAddress,cmdAuthenticate,cmdHeartBeat,cmdNotification};
 }

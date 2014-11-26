@@ -54,7 +54,7 @@ public class WaitRequest extends StateAdapter implements TCP {
                 throw new ClassNotFoundException("Problem retrieving repository address.");
 
             // Get file attributes from repository
-            OmniFile retrievedFile = getFile(repositorySocket);
+            // TODO: Integration -> GetFileCommand; OmniFile retrievedFile = getFile(repositorySocket);
 
             // Save file on disk
             saveFileFromSocket(repositorySocket, client.getLocalDirectoryPath()).renameTo(new File(retrievedFile.getFileName() + retrievedFile.getFileExtension()));
@@ -80,13 +80,14 @@ public class WaitRequest extends StateAdapter implements TCP {
         try {
             // Wait for server to retrieve repository address
             Request repositoryAddr = getTCPMessage(client.getServerSocket());
+            //TODO: Integration -> Verify file ok / not ok
             if (repositoryAddr.getCmd() == Constants.CMD.cmdRepositoryAddress)
                 repositorySocket = new Socket((String) repositoryAddr.getArgsList().get(0), (Integer) repositoryAddr.getArgsList().get(1));
             else
                 throw new ClassNotFoundException("Problem retrieving repository address.");
 
             // Send file attributes to repository
-            sendFile(repositorySocket, fileToSend);
+            //TODO: Integration -> CMDSendFile; sendFile(repositorySocket, fileToSend);
 
             // Read file to socket
             readFileToSocket(repositorySocket, fileToSend);
