@@ -94,7 +94,7 @@ public class OmniRepository extends CommunicationAdapter{
     //END-Gets
 
 
-    public void sendNotification(int operation, int status){
+    public void sendNotification(int operation, int status,String fileName){
         try {
             ArrayList<Object> tempList = new ArrayList<Object>();
             tempList.add(operation);
@@ -111,7 +111,7 @@ public class OmniRepository extends CommunicationAdapter{
 
     public void deleteFile(String fileName){
 
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName);
         //find file and delete
         for(OmniFile file : fileList){
             if(file.getFileName().equalsIgnoreCase(fileName))
@@ -120,12 +120,12 @@ public class OmniRepository extends CommunicationAdapter{
                 fileList.remove(file);
             }
         }
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName);
     }
 
     public void sendFile(Socket socket,OmniFile omnifile) throws IOException, InterruptedException {
 
-        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED);
+        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED,omnifile.getFileName());
         //find file and send
         for(OmniFile file : fileList){
             if(file.equals(omnifile))
@@ -134,17 +134,17 @@ public class OmniRepository extends CommunicationAdapter{
                 break;
             }
         }
-        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED);
+        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED,omnifile.getFileName());
     }
 
     public void getFile(Socket socket, String fileName) throws IOException, InterruptedException, ClassNotFoundException {
 
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName);
 
         OmniFile tempFile= null;
         tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + File.separator + fileName);
 
         fileList.add(tempFile);
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName);
     }
 }
