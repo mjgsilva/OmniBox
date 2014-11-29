@@ -23,7 +23,7 @@ public class ButtonsPanel extends JPanel implements Observer {
 
     public ButtonsPanel(ClientModel cm) {
         this.cm = cm;
-        
+        cm.addObserver(this);
         buildLayout();
     }
 

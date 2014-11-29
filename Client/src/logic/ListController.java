@@ -4,10 +4,13 @@ import communication.CommunicationAdapter;
 import shared.Constants;
 import shared.OmniFile;
 import shared.Request;
+import ui.graphic.ErrorDialog;
 import ui.graphic.ListPanel;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -22,14 +25,23 @@ import static shared.Constants.CMD.*;
 public class ListController extends CommunicationAdapter {
     private final Client client;
     private final ArrayList<OmniFile> files = new ArrayList<OmniFile>();
+    private final ListPanel filesList;
 
     public ListController(Client client, ListPanel filesList) {
         this.client = client;
+        this.filesList = filesList;
+    }
+
+    /**
+     * Method should only be called when authentication is a success.
+     */
+    public void startListController() {
+        new ListControllerThread().start();
     }
 
     /**
      * List Controller Thread.
-     * Is a daemon thread.
+     * Its a daemon thread.
      * Thread to keep reading the socket from server.
      *
      * Updates files List.
@@ -37,11 +49,9 @@ public class ListController extends CommunicationAdapter {
      * The thread to handle requests is user type.
      */
     public class ListControllerThread extends Thread {
-        private final ListPanel filesList;
 
-        public ListControllerThread(ListPanel filesList) {
+        public ListControllerThread() {
             setDaemon(true);
-            this.filesList = filesList;
         }
 
         @Override
@@ -54,10 +64,29 @@ public class ListController extends CommunicationAdapter {
                     Constants.CMD cmd = request.getCmd();
                     switch (cmd) {
                         case cmdRepositoryAddress:
-                            //client.define
-                            break;
-                        case cmdNotification:
+                            ArrayList<Object> args = request.getArgsList();
+                            int operation = Integer.parseInt((String) args.get(0));
+                            String repositoryAddress = (String) args.get(1);
+                            int repositoryPort = (Integer) args.get(2);
 
+                            if ((Boolean) args.get(3)) {
+                                client.setRepositorySocket(new Socket(repositoryAddress, repositoryPort));
+                                if (operation == Constants.OP_SEND_FILE) {
+                                    // Client has to be on state WaitAnswer for this to work correctly
+
+                                    client.defineSendRequest(client.getFileToUpload());
+                                } else if (operation == Constants.OP_GET_FILE) {
+                                    // Client has to be on state WaitAnswer for this to work correctly
+                                    client.defineGetRequest(new OmniFile(ListPanel.getFilesList().getSelectedValue()));
+                                }
+                            } else
+                                new ErrorDialog(null, "Server didn't authorize the operation.");
+                            break;
+                        case cmdRefreshList:
+                            ListPanel.getFilesList().removeAll();
+                            for (Object aux : request.getArgsList()) {
+                                filesList.addItemToList((String)aux);
+                            }
                             break;
                         default:
                             break;

@@ -6,6 +6,7 @@ import shared.Constants;
 import shared.FileOperations;
 import shared.OmniFile;
 import shared.Request;
+import ui.graphic.ErrorDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,37 +40,24 @@ public class WaitRequest extends StateAdapter implements TCP {
         ArrayList <OmniFile> filesToGet = new ArrayList<OmniFile>();
         Socket repositorySocket = null;
 
+        new ErrorDialog(null, fileToGet.getFileName());
+
         // add fileToGet to request args
         filesToGet.add(fileToGet);
 
         // Send request to get file with fileToGet as an arg and wait for repository address to be given
         sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdGetFile, filesToGet));
 
-        try {
-            // Wait for server to retrieve repository address
-            Request repositoryAddr = getTCPMessage(client.getServerSocket());
-            if (repositoryAddr.getCmd() == Constants.CMD.cmdRepositoryAddress)
-                repositorySocket = new Socket((String) repositoryAddr.getArgsList().get(0), (Integer) repositoryAddr.getArgsList().get(1));
-            else
-                throw new ClassNotFoundException("Problem retrieving repository address.");
-
-            // Get file attributes from repository
-            // TODO: Integration -> GetFileCommand; OmniFile retrievedFile = getFile(repositorySocket);
-
-            // Save file on disk
-            //saveFileFromSocket(repositorySocket, client.getLocalDirectoryPath()).renameTo(new File(retrievedFile.getFileName() + retrievedFile.getFileExtension()));
-        } finally {
-            if (repositorySocket != null && !repositorySocket.isClosed())
-                repositorySocket.close();
-        }
-
-        return this;
+        return new WaitAnswer(client);
     }
 
     @Override
     public StateInterface defineSendRequest(final OmniFile fileToSend) throws IOException, InterruptedException, ClassNotFoundException {
         ArrayList <OmniFile> filesToSend = new ArrayList<OmniFile>();
         Socket repositorySocket = null;
+        client.setFileToUpload(fileToSend);
+
+        new ErrorDialog(null, fileToSend.getFileName());
 
         // add fileToSend to request args
         filesToSend.add(fileToSend);
@@ -77,26 +65,7 @@ public class WaitRequest extends StateAdapter implements TCP {
         // Send request to send file with fileToSend as an arg and wait for repository address to be given
         sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdSendFile, filesToSend));
 
-        try {
-            // Wait for server to retrieve repository address
-            Request repositoryAddr = getTCPMessage(client.getServerSocket());
-            //TODO: Integration -> Verify file ok / not ok
-            if (repositoryAddr.getCmd() == Constants.CMD.cmdRepositoryAddress)
-                repositorySocket = new Socket((String) repositoryAddr.getArgsList().get(0), (Integer) repositoryAddr.getArgsList().get(1));
-            else
-                throw new ClassNotFoundException("Problem retrieving repository address.");
-
-            // Send file attributes to repository
-            //TODO: Integration -> CMDSendFile; sendFile(repositorySocket, fileToSend);
-
-            // Read file to socket
-            readFileToSocket(repositorySocket, fileToSend);
-        } finally {
-            if (repositorySocket != null && !repositorySocket.isClosed())
-                repositorySocket.close();
-        }
-
-        return this;
+        return new WaitAnswer(client);
     }
 
     @Override

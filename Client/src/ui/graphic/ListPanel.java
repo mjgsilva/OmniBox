@@ -2,6 +2,7 @@ package ui.graphic;
 
 import logic.ClientModel;
 import logic.ListController;
+import logic.state.WaitRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,15 +22,12 @@ public class ListPanel extends JPanel implements Observer {
     public ListPanel(ClientModel cm) {
         this.cm = cm;
         this.lc = new ListController(cm.getClient(), this);
+        cm.addObserver(this);
         buildLayout();
     }
 
     private void buildLayout() {
         vertical = Box.createVerticalBox();
-
-        for (int i = 0; i < 30; i++) {
-            listModel.addElement("John Doe number " + (i + 1));
-        }
 
         filesList = new JList<String>(listModel);
         filesList.setMinimumSize(new Dimension(300, 0));
@@ -59,9 +57,14 @@ public class ListPanel extends JPanel implements Observer {
         filesList = l;
     }
 
+    public void addItemToList(String item) {
+        listModel.addElement(item);
+    }
+
     @Override
     public void update(Observable observable, Object o) {
-
+        if (cm.getCurrentState() instanceof WaitRequest)
+            lc.startListController();
     }
 }
 

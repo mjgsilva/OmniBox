@@ -2,9 +2,13 @@ package ui.graphic;
 
 import logic.Client;
 import logic.ClientModel;
+import logic.state.WaitAnswer;
+import logic.state.WaitAuthentication;
+import logic.state.WaitRequest;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -75,6 +79,45 @@ public class MainFrame extends JFrame implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
+        if (cm.getCurrentState() instanceof WaitAuthentication) {
+            // Show dialog with login form
+            // Disable parent window
+            setEnabled(false);
 
+            JPanel panel = new JPanel(new BorderLayout(5, 5));
+
+            JPanel label = new JPanel(new GridLayout(0, 1, 2, 2));
+            label.add(new JLabel("Username:", SwingConstants.RIGHT));
+            label.add(new JLabel("Password:", SwingConstants.RIGHT));
+            panel.add(label, BorderLayout.WEST);
+
+            JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));
+            JTextField username = new JTextField("");
+            controls.add(username);
+            JPasswordField password = new JPasswordField("");
+            controls.add(password);
+            panel.add(controls, BorderLayout.CENTER);
+
+            int value = JOptionPane.showConfirmDialog(this, panel, "Login - OmniBox", JOptionPane.OK_CANCEL_OPTION);
+
+            // Validate data
+            try {
+                // Even if value == JOptionPane.CANCEL_OPTION it calls defineAuthentication to notify Observers.
+                // Validation is done inside the state. Is done via exceptions.
+                cm.defineAuthentication(username.getText(), password.getPassword().toString());
+            } catch (IOException e) {
+                new ErrorDialog(null, e.getMessage());
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                new ErrorDialog(null, e.getMessage());
+            } catch (Exception e) {
+                new ErrorDialog(null, e.getMessage());
+            }
+        } else if (cm.getCurrentState() instanceof WaitRequest) {
+            // Enable components
+            setEnabled(true);
+        } else if (cm.getCurrentState() instanceof WaitAnswer) {
+            cm.setFileToUpload(null);
+        }
     }
 }

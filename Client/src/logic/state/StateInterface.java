@@ -13,7 +13,7 @@ import java.io.IOException;
  * Created by ©OmniBox on 01-11-2014.
  */
 public interface StateInterface {
-    public StateInterface defineAuthentication(String username, String password) throws InterruptedException, IOException;
+    public StateInterface defineAuthentication(String username, String password) throws InterruptedException, IOException, ClassNotFoundException;
     public StateInterface defineGetRequest(final OmniFile fileToGet) throws IOException, InterruptedException, ClassNotFoundException;
     public StateInterface defineSendRequest(final OmniFile fileToSend) throws IOException, InterruptedException, ClassNotFoundException;
     public StateInterface defineRemoveRequest(final OmniFile fileToRemove) throws IOException, InterruptedException;
