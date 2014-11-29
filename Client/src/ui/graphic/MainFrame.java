@@ -12,7 +12,7 @@ import java.util.Observer;
  * Created by OmniBox on 08-11-2014.
  */
 public class MainFrame extends JFrame implements Observer {
-    private ClientModel cm;
+    private final ClientModel cm;
     private JPanel listPanel;
     private JPanel buttonsPanel;
     private JPanel fileInfoPanel;

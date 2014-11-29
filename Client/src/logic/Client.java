@@ -27,7 +27,7 @@ public class Client extends Observable implements ClientInterface {
     private String localDirectoryPath = System.getProperty("user.dir"); // default - current directory
     private Socket serverSocket;
 
-    private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
+    //private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
 
 
     /**
@@ -139,7 +139,7 @@ public class Client extends Observable implements ClientInterface {
      *
      * @return
      */
-    public String getFileListToString() {
+    /*public String getFileListToString() {
         String list = "";
 
         for (int i = 0; i < fileList.size(); i++)
@@ -154,7 +154,7 @@ public class Client extends Observable implements ClientInterface {
 
     public File getFile(int index) {
         return new File(fileList.get(index).getFileName());
-    }
+    }*/
 
     public Socket getServerSocket() {
         return serverSocket;

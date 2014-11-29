@@ -57,7 +57,7 @@ public class WaitRequest extends StateAdapter implements TCP {
             // TODO: Integration -> GetFileCommand; OmniFile retrievedFile = getFile(repositorySocket);
 
             // Save file on disk
-            saveFileFromSocket(repositorySocket, client.getLocalDirectoryPath()).renameTo(new File(retrievedFile.getFileName() + retrievedFile.getFileExtension()));
+            //saveFileFromSocket(repositorySocket, client.getLocalDirectoryPath()).renameTo(new File(retrievedFile.getFileName() + retrievedFile.getFileExtension()));
         } finally {
             if (repositorySocket != null && !repositorySocket.isClosed())
                 repositorySocket.close();

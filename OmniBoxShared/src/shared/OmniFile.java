@@ -1,12 +1,13 @@
 package shared;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by ©OmniBox on 02-11-2014.
  */
-public class OmniFile extends File {
+public class OmniFile extends File implements Serializable {
     private final String fileName;
     private final Date creationDate;
     private final String fileExtension;

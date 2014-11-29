@@ -1,12 +1,13 @@
 package shared;
 
+import java.io.Serializable;
 import java.lang.Object;
 import java.util.ArrayList;
 
 /**
  * Created by OmniBox on 06/11/14.
  */
-public class Request {
+public class Request implements Serializable {
     private Constants.CMD cmd;
     private ArrayList<Object> argsList = new ArrayList<Object>();
 

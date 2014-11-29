@@ -1,7 +1,7 @@
 package ui.graphic;
 
 import logic.ClientModel;
-import shared.OmniFile;
+import logic.ListController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,12 +13,14 @@ import java.util.Observer;
  */
 public class ListPanel extends JPanel implements Observer {
     private ClientModel cm;
+    private ListController lc;
     Box vertical;
-    JList<String> filesList;
+    private static JList<String> filesList;
     DefaultListModel<String> listModel = new DefaultListModel<String>();
 
     public ListPanel(ClientModel cm) {
         this.cm = cm;
+        this.lc = new ListController(cm.getClient(), this);
         buildLayout();
     }
 
@@ -47,6 +49,14 @@ public class ListPanel extends JPanel implements Observer {
 
         //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(vertical);
+    }
+
+    public static synchronized JList<String> getFilesList() {
+        return filesList;
+    }
+
+    public static synchronized void setFilesList(JList<String> l) {
+        filesList = l;
     }
 
     @Override

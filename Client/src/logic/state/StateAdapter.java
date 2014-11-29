@@ -7,6 +7,7 @@ import shared.Request;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.util.NoSuchElementException;
 
@@ -89,7 +90,12 @@ public abstract class StateAdapter extends CommunicationAdapter implements State
     }
 
     @Override
-    public void sendUDPMessage(String messageToSend) throws InterruptedException, IOException {
-        super.sendUDPMessage(messageToSend);
+    public void sendUDPMessage(DatagramSocket socket, Request cmd) throws InterruptedException, IOException {
+        super.sendUDPMessage(socket, cmd);
+    }
+
+    @Override
+    public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException {
+        return super.getUDPMessage(socket);
     }
 }
