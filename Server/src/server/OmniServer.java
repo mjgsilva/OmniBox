@@ -5,6 +5,7 @@ import database.FilesDB;
 import database.RepositoriesDB;
 import database.UsersDB;
 import shared.*;
+import threads.HeartBeatHandler;
 import threads.ProcessClient;
 import threads.ProcessRepository;
 
@@ -34,13 +35,14 @@ public class OmniServer extends CommunicationAdapter {
         Socket socket;
 
         try {
-            ProcessRepository pr = new ProcessRepository(datagramSocket,this);
-            pr.start();
+            ProcessRepository processRepository = new ProcessRepository(datagramSocket,this);
+            HeartBeatHandler heartBeatHandler = new HeartBeatHandler(this);
+            processRepository.start();
             while (true) try {
                 socket = serverSocket.accept();
                 socket.setSoTimeout(Constants.TIMEOUT);
-                ProcessClient pc = new ProcessClient(socket, this);
-                pc.start();
+                ProcessClient processClient = new ProcessClient(socket, this);
+                processClient.start();
             } catch (IOException ioe) {
                 System.out.println("Error: " + ioe.getMessage());
                 return;

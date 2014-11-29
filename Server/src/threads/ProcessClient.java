@@ -23,13 +23,12 @@ public class ProcessClient extends Thread {
     }
 
     public void run() {
-
-        try {
+        while(true) {
             try {
                 Request request = omniServer.getTCPMessage(socket);
 
                 if (request instanceof Request) {
-                    switch(request.getCmd()) {
+                    switch (request.getCmd()) {
                         case cmdAuthenticate:
                             autheticate(request);
                             break;
@@ -40,13 +39,12 @@ public class ProcessClient extends Thread {
                 }
             } catch (ClassNotFoundException e) {
             } catch (InterruptedException e) {
-            }
-        } catch (IOException e) {
-        } finally {
-            try {
-                if(socket != null)
-                    socket.close();
             } catch (IOException e) {
+            } finally {
+                try {
+                    if (socket != null)
+                        socket.close();
+                } catch (IOException e) {}
             }
         }
     }
