@@ -26,7 +26,7 @@ public class HeartBeat extends Thread{
         if(omniRepository.firstStart)
         {
             try{
-                tempList.add(Constants.OP_STARTED);
+                tempList.add(Constants.OP_S_STARTED);
                 cmdTemp = new Request(Constants.CMD.cmdHeartBeat,tempList);
                 omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
                 omniRepository.firstStart = false;
@@ -38,7 +38,7 @@ public class HeartBeat extends Thread{
         }
 
         try {
-            wait(30000);
+            wait(Constants.EXPIRE_TIME);
 
             tempList.clear();
             tempList.add(omniRepository);

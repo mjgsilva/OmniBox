@@ -43,7 +43,7 @@ public class DirectoryHandler extends Thread{
                         //add file to fileList of repository
                         omniRepository.getFileList().add(tempFile);
                         cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
-                        cmdTemp.getArgsList().add(Constants.OP_FINISHED);
+                        cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                         cmdTemp.getArgsList().add(tempFile);
 
                         //Send a notification request to Server
@@ -51,7 +51,7 @@ public class DirectoryHandler extends Thread{
                     }
                     if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
                         cmdTemp.getArgsList().add(Constants.OP_DELETE);
-                        cmdTemp.getArgsList().add(Constants.OP_FINISHED);
+                        cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                         cmdTemp.getArgsList().add(tempFile);
 
                         //remove file of fileList
@@ -66,7 +66,7 @@ public class DirectoryHandler extends Thread{
                         //add file to fileList of repository
                         omniRepository.getFileList().add(tempFile);
                         cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
-                        cmdTemp.getArgsList().add(Constants.OP_FINISHED);
+                        cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                         cmdTemp.getArgsList().add(tempFile);
 
                         //Send a notification request to Server
