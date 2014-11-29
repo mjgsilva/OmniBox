@@ -21,7 +21,7 @@ public class Repository {
 
         if(args.length != 1){
             if (args.length != 3) {
-                System.out.println("Syntax: java <port> <address> <fileDB> // java <port>");
+                System.out.println("Syntax: java <port> <address> <filesDirectory> // java <port>");
                 return;
             }
         }

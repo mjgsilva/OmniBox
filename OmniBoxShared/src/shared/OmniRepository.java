@@ -20,6 +20,7 @@ public class OmniRepository extends CommunicationAdapter{
     private DatagramPacket packet;
     private String filesDirectory;
     private final HashSet<OmniFile> fileList = new HashSet();
+    public boolean firstStart=true;
 
 
     private final int oppNum = 0;
@@ -36,6 +37,10 @@ public class OmniRepository extends CommunicationAdapter{
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
         this.filesDirectory = "";
         setUDPSocket();
+    }
+
+    public DatagramSocket getSocketUDP() {
+        return socketUDP;
     }
 
     private void setUDPSocket() throws SocketException, UnknownHostException {

@@ -1,10 +1,13 @@
 package threads;
 
+import shared.Constants;
 import shared.OmniFile;
 import shared.OmniRepository;
+import shared.Request;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +28,9 @@ public class DirectoryHandler extends Thread{
 
     @Override
     public void run() {
+        Request cmdTemp = new Request(Constants.CMD.cmdNotification,new ArrayList<Object>());
+        OmniFile tempFile = null;
+
         while(true) {
             try {
                 WatchKey watckKey = watcher.take();
@@ -32,13 +38,39 @@ public class DirectoryHandler extends Thread{
                 List<WatchEvent<?>> events = watckKey.pollEvents();
                 for (WatchEvent event : events) {
                     if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                        omniRepository.getFileList().add(new OmniFile(event.context().toString()));
+                        //create a tempFile based on event
+                        tempFile = new OmniFile(event.context().toString());
+                        //add file to fileList of repository
+                        omniRepository.getFileList().add(tempFile);
+                        cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
+                        cmdTemp.getArgsList().add(Constants.OP_FINISHED);
+                        cmdTemp.getArgsList().add(tempFile);
+
+                        //Send a notification request to Server
+                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
                     }
                     if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
+                        cmdTemp.getArgsList().add(Constants.OP_DELETE);
+                        cmdTemp.getArgsList().add(Constants.OP_FINISHED);
+                        cmdTemp.getArgsList().add(tempFile);
+
+                        //remove file of fileList
                         omniRepository.getFileList().remove((OmniFile) event.context());
+
+                        //Send a notification request to Server
+                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
                     }
                     if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
-                        omniRepository.getFileList().add(new OmniFile(event.context().toString()));
+                        //create a tempFile based on event
+                        tempFile = new OmniFile(event.context().toString());
+                        //add file to fileList of repository
+                        omniRepository.getFileList().add(tempFile);
+                        cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
+                        cmdTemp.getArgsList().add(Constants.OP_FINISHED);
+                        cmdTemp.getArgsList().add(tempFile);
+
+                        //Send a notification request to Server
+                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
                     }
                 }
 

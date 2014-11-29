@@ -5,10 +5,7 @@ import shared.OmniFile;
 import shared.Request;
 
 import java.io.*;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.NoSuchElementException;
 
 /**
@@ -94,7 +91,34 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     }
 
     @Override
-    public void sendUDPMessage(String messageToSend) throws InterruptedException, IOException {
+    public void sendUDPMessage(DatagramSocket socket,Request cmd) throws InterruptedException, IOException {
+        DatagramPacket packet = null;
+        ByteArrayOutputStream bOut = null;
+        ObjectOutputStream out = null;
 
+        bOut = new ByteArrayOutputStream();
+        out = new ObjectOutputStream(bOut);
+
+        out.writeObject(cmd);
+
+        packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), socket.getInetAddress(), socket.getPort());
+        socket.send(packet);
+
+    }
+
+    @Override
+    public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException {
+        Request cmdTemp=null;
+        ObjectInputStream in = null;
+        DatagramPacket packet = null;
+
+        packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE);
+        socket.receive(packet);
+
+        in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+
+        cmdTemp = (Request)(in.readObject());
+
+        return cmdTemp;
     }
 }

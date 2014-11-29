@@ -19,6 +19,7 @@ public class Constants {
     final public static int OP_DOWNLOAD = 0;
     final public static int OP_UPLOAD = 1;
     final public static int OP_DELETE = 2;
+    final public static int OP_REPLY = 3;
     final public static int OP_STARTED = 1;
     final public static int OP_FINISHED = 0;
 
