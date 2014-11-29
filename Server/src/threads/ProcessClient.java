@@ -23,29 +23,30 @@ public class ProcessClient extends Thread {
     }
 
     public void run() {
-        while(true) {
-            try {
-                Request request = omniServer.getTCPMessage(socket);
-
-                if (request instanceof Request) {
-                    switch (request.getCmd()) {
-                        case cmdAuthenticate:
-                            autheticate(request);
-                            break;
-                        case cmdSendFile:
-                            upload(request);
-                            break;
-                    }
-                }
-            } catch (ClassNotFoundException e) {
-            } catch (InterruptedException e) {
-            } catch (IOException e) {
-            } finally {
+        try {
+            while(true) {
                 try {
-                    if (socket != null)
-                        socket.close();
+                    Request request = omniServer.getTCPMessage(socket);
+
+                    if (request instanceof Request) {
+                        switch (request.getCmd()) {
+                            case cmdAuthenticate:
+                                autheticate(request);
+                                break;
+                            case cmdSendFile:
+                                upload(request);
+                                break;
+                        }
+                    }
+                } catch (ClassNotFoundException e) {
+                } catch (InterruptedException e) {
                 } catch (IOException e) {}
             }
+        } finally {
+            try {
+                if (socket != null)
+                    socket.close();
+            } catch (IOException e) { }
         }
     }
 
@@ -69,6 +70,7 @@ public class ProcessClient extends Thread {
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
         ArrayList args = new ArrayList();
         args.add(Constants.OP_DOWNLOAD);
+
 
         if(omniServer.fileExists(omniFile)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
