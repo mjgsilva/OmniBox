@@ -26,9 +26,9 @@ public class RepositoriesDB {
 
     public void addRepo(OmniRepository omniRepository) {
         repositories.remove(omniRepository);
+        availability.remove(omniRepository);
         repositories.add(omniRepository);
         putTimer(omniRepository);
-        availability.remove(omniRepository);
         availability.offer(omniRepository);
     }
 

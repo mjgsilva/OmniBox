@@ -21,6 +21,10 @@ public class FilesDB {
 
     }
 
+    public boolean fileExists(OmniFile omniFile) {
+        return files.contains(omniFile);
+    }
+
     public void removeFile(final OmniFile omniFile) {
         files.remove(omniFile);
     }
