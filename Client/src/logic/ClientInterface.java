@@ -13,7 +13,7 @@ import java.io.IOException;
  * Created by ©OmniBox on 01-11-2014.
  */
 public interface ClientInterface {
-    void defineAuthentication(final String username, final String password) throws IOException, InterruptedException;
+    void defineAuthentication(final String username, final String password) throws IOException, InterruptedException, ClassNotFoundException;
 
     void defineGetRequest(final OmniFile fileToGet) throws InterruptedException, IOException, ClassNotFoundException;
 

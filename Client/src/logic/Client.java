@@ -26,7 +26,8 @@ public class Client extends Observable implements ClientInterface {
     private String serverIP = "127.0.0.1"; // default
     private String localDirectoryPath = System.getProperty("user.dir"); // default - current directory
     private Socket serverSocket;
-
+    private OmniFile fileToUpload = null;
+    private Socket repositorySocket = null;
     //private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
 
 
@@ -80,7 +81,7 @@ public class Client extends Observable implements ClientInterface {
     }
 
     @Override
-    public void defineAuthentication(String username, String password) throws IOException, InterruptedException {
+    public void defineAuthentication(String username, String password) throws IOException, InterruptedException, ClassNotFoundException {
         currentState = currentState.defineAuthentication(username, password);
     }
 
@@ -158,5 +159,21 @@ public class Client extends Observable implements ClientInterface {
 
     public Socket getServerSocket() {
         return serverSocket;
+    }
+
+    public OmniFile getFileToUpload() {
+        return fileToUpload;
+    }
+
+    public void setFileToUpload(OmniFile fileToUpload) {
+        this.fileToUpload = fileToUpload;
+    }
+
+    public Socket getRepositorySocket() {
+        return this.repositorySocket;
+    }
+
+    public void setRepositorySocket(Socket repositorySocket) {
+        this.repositorySocket = repositorySocket;
     }
 }

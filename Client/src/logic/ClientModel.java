@@ -1,5 +1,6 @@
 package logic;
 
+import logic.state.StateInterface;
 import shared.OmniFile;
 
 import java.io.File;
@@ -26,7 +27,7 @@ public class ClientModel extends Observable implements ClientInterface {
     }
 
     @Override
-    public void defineAuthentication(String username, String password) throws IOException, InterruptedException {
+    public void defineAuthentication(String username, String password) throws IOException, InterruptedException, ClassNotFoundException {
         client.defineAuthentication(username, password);
         sendNotification();
     }
@@ -59,5 +60,13 @@ public class ClientModel extends Observable implements ClientInterface {
     public void defineMulticastRequest() throws IOException {
         client.defineMulticastRequest();
         sendNotification();
+    }
+
+    public void setFileToUpload(OmniFile fileToUpload) {
+        client.setFileToUpload(fileToUpload);
+    }
+
+    public StateInterface getCurrentState() {
+        return client.getCurrentState();
     }
 }

@@ -29,7 +29,7 @@ public abstract class StateAdapter extends CommunicationAdapter implements State
     }
 
     @Override
-    public StateInterface defineAuthentication(String username, String password) throws InterruptedException, IOException {
+    public StateInterface defineAuthentication(String username, String password) throws InterruptedException, IOException, ClassNotFoundException {
         return this;
     }
 
@@ -62,16 +62,6 @@ public abstract class StateAdapter extends CommunicationAdapter implements State
     @Override
     public String sendMulticastMessage(String messageToSend, int port) throws IOException {
         return super.sendMulticastMessage(messageToSend, port);
-    }
-
-    @Override
-    public OmniFile getFile(Socket socket) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException, ClassNotFoundException {
-        return super.getFile(socket);
-    }
-
-    @Override
-    public void sendFile(Socket socket, OmniFile fileToSend) throws IllegalArgumentException, InterruptedException, IOException {
-        super.sendFile(socket, fileToSend);
     }
 
     @Override

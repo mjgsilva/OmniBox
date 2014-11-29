@@ -3,6 +3,7 @@ package logic.state;
 import logic.Client;
 import shared.Constants;
 import shared.Request;
+import shared.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,14 +19,22 @@ public class WaitAuthentication extends StateAdapter {
     }
 
     @Override
-    public StateInterface defineAuthentication(String username, String password) throws InterruptedException, IOException {
-        ArrayList<String> parameters = new ArrayList<String>();
-        parameters.add(username); parameters.add(password);
+    public StateInterface defineAuthentication(String username, String password) throws InterruptedException, IOException, ClassNotFoundException {
+        ArrayList<Object> parameters = new ArrayList<Object>();
+        parameters.add(new User(username, password));
 
         // If there's any error, stays in this state and then its UI responsibility to prompt an error message
         sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdAuthenticate, parameters));
 
-        return new WaitRequest(client);
+        // Wait for answer
+        Request request = getTCPMessage(client.getServerSocket());
+
+        if (request.getCmd() == Constants.CMD.cmdAuthenticate) {
+            if ((Boolean)request.getArgsList().get(0))
+                return new WaitRequest(client);
+        }
+
+        return this;
     }
 
     @Override
