@@ -25,7 +25,7 @@ public class OmniRepository extends CommunicationAdapter{
     public boolean firstStart=true;
 
 
-    private final int oppNum = 0;
+    private int oppNum = 0;
 
     public OmniRepository(int port, String addressServer, String filesDirectory) throws IOException {
         this.port = port;
@@ -111,6 +111,7 @@ public class OmniRepository extends CommunicationAdapter{
 
     public void deleteFile(String fileName){
 
+        oppNum++;
         sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName);
         //find file and delete
         for(OmniFile file : fileList){
@@ -121,10 +122,12 @@ public class OmniRepository extends CommunicationAdapter{
             }
         }
         sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName);
+        oppNum--;
     }
 
     public void sendFile(Socket socket,OmniFile omnifile) throws IOException, InterruptedException {
 
+        oppNum++;
         sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED,omnifile.getFileName());
         //find file and send
         for(OmniFile file : fileList){
@@ -135,10 +138,12 @@ public class OmniRepository extends CommunicationAdapter{
             }
         }
         sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED,omnifile.getFileName());
+        oppNum--;
     }
 
     public void getFile(Socket socket, String fileName) throws IOException, InterruptedException, ClassNotFoundException {
 
+        oppNum++;
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName);
 
         OmniFile tempFile= null;
@@ -146,5 +151,6 @@ public class OmniRepository extends CommunicationAdapter{
 
         fileList.add(tempFile);
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName);
+        oppNum--;
     }
 }
