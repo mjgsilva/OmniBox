@@ -2,6 +2,7 @@ import shared.OmniRepository;
 import threads.AnswerClient;
 import threads.DirectoryHandler;
 import threads.HeartBeat;
+import threads.ProcessServer;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -35,6 +36,7 @@ public class Repository {
                 new AnswerClient(repo).start();
                 new HeartBeat(repo).start();
                 new DirectoryHandler(repo).start();
+                new ProcessServer(repo);
             case 1:
                 port = Integer.parseInt(args[1]);
 

@@ -29,16 +29,18 @@ public class ProcessClient extends Thread {
                 omniRepository.deleteFile((OmniFile) request.getArgsList().get(0));
             case cmdGetFile:
                 try {
-                    omniRepository.getFile(socketToClient);
+                    //Send a file to a client
+                    omniRepository.sendFile(socketToClient, omniRepository.getOmniFileByName((String) request.getArgsList().get(0)));
                 } catch (InterruptedException e) {
                 } catch (IOException e) {
-                } catch (ClassNotFoundException e) {
                 }
             case cmdSendFile:
                 try {
-                    omniRepository.sendFile(socketToClient, (OmniFile) request.getArgsList().get(0));
+                    omniRepository.getFile(socketToClient, (String) request.getArgsList().get(0));
                 } catch (IOException e) {
                 } catch (InterruptedException e) {
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
 
             default:

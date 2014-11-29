@@ -57,22 +57,6 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     }
 
     @Override
-    public OmniFile getFile(Socket socket) throws NoSuchElementException, IllegalArgumentException, InterruptedException, IOException, ClassNotFoundException {
-        // IOException my be thrown here, user of this method is supposed to handle this exceptions
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-        // Read Object - May throw ClassNotFoundException
-        return (OmniFile) in.readObject();
-    }
-
-    @Override
-    public void sendFile(Socket socket, OmniFile fileToSend) throws IllegalArgumentException, InterruptedException, IOException {
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        // Sends OmniFile object
-        out.writeObject(fileToSend);
-        out.flush();
-    }
-
-    @Override
     public void sendTCPMessage(Socket socket, Request cmd) throws InterruptedException, IOException {
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(cmd);

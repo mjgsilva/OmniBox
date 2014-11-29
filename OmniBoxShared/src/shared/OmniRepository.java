@@ -1,10 +1,12 @@
 package shared;
 import communication.CommunicationAdapter;
+import shared.FileOperations;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 
 /**
  * Created by OmniBox on 02/11/14.
@@ -80,34 +82,69 @@ public class OmniRepository extends CommunicationAdapter{
         return oppNum;
     }
 
+
+    public OmniFile getOmniFileByName(String fileName){
+        for (OmniFile omniFile : fileList) {
+            if(omniFile.getFileName().equalsIgnoreCase(fileName)){
+                return omniFile;
+            }
+        }
+        return null;
+    }
     //END-Gets
 
-    public void deleteFile(OmniFile omniFile){
 
+    public void sendNotification(int operation, int status){
+        try {
+            ArrayList<Object> tempList = new ArrayList<Object>();
+            tempList.add(operation);
+            tempList.add(status);
+            Request reqTemp = new Request(Constants.CMD.cmdNotification,tempList);
+
+            sendUDPMessage(socketUDP,reqTemp);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteFile(String fileName){
+
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED);
         //find file and delete
         for(OmniFile file : fileList){
-            if(file.equals(omniFile))
+            if(file.getFileName().equalsIgnoreCase(fileName))
             {
                 file.delete();
                 fileList.remove(file);
             }
         }
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED);
     }
 
     public void sendFile(Socket socket,OmniFile omnifile) throws IOException, InterruptedException {
+
+        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED);
         //find file and send
         for(OmniFile file : fileList){
             if(file.equals(omnifile))
             {
-                sendFile(socket,file);
+                FileOperations.readFileToSocket(socket, file);
+                break;
             }
         }
+        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED);
     }
 
-    protected void getFile(Socket socket,OmniFile file) throws IOException, InterruptedException, ClassNotFoundException {
+    public void getFile(Socket socket, String fileName) throws IOException, InterruptedException, ClassNotFoundException {
+
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED);
+
         OmniFile tempFile= null;
-        tempFile = getFile(socket);
+        tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + File.separator + fileName);
 
         fileList.add(tempFile);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED);
     }
 }
