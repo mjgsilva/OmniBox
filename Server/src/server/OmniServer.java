@@ -43,8 +43,8 @@ public class OmniServer extends CommunicationAdapter {
                 try {
                 socket = serverSocket.accept();
                 socket.setSoTimeout(Constants.TIMEOUT);
-                ProcessClient pc = new ProcessClient(socket, this);
-                pc.start();
+                ProcessClient processClient = new ProcessClient(socket, this);
+                processClient.start();
             } catch (IOException ioe) {
                 System.out.println("Error: " + ioe.getMessage());
                 return;
@@ -72,13 +72,19 @@ public class OmniServer extends CommunicationAdapter {
     @Override
     public void sendUDPMessage(DatagramSocket datagramSocket, Request cmd) throws InterruptedException, IOException { super.sendUDPMessage(datagramSocket,cmd); }
 
+    //UsersDB
     public boolean login(User user) {
         return usersDB.login(user);
     }
 
+    //RepositoriesDB
     public OmniRepository getLessWorkloadedRepository() { return repositoriesDB.getLessWorkloadedRepository(); }
 
+    public void removeExpiredRepositories() { repositoriesDB.removeExpiredRepositories(); }
+
+    public OmniRepository getDownloadSource(OmniFile omniFile) { return repositoriesDB.getDownloadSource(omniFile); }
+
+    //FilesDB
     public boolean fileExists(OmniFile omniFile) { return filesDB.fileExists(omniFile); }
 
-    public void removeExpiredRepositories() { repositoriesDB.removeExpiredRepositories(); }
 }

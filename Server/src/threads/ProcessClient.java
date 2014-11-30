@@ -36,6 +36,9 @@ public class ProcessClient extends Thread {
                             case cmdSendFile:
                                 upload(request);
                                 break;
+                            case cmdGetFile:
+                                download(request);
+                                break;
                         }
                     }
                 } catch (ClassNotFoundException e) {
@@ -69,10 +72,29 @@ public class ProcessClient extends Thread {
     private void upload(Request request) {
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
         ArrayList args = new ArrayList();
-        args.add(Constants.OP_DOWNLOAD);
+        args.add(Constants.OP_UPLOAD);
 
         if(omniServer.fileExists(omniFile)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
+            args.add(omniRepository.getAddressServer());
+            args.add(omniRepository.getPort());
+            args.add(Constants.FILEOK);
+        } else {
+            args.add(null);
+            args.add(null);
+            args.add(Constants.FILENOTOK);
+        }
+        Request response = new Request(Constants.CMD.cmdRepositoryAddress,args);
+        sendMessage(response);
+    }
+
+    private void download(Request request) {
+        OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
+        ArrayList args = new ArrayList();
+        args.add(Constants.OP_DOWNLOAD);
+
+        if(omniServer.fileExists(omniFile)) {
+            OmniRepository omniRepository = omniServer.getDownloadSource(omniFile);
             args.add(omniRepository.getAddressServer());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);

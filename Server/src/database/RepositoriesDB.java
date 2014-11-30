@@ -5,10 +5,7 @@ import shared.Constants;
 import shared.OmniFile;
 import shared.OmniRepository;
 
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -46,6 +43,21 @@ public class RepositoriesDB {
                 availability.remove(omniRepository);
             }
         }
+    }
+
+    public OmniRepository getDownloadSource(OmniFile omniFile) {
+        OmniRepository lessWorkloadedRepository = getLessWorkloadedRepository();
+
+        if(lessWorkloadedRepository.fileExists(omniFile)) {
+            return lessWorkloadedRepository;
+        } else {
+            PriorityQueue<OmniRepository> temporaryPQ = new PriorityQueue<OmniRepository>(10,new AvailabilityComparator());
+            for(OmniRepository omniRepository : repositories) {
+                if(omniRepository.fileExists(omniFile))
+                    temporaryPQ.offer(omniRepository);
+            }
+            return temporaryPQ.peek();
+         }
     }
 
     public OmniRepository getLessWorkloadedRepository() {
