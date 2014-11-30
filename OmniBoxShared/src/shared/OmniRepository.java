@@ -153,4 +153,27 @@ public class OmniRepository extends CommunicationAdapter{
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName);
         oppNum--;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof OmniRepository) {
+            OmniRepository repoTemp = ((OmniRepository) obj);
+            if ((this.getPort() == repoTemp.getPort()) && (this.getSocket().getInetAddress().getHostAddress().equalsIgnoreCase(repoTemp.getSocket().getInetAddress().getHostAddress()))) {
+                return true;
+            } else
+                return false;
+        }
+        else
+            return false;
+    }
+
+    public boolean fileExists(OmniFile omniFile) {
+        return fileList.contains(omniFile);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = socket.hashCode();
+        return result * 30;
+    }
 }
