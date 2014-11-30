@@ -75,7 +75,7 @@ public class OmniServer extends CommunicationAdapter {
         return usersDB.login(user);
     }
 
-    public OmniRepository getLessWorkloadedRepository() { return repositoriesDB.getRepositoriesAvailability(); }
+    public OmniRepository getLessWorkloadedRepository() { return repositoriesDB.getLessWorkloadedRepository(); }
 
     public boolean fileExists(OmniFile omniFile) { return filesDB.fileExists(omniFile); }
 

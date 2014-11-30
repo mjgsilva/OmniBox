@@ -2,6 +2,7 @@
 package database;
 
 import shared.Constants;
+import shared.OmniFile;
 import shared.OmniRepository;
 
 import java.util.Calendar;
@@ -47,7 +48,7 @@ public class RepositoriesDB {
         }
     }
 
-    public OmniRepository getRepositoriesAvailability() {
+    public OmniRepository getLessWorkloadedRepository() {
         return availability.peek();
     }
 

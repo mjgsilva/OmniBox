@@ -71,7 +71,6 @@ public class ProcessClient extends Thread {
         ArrayList args = new ArrayList();
         args.add(Constants.OP_DOWNLOAD);
 
-
         if(omniServer.fileExists(omniFile)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
             args.add(omniRepository.getAddressServer());
