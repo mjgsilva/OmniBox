@@ -104,14 +104,16 @@ public class MainFrame extends JFrame implements Observer {
             try {
                 // Even if value == JOptionPane.CANCEL_OPTION it calls defineAuthentication to notify Observers.
                 // Validation is done inside the state. Is done via exceptions.
-                cm.defineAuthentication(username.getText(), password.getPassword().toString());
+                cm.defineAuthentication(username.getText(), new String(password.getPassword()));
             } catch (IOException e) {
                 new ErrorDialog(null, e.getMessage());
-                e.printStackTrace();
+                cm.sendNotification();
             } catch (InterruptedException e) {
                 new ErrorDialog(null, e.getMessage());
+                cm.sendNotification();
             } catch (Exception e) {
                 new ErrorDialog(null, e.getMessage());
+                cm.sendNotification();
             }
         } else if (cm.getCurrentState() instanceof WaitRequest) {
             // Enable components

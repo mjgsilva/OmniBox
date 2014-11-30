@@ -32,6 +32,8 @@ public class WaitAuthentication extends StateAdapter {
         if (request.getCmd() == Constants.CMD.cmdAuthenticate) {
             if ((Boolean)request.getArgsList().get(0))
                 return new WaitRequest(client);
+            else
+                throw new IOException("Invalid username or password.");
         }
 
         return this;
