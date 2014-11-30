@@ -31,6 +31,7 @@ public class OmniRepository extends CommunicationAdapter{
         this.port = port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
+        socket = new ServerSocket(port);
         setUDPSocket();
     }
 
@@ -38,6 +39,7 @@ public class OmniRepository extends CommunicationAdapter{
         this.port = port;
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
         this.filesDirectory = "";
+        socket = new ServerSocket(port);
         setUDPSocket();
     }
 
