@@ -38,6 +38,7 @@ public class OmniServer extends CommunicationAdapter {
             ProcessRepository processRepository = new ProcessRepository(datagramSocket,this);
             HeartBeatHandler heartBeatHandler = new HeartBeatHandler(this);
             processRepository.start();
+            heartBeatHandler.start();
             while (true)
                 try {
                 socket = serverSocket.accept();
