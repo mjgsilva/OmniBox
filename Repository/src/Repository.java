@@ -19,6 +19,7 @@ public class Repository {
         int port;
         String address;
         String filesDirectory;
+        AnswerClient answerClient;
 
         if(args.length != 1){
             if (args.length != 3) {
@@ -29,21 +30,25 @@ public class Repository {
 
         switch (args.length) {
             case 3:
-                port = Integer.parseInt(args[1]);
+                port = Integer.parseInt(args[0]);
                 address = args[1].trim();
                 filesDirectory = args[2].trim();
                 repo = new OmniRepository(port,address,filesDirectory);
-                new AnswerClient(repo).start();
+                answerClient = new AnswerClient(repo);
+                answerClient.start();
                 new HeartBeat(repo).start();
-                new DirectoryHandler(repo).start();
+                //new DirectoryHandler(repo).start();
                 new ProcessServer(repo);
+                break;
             case 1:
                 port = Integer.parseInt(args[1]);
 
                 repo = new OmniRepository(port);
                 new AnswerClient(repo).start();
                 new HeartBeat(repo).start();
-                new DirectoryHandler(repo).start();
+                //new DirectoryHandler(repo).start();
+                new ProcessServer(repo);
+                break;
             default:
                 return;
         }

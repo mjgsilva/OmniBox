@@ -22,32 +22,18 @@ public class HeartBeat extends Thread{
     public void run() {
         Request cmdTemp = null;
         ArrayList<Object> tempList = new ArrayList<Object>();
-
-        if(omniRepository.firstStart)
-        {
-            try{
-                tempList.add(Constants.OP_S_STARTED);
-                cmdTemp = new Request(Constants.CMD.cmdHeartBeat,tempList);
-                omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
-                omniRepository.firstStart = false;
+        while(true) {
+            try {
+                tempList.clear();
+                tempList.add(omniRepository);
+                cmdTemp = new Request(Constants.CMD.cmdHeartBeat, tempList);
+                omniRepository.sendUDPMessage(omniRepository.getSocketUDP(), cmdTemp);
+                wait(Constants.EXPIRE_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        try {
-            wait(Constants.EXPIRE_TIME);
-
-            tempList.clear();
-            tempList.add(omniRepository);
-            cmdTemp = new Request(Constants.CMD.cmdHeartBeat,tempList);
-            omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
 
