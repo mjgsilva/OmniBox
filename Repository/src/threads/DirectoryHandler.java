@@ -47,7 +47,7 @@ public class DirectoryHandler extends Thread{
                         cmdTemp.getArgsList().add(tempFile);
 
                         //Send a notification request to Server
-                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
+                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
                     }
                     if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
                         cmdTemp.getArgsList().add(Constants.OP_DELETE);
@@ -58,7 +58,7 @@ public class DirectoryHandler extends Thread{
                         omniRepository.getFileList().remove((OmniFile) event.context());
 
                         //Send a notification request to Server
-                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
+                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
                     }
                     if (event.kind() == StandardWatchEventKinds.ENTRY_MODIFY) {
                         //create a tempFile based on event
@@ -70,7 +70,7 @@ public class DirectoryHandler extends Thread{
                         cmdTemp.getArgsList().add(tempFile);
 
                         //Send a notification request to Server
-                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),cmdTemp);
+                        omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
                     }
                 }
 

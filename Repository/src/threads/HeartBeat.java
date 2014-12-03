@@ -27,7 +27,7 @@ public class HeartBeat extends Thread{
                 tempList.clear();
                 tempList.add(omniRepository);
                 cmdTemp = new Request(Constants.CMD.cmdHeartBeat, tempList);
-                omniRepository.sendUDPMessage(omniRepository.getSocketUDP(), cmdTemp);
+                omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(), cmdTemp);
                 wait(Constants.EXPIRE_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();

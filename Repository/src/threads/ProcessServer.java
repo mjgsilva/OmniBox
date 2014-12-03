@@ -24,14 +24,14 @@ public class ProcessServer extends Thread  {
         this.omniRepository = omniRepository;
         InetAddress inetServerAddr = InetAddress.getByName(omniRepository.getAddressServer());
 
-        dSocket = new DatagramSocket(omniRepository.getServerPort(), inetServerAddr);
+        dSocket = omniRepository.getSocketUDP();//new DatagramSocket(omniRepository.getServerPort(), inetServerAddr);
     }
 
     @Override
     public void run() {
         Request request = null;
         try {
-            request = omniRepository.getUDPMessage(dSocket);
+            request = omniRepository.getUDPMessage(dSocket,omniRepository.getServerAddr(),omniRepository.getServerPort());
 
 
             switch (request.getCmd()) {

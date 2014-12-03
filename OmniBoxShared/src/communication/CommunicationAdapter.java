@@ -75,7 +75,7 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     }
 
     @Override
-    public void sendUDPMessage(DatagramSocket socket,Request cmd) throws InterruptedException, IOException {
+    public void sendUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port,Request cmd) throws InterruptedException, IOException {
         DatagramPacket packet = null;
         ByteArrayOutputStream bOut = null;
         ObjectOutputStream out = null;
@@ -85,18 +85,18 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
 
         out.writeObject(cmd);
 
-        packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), socket.getInetAddress(), socket.getPort());
+        packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), inetAddress, port);
         socket.send(packet);
 
     }
 
     @Override
-    public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException {
+    public Request getUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port) throws InterruptedException, IOException, ClassNotFoundException {
         Request cmdTemp=null;
         ObjectInputStream in = null;
         DatagramPacket packet = null;
 
-        packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE);
+        packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE,inetAddress,port);
         socket.receive(packet);
 
         in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));

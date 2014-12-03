@@ -17,13 +17,13 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private int port;
     private String addressServer;
     private int serverPort;
-    private ServerSocket socket;
+    private transient ServerSocket socket;
     private InetAddress serverAddr;
-    private DatagramSocket socketUDP;
-    private DatagramPacket packet;
+    private InetAddress localAddr;
+    private transient DatagramSocket socketUDP;
+    private transient DatagramPacket packet;
     private String filesDirectory;
     private final HashSet<OmniFile> fileList = new HashSet();
-    public boolean firstStart=true;
 
 
     private int oppNum = 0;
@@ -32,6 +32,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         this.port = port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
+        this.localAddr = InetAddress.getLocalHost();
         socket = new ServerSocket(port);
         setUDPSocket();
     }
@@ -40,10 +41,13 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         this.port = port;
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
         this.filesDirectory = "";
+        this.localAddr = InetAddress.getLocalHost();
         socket = new ServerSocket(port);
         setUDPSocket();
     }
 
+    public InetAddress getLocalAddr() {return localAddr;}
+    public InetAddress getServerAddr() {return serverAddr;}
     public DatagramSocket getSocketUDP() {
         return socketUDP;
     }
@@ -104,7 +108,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
             tempList.add(status);
             Request reqTemp = new Request(Constants.CMD.cmdNotification,tempList);
 
-            sendUDPMessage(socketUDP,reqTemp);
+            sendUDPMessage(socketUDP,serverAddr,serverPort,reqTemp);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -3,6 +3,8 @@ package communication;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 import shared.Request;
 
 /**
@@ -25,8 +27,8 @@ public interface UDP {
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendUDPMessage(DatagramSocket socket, Request cmd) throws InterruptedException, IOException;
+    public void sendUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port, Request cmd) throws InterruptedException, IOException;
 
 
-    public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException;
+    public Request getUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port) throws InterruptedException, IOException, ClassNotFoundException;
 }
