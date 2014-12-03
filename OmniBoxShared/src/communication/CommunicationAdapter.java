@@ -91,12 +91,12 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     }
 
     @Override
-    public Request getUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port) throws InterruptedException, IOException, ClassNotFoundException {
+    public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException {
         Request cmdTemp=null;
         ObjectInputStream in = null;
         DatagramPacket packet = null;
 
-        packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE,inetAddress,port);
+        packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE);
         socket.receive(packet);
 
         in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));

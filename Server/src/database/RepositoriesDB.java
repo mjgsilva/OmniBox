@@ -56,11 +56,11 @@ public class RepositoriesDB {
     public void deleteBroadcast(final Request response) {
         for(OmniRepository omniRepository : repositories) {
             try {
-                InetAddress repositoryAddress = omniRepository.getSocketUDP().getInetAddress();
+                InetAddress repositoryAddress = omniRepository.getLocalAddr();
                 int repositoryPort = omniRepository.getPort();
 
-                DatagramSocket tempSocket = new DatagramSocket(repositoryPort, repositoryAddress);
-                omniRepository.sendUDPMessage(tempSocket, response);
+                DatagramSocket tempSocket = new DatagramSocket();
+                omniRepository.sendUDPMessage(tempSocket,repositoryAddress,repositoryPort,response);
                 tempSocket.close(); //TODO: Review this
             } catch (InterruptedException e) {
             } catch (IOException e) {

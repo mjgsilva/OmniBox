@@ -2,7 +2,9 @@ package database;
 
 import shared.OmniFile;
 import shared.OmniRepository;
+import shared.User;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -11,11 +13,11 @@ import java.util.Iterator;
  */
 public class FilesDB {
     private HashSet<OmniFile> files;
-    private HashSet<OmniFile> filesBeingAccessed;
+    private HashMap<User,OmniFile> filesBeingAccessed;
 
     public FilesDB() {
         files = new HashSet<OmniFile>();
-        filesBeingAccessed = new HashSet<OmniFile>();
+        filesBeingAccessed = new HashMap<User,OmniFile>();
     }
 
     public void addFile(final OmniFile omniFile) {
@@ -32,16 +34,16 @@ public class FilesDB {
     }
 
     public boolean isFileBeingAccessed(final OmniFile omniFile) {
-        return filesBeingAccessed.contains(omniFile);
+        return filesBeingAccessed.containsValue(omniFile);
     }
 
-    public void addAccessToFile(final OmniFile omniFile) {
-        if(!isFileBeingAccessed(omniFile))
-            filesBeingAccessed.add(omniFile);
+    public void addAccessToFile(final User user, final OmniFile omniFile) {
+        if(!filesBeingAccessed.containsKey(user))
+            filesBeingAccessed.put(user,omniFile);
     }
 
-    public void removeAccessToFile(final OmniFile omniFile) {
-        filesBeingAccessed.remove(omniFile);
+    public void removeAccessToFile(final User user) {
+        filesBeingAccessed.remove(user);
     }
 
     public void rebuildSet(final HashSet<OmniRepository> omniRepositories) {

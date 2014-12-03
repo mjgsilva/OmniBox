@@ -53,7 +53,7 @@ public class ProcessClient extends Thread {
                         omniServer.removeUserActivity(user);
                     }
                     if(omniFile != null) {
-                        omniServer.remoteAccessToFile(omniFile);
+                        omniServer.remoteAccessToFile(user);
                     }
                 }
             }
@@ -121,7 +121,7 @@ public class ProcessClient extends Thread {
 
             this.omniFile = omniFile;
             omniServer.editUserActivity(user, Constants.OP_UPLOAD);
-            omniServer.addAccessToFile(omniFile); //TODO: Get out
+            omniServer.addAccessToFile(user,omniFile); //TODO: Get out
         } else {
             args.add(null);
             args.add(null);

@@ -1,5 +1,6 @@
 package threads;
 
+import com.sun.tools.internal.jxc.apt.Const;
 import server.OmniServer;
 import shared.*;
 
@@ -49,7 +50,6 @@ public class ProcessRepository extends Thread {
     private void ProcessHeartBeat(Request request) {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
         omniServer.addRepository(omniRepository);
-
     }
 
     private void ProcessNotification(Request request) {
@@ -60,10 +60,12 @@ public class ProcessRepository extends Thread {
 
         if(operationType == Constants.OP_DOWNLOAD) {
             if(status == Constants.OP_S_STARTED) {
-                omniServer.editUserActivity(user, Constants.OP_UPLOAD);
+                omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
+                omniServer.fileBeingAccessed(omniFile);
             } else {
                 if(status == Constants.OP_S_FINISHED) {
-
+                    omniServer.editUserActivity(user, Constants.INACTIVE);
+                    omniServer.remoteAccessToFile(user);
                 }
             }
         }

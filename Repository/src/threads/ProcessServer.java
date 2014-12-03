@@ -31,7 +31,7 @@ public class ProcessServer extends Thread  {
     public void run() {
         Request request = null;
         try {
-            request = omniRepository.getUDPMessage(dSocket,omniRepository.getServerAddr(),omniRepository.getServerPort());
+            request = omniRepository.getUDPMessage(dSocket);
 
 
             switch (request.getCmd()) {

@@ -30,5 +30,5 @@ public interface UDP {
     public void sendUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port, Request cmd) throws InterruptedException, IOException;
 
 
-    public Request getUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port) throws InterruptedException, IOException, ClassNotFoundException;
+    public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException;
 }

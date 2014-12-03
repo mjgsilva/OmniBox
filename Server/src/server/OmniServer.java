@@ -11,6 +11,7 @@ import threads.ProcessRepository;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -74,7 +75,7 @@ public class OmniServer extends CommunicationAdapter {
     public Request getUDPMessage(DatagramSocket datagramSocket) throws InterruptedException, IOException, ClassNotFoundException { return super.getUDPMessage(datagramSocket); }
 
     @Override
-    public void sendUDPMessage(DatagramSocket datagramSocket, Request cmd) throws InterruptedException, IOException { super.sendUDPMessage(datagramSocket,cmd); }
+    public void sendUDPMessage(DatagramSocket datagramSocket,InetAddress inetAddress,int port,Request cmd) throws InterruptedException, IOException { super.sendUDPMessage(datagramSocket,inetAddress,port,cmd); }
 
     //UsersDB
     public boolean login(final User user) {
@@ -136,11 +137,11 @@ public class OmniServer extends CommunicationAdapter {
         return filesDB.isFileBeingAccessed(omniFile);
     }
 
-    public void addAccessToFile(final OmniFile omniFile) {
-        filesDB.addAccessToFile(omniFile);
+    public void addAccessToFile(final User user, final OmniFile omniFile) {
+        filesDB.addAccessToFile(user,omniFile);
     }
 
-    public void remoteAccessToFile(final OmniFile omniFile) {
-        filesDB.removeAccessToFile(omniFile);
+    public void remoteAccessToFile(final User user) {
+        filesDB.removeAccessToFile(user);
     }
 }
