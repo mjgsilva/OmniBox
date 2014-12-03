@@ -8,6 +8,7 @@ import ui.graphic.ErrorDialog;
 import ui.graphic.ListPanel;
 
 import javax.swing.*;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -67,13 +68,18 @@ public class ListController extends CommunicationAdapter {
                             ArrayList<Object> args = request.getArgsList();
                             int operation = (Integer)(args.get(0));
                             String repositoryAddress = (String) args.get(1);
-                            int repositoryPort = (Integer) args.get(2);
+                            int repositoryPort = ((Integer) args.get(2)) == null ? 0 : (Integer) args.get(2);
 
-                            if ((Boolean) args.get(3)) {
+                            // For tests: Client - Repository
+                            //operation = Constants.OP_SEND_FILE;
+                            //repositoryAddress="10.65.201.232";
+                            //repositoryPort=6000;
+
+
+                            if ((Boolean) args.get(3) && repositoryAddress != null && repositoryPort != 0) {
                                 client.setRepositorySocket(new Socket(repositoryAddress, repositoryPort));
                                 if (operation == Constants.OP_SEND_FILE) {
                                     // Client has to be on state WaitAnswer for this to work correctly
-
                                     client.defineSendRequest(client.getFileToUpload());
                                 } else if (operation == Constants.OP_GET_FILE) {
                                     // Client has to be on state WaitAnswer for this to work correctly
@@ -84,14 +90,14 @@ public class ListController extends CommunicationAdapter {
                             break;
                         case cmdRefreshList:
                             ListPanel.getFilesList().removeAll();
-                            for (Object aux : request.getArgsList()) {
-                                filesList.addItemToList((String)aux);
+                            ArrayList<Object> temp = request.getArgsList();
+                            for (Object aux : temp) {
+                                filesList.addItemToList(((OmniFile) aux).getFileName());
                             }
                             break;
                         default:
                             break;
                     }
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     System.exit(-1);

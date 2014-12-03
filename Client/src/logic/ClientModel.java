@@ -12,6 +12,8 @@ import java.util.Observable;
  */
 public class ClientModel extends Observable implements ClientInterface {
     private Client client;
+    private int selectedIndex = -1;
+    private OmniFile selectedFile = null;
 
     public ClientModel(Client client) {
         this.client = client;
@@ -68,5 +70,25 @@ public class ClientModel extends Observable implements ClientInterface {
 
     public StateInterface getCurrentState() {
         return client.getCurrentState();
+    }
+
+    public void closeServerSocket() throws IOException {
+        client.getServerSocket().close();
+    }
+
+    public void setSelectedIndex(int selectedIndex) {
+        this.selectedIndex = selectedIndex;
+    }
+
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+
+    public OmniFile getSelectedFile() {
+        return selectedFile;
+    }
+
+    public void setSelectedFile(OmniFile selectedFile) {
+        this.selectedFile = selectedFile;
     }
 }

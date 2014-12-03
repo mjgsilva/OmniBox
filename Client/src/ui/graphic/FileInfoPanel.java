@@ -1,6 +1,8 @@
 package ui.graphic;
 
 import logic.ClientModel;
+import logic.state.WaitAuthentication;
+import shared.OmniFile;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,6 +56,25 @@ public class FileInfoPanel extends JPanel implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-
+        if (cm.getCurrentState() instanceof WaitAuthentication)
+            setVisible(false);
+        else {
+            setVisible(true);
+            // Non is selected
+            if (cm.getSelectedIndex() == -1) {
+                fileName.setText("-");
+                fileSize.setText("-");
+                fileExtension.setText("-");
+                lastModification.setText("-");
+            } else {
+                OmniFile selectedFile = cm.getSelectedFile();
+                if (selectedFile == null)
+                    return;
+                fileName.setText(selectedFile.getFileName());
+                fileSize.setText(((Long)selectedFile.getFileSize()).toString());
+                fileExtension.setText(selectedFile.getFileExtension());
+                lastModification.setText(selectedFile.getCreationDate().toString());
+            }
+        }
     }
 }

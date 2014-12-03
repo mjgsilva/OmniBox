@@ -56,9 +56,16 @@ public class Client extends Observable implements ClientInterface {
             case 3:
                 temp.localDirectoryPath = args[2];
             case 2:
-                if (args[1].equalsIgnoreCase("$multicast$"))
+                if (args[1].equalsIgnoreCase("$multicast$")) {
+                    try {
+                        temp.port = Integer.parseInt(args[0]);
+                        if (temp.port <= 0)
+                            throw new NumberFormatException();
+                    } catch (NumberFormatException e) {
+                        return null;
+                    }
                     temp.defineMulticastRequest();
-                else
+                } else
                     temp.serverIP = args[1];
             case 1:
                 try {
@@ -70,6 +77,7 @@ public class Client extends Observable implements ClientInterface {
                 }
                 // If serverIP is wrong it throws an IOException, caught on interface
                 temp.serverSocket = new Socket(temp.serverIP, temp.port);
+
                 return temp;
             default:
                 return null;
