@@ -103,6 +103,15 @@ public class MainFrame extends JFrame implements Observer {
             // Validate data
             try {
                 // Even if value == JOptionPane.CANCEL_OPTION it calls defineAuthentication to notify Observers.
+                if (value == JOptionPane.CANCEL_OPTION) {
+                    try {
+                        cm.closeServerSocket();
+                    } catch (IOException e) {
+                        System.out.println("Error closing server socket...");
+                    }
+                    System.out.println("OmniBox is shutting down...");
+                    System.exit(0);
+                }
                 // Validation is done inside the state. Is done via exceptions.
                 cm.defineAuthentication(username.getText(), new String(password.getPassword()));
             } catch (IOException e) {
