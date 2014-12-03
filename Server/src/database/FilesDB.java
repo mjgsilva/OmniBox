@@ -11,9 +11,11 @@ import java.util.Iterator;
  */
 public class FilesDB {
     private HashSet<OmniFile> files;
+    private HashSet<OmniFile> filesBeingAccessed;
 
     public FilesDB() {
         files = new HashSet<OmniFile>();
+        filesBeingAccessed = new HashSet<OmniFile>();
     }
 
     public void addFile(final OmniFile omniFile) {
@@ -27,6 +29,19 @@ public class FilesDB {
 
     public void removeFile(final OmniFile omniFile) {
         files.remove(omniFile);
+    }
+
+    public boolean isFileBeingAccessed(final OmniFile omniFile) {
+        return filesBeingAccessed.contains(omniFile);
+    }
+
+    public void addAccessToFile(final OmniFile omniFile) {
+        if(!isFileBeingAccessed(omniFile))
+            filesBeingAccessed.add(omniFile);
+    }
+
+    public void removeAccessToFile(final OmniFile omniFile) {
+        filesBeingAccessed.remove(omniFile);
     }
 
     public void rebuildSet(final HashSet<OmniRepository> omniRepositories) {

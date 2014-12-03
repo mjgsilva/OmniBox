@@ -60,6 +60,10 @@ public class OmniServer extends CommunicationAdapter {
         }
     }
 
+    public DatagramSocket getDatagramSocket() {
+        return datagramSocket;
+    }
+
     @Override
     public Request getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException { return super.getTCPMessage(socket); }
 
@@ -73,18 +77,70 @@ public class OmniServer extends CommunicationAdapter {
     public void sendUDPMessage(DatagramSocket datagramSocket, Request cmd) throws InterruptedException, IOException { super.sendUDPMessage(datagramSocket,cmd); }
 
     //UsersDB
-    public boolean login(User user) {
+    public boolean login(final User user) {
         return usersDB.login(user);
     }
 
+    public void addUserActivity(final User user) {
+        usersDB.addUserActivity(user);
+    }
+
+    public void editUserActivity(final User user, final Integer activityType) {
+        usersDB.editUserActivity(user,activityType);
+    }
+
+    public void removeUserActivity(final User user) {
+        usersDB.remoteUserActivity(user);
+    }
+
     //RepositoriesDB
-    public OmniRepository getLessWorkloadedRepository() { return repositoriesDB.getLessWorkloadedRepository(); }
+    public void addRepository(final OmniRepository omniRepository) {
+        repositoriesDB.addRepo(omniRepository);
+    }
 
-    public void removeExpiredRepositories() { repositoriesDB.removeExpiredRepositories(); }
+    public int getNumberOfRepositories() {
+        return repositoriesDB.getNumberOfRepositories();
+    }
 
-    public OmniRepository getDownloadSource(OmniFile omniFile) { return repositoriesDB.getDownloadSource(omniFile); }
+    public OmniRepository getLessWorkloadedRepository() {
+        return repositoriesDB.getLessWorkLoadedRepository();
+    }
+
+    public void removeExpiredRepositories() {
+        repositoriesDB.removeExpiredRepositories();
+    }
+
+    public OmniRepository getDownloadSource(final OmniFile omniFile) {
+        return repositoriesDB.getDownloadSource(omniFile);
+    }
+
+    public void deleteBroadcast(final Request response) {
+
+        repositoriesDB.deleteBroadcast(response);
+    }
 
     //FilesDB
-    public boolean fileExists(OmniFile omniFile) { return filesDB.fileExists(omniFile); }
+    public boolean fileExists(final OmniFile omniFile) {
+        return filesDB.fileExists(omniFile);
+    }
 
+    public void addFile(final OmniFile omniFile) {
+        filesDB.addFile(omniFile);
+    }
+
+    public void removeFile(final OmniFile omniFile) {
+        filesDB.removeFile(omniFile);
+    }
+
+    public boolean fileBeingAccessed(final OmniFile omniFile) {
+        return filesDB.isFileBeingAccessed(omniFile);
+    }
+
+    public void addAccessToFile(final OmniFile omniFile) {
+        filesDB.addAccessToFile(omniFile);
+    }
+
+    public void remoteAccessToFile(final OmniFile omniFile) {
+        filesDB.removeAccessToFile(omniFile);
+    }
 }

@@ -36,7 +36,7 @@ public class ProcessServer extends Thread  {
 
             switch (request.getCmd()) {
                 case cmdNotification:
-                    if((Integer)request.getArgsList().get(0) == Constants.OP_REPLY)
+                    if((Integer)request.getArgsList().get(0) == Constants.OP_REPLICATION)
                     {
                         //Create socket with addr and port that server send in notification request
                         Socket socketTemp= new Socket((String)request.getArgsList().get(1),(Integer)request.getArgsList().get(2));

@@ -4,7 +4,11 @@ package database;
 import shared.Constants;
 import shared.OmniFile;
 import shared.OmniRepository;
+import shared.Request;
 
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -22,7 +26,7 @@ public class RepositoriesDB {
         availability = new PriorityBlockingQueue(10,new AvailabilityComparator());
     }
 
-    public void addRepo(OmniRepository omniRepository) {
+    public void addRepo(final OmniRepository omniRepository) {
         repositories.remove(omniRepository);
         availability.remove(omniRepository);
         repositories.add(omniRepository);
@@ -30,9 +34,13 @@ public class RepositoriesDB {
         availability.offer(omniRepository);
     }
 
-    private void putTimer(OmniRepository omniRepository) {
+    private void putTimer(final OmniRepository omniRepository) {
         Calendar now = Calendar.getInstance();
         timers.put(omniRepository,System.currentTimeMillis());
+    }
+
+    public int getNumberOfRepositories() {
+        return repositories.size();
     }
 
     public void removeExpiredRepositories() {
@@ -45,11 +53,26 @@ public class RepositoriesDB {
         }
     }
 
-    public OmniRepository getDownloadSource(OmniFile omniFile) {
-        OmniRepository lessWorkloadedRepository = getLessWorkloadedRepository();
+    public void deleteBroadcast(final Request response) {
+        for(OmniRepository omniRepository : repositories) {
+            try {
+                InetAddress repositoryAddress = omniRepository.getSocketUDP().getInetAddress();
+                int repositoryPort = omniRepository.getPort();
 
-        if(lessWorkloadedRepository.fileExists(omniFile)) {
-            return lessWorkloadedRepository;
+                DatagramSocket tempSocket = new DatagramSocket(repositoryPort, repositoryAddress);
+                omniRepository.sendUDPMessage(tempSocket, response);
+                tempSocket.close(); //TODO: Review this
+            } catch (InterruptedException e) {
+            } catch (IOException e) {
+            }
+        }
+    }
+
+    public OmniRepository getDownloadSource(final OmniFile omniFile) {
+        OmniRepository lessWorkLoadedRepository = getLessWorkLoadedRepository();
+
+        if(lessWorkLoadedRepository.fileExists(omniFile)) {
+            return lessWorkLoadedRepository;
         } else {
             PriorityQueue<OmniRepository> temporaryPQ = new PriorityQueue<OmniRepository>(10,new AvailabilityComparator());
             for(OmniRepository omniRepository : repositories) {
@@ -60,7 +83,7 @@ public class RepositoriesDB {
          }
     }
 
-    public OmniRepository getLessWorkloadedRepository() {
+    public OmniRepository getLessWorkLoadedRepository() {
         return availability.peek();
     }
 

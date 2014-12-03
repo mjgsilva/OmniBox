@@ -16,6 +16,8 @@ import java.util.ArrayList;
 public class ProcessClient extends Thread {
     final private Socket socket;
     final private OmniServer omniServer;
+    private User user;
+    private OmniFile omniFile;
 
     public ProcessClient(Socket socket,OmniServer omniServer) {
         this.socket = socket;
@@ -39,11 +41,21 @@ public class ProcessClient extends Thread {
                             case cmdGetFile:
                                 download(request);
                                 break;
+                            case cmdDeleteFile:
+                                delete(request);
+                                break;
                         }
                     }
                 } catch (ClassNotFoundException e) {
                 } catch (InterruptedException e) {
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                    if(user != null) {
+                        omniServer.removeUserActivity(user);
+                    }
+                    if(omniFile != null) {
+                        omniServer.remoteAccessToFile(omniFile);
+                    }
+                }
             }
         } finally {
             try {
@@ -64,7 +76,14 @@ public class ProcessClient extends Thread {
     private void autheticate(Request req) {
         User user = (User) req.getArgsList().get(0);
         ArrayList args = new ArrayList();
-        args.add(omniServer.login(user));
+        boolean validLogin = omniServer.login(user);
+
+        if(validLogin) {
+            this.user = user;
+            omniServer.addUserActivity(user);
+        }
+
+        args.add(validLogin);
         Request response = new Request(Constants.CMD.cmdAuthenticate,args);
         sendMessage(response);
     }
@@ -74,11 +93,12 @@ public class ProcessClient extends Thread {
         ArrayList args = new ArrayList();
         args.add(Constants.OP_UPLOAD);
 
-        if(omniServer.fileExists(omniFile)) {
+        if(!omniServer.fileExists(omniFile) && (omniServer.getNumberOfRepositories() != 0)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
             args.add(omniRepository.getAddressServer());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
+            omniServer.addFile(omniFile);
         } else {
             args.add(null);
             args.add(null);
@@ -98,12 +118,31 @@ public class ProcessClient extends Thread {
             args.add(omniRepository.getAddressServer());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
+
+            this.omniFile = omniFile;
+            omniServer.editUserActivity(user, Constants.OP_UPLOAD);
+            omniServer.addAccessToFile(omniFile); //TODO: Get out
         } else {
             args.add(null);
             args.add(null);
             args.add(Constants.FILENOTOK);
         }
+
         Request response = new Request(Constants.CMD.cmdRepositoryAddress,args);
         sendMessage(response);
+    }
+
+    private void delete(Request request){
+        OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
+        ArrayList args = new ArrayList();
+
+        if(omniServer.fileExists(omniFile) && !omniServer.fileBeingAccessed(omniFile))
+        {
+            args.add(omniFile);
+        }
+
+        Request response = new Request(Constants.CMD.cmdDeleteFile,args);
+        omniServer.deleteBroadcast(response);
+        omniServer.removeFile(omniFile); //TODO: Get out
     }
 }
