@@ -65,7 +65,7 @@ public class ListController extends CommunicationAdapter {
                     switch (cmd) {
                         case cmdRepositoryAddress:
                             ArrayList<Object> args = request.getArgsList();
-                            int operation = Integer.parseInt((String) args.get(0));
+                            int operation = (Integer)(args.get(0));
                             String repositoryAddress = (String) args.get(1);
                             int repositoryPort = (Integer) args.get(2);
 
