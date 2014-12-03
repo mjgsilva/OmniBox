@@ -30,6 +30,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     public OmniRepository(int port, String addressServer, String filesDirectory) throws IOException {
         this.port = port;
+        this.serverPort = port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
         this.localAddr = InetAddress.getLocalHost();
@@ -39,6 +40,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     public OmniRepository(int port) throws IOException {
         this.port = port;
+        this.serverPort = port;
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
         this.filesDirectory = "";
         this.localAddr = InetAddress.getLocalHost();
@@ -161,26 +163,27 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         oppNum--;
     }
 
-    @Override
-    public boolean equals(Object obj){
-        if(obj instanceof OmniRepository) {
-            OmniRepository repoTemp = ((OmniRepository) obj);
-            if ((this.getPort() == repoTemp.getPort()) && (this.getSocket().getInetAddress().getHostAddress().equalsIgnoreCase(repoTemp.getSocket().getInetAddress().getHostAddress()))) {
-                return true;
-            } else
-                return false;
-        }
-        else
-            return false;
-    }
-
     public boolean fileExists(OmniFile omniFile) {
         return fileList.contains(omniFile);
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OmniRepository that = (OmniRepository) o;
+
+        if (port != that.port) return false;
+        if (!localAddr.equals(that.localAddr)) return false;
+
+        return true;
+    }
+
+    @Override
     public int hashCode() {
-        int result = socket.hashCode();
-        return result * 30;
+        int result = port;
+        result = 31 * result + localAddr.hashCode();
+        return result;
     }
 }
