@@ -4,6 +4,7 @@ import shared.FileOperations;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import java.util.HashSet;
  * Created by OmniBox on 02/11/14.
  */
 
-public class OmniRepository extends CommunicationAdapter{
+public class OmniRepository extends CommunicationAdapter implements Serializable{
     private int port;
     private String addressServer;
     private int serverPort;
@@ -51,7 +52,7 @@ public class OmniRepository extends CommunicationAdapter{
         //Socket Udp to communicate operations
         serverAddr = InetAddress.getByName(addressServer);
         socketUDP = new DatagramSocket();
-        socketUDP.setSoTimeout(Constants.TIMEOUT *1000);
+        socketUDP.setSoTimeout(Constants.TIMEOUT * 1000);
     }
 
     //Gets
