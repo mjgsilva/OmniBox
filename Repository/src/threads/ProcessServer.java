@@ -32,7 +32,7 @@ public class ProcessServer extends Thread  {
         Request request = null;
         try {
             request = omniRepository.getUDPMessage(dSocket);
-
+            System.out.println("Get UDP Message");
 
             switch (request.getCmd()) {
                 case cmdNotification:
