@@ -26,5 +26,5 @@ public class Constants implements Serializable {
     final public static int OP_S_FINISHED = 0;
     final public static int INACTIVE = 9;
 
-    public enum CMD {cmdNone,cmdSendFile,cmdGetFile,cmdDeleteFile,cmdRepositoryAddress,cmdAuthenticate,cmdHeartBeat,cmdNotification,cmdRefreshList};
+    public enum CMD {cmdNone,cmdSendFile,cmdGetFile,cmdDeleteFile,cmdRepositoryAddress,cmdAuthentication,cmdHeartBeat,cmdNotification,cmdRefreshList};
 }

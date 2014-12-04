@@ -50,6 +50,7 @@ public class ProcessRepository extends Thread {
     private void ProcessHeartBeat(Request request) {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
         omniServer.addRepository(omniRepository);
+        System.out.println("Ligou-se! " + omniRepository.getLocalAddr().getHostAddress().toString());
     }
 
     private void ProcessNotification(Request request) {
@@ -59,14 +60,50 @@ public class ProcessRepository extends Thread {
         User user = (User)request.getArgsList().get(3);
 
         if(operationType == Constants.OP_DOWNLOAD) {
-            if(status == Constants.OP_S_STARTED) {
-                omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
-                omniServer.fileBeingAccessed(omniFile);
+            downloadNotification(status,omniFile,user);
+        } else {
+            if(operationType == Constants.OP_UPLOAD) {
+                uploadNotification(status,omniFile,user);
             } else {
-                if(status == Constants.OP_S_FINISHED) {
-                    omniServer.editUserActivity(user, Constants.INACTIVE);
-                    omniServer.remoteAccessToFile(user);
+                if(operationType == Constants.OP_DELETE) {
+                    deleteNotification(status,omniFile,user);
+                    //TODO: is this really necessary? deleteNotification(status,omniFile);
                 }
+            }
+        }
+    }
+
+    private void downloadNotification(int status,OmniFile omniFile,User user) {
+        if(status == Constants.OP_S_STARTED) {
+            omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
+            omniServer.addAccessToFile(user, omniFile);
+        } else {
+            if(status == Constants.OP_S_FINISHED) {
+                omniServer.editUserActivity(user, Constants.INACTIVE);
+                omniServer.removeAccessToFile(user);
+            }
+        }
+        //TODO: E se a transf falhar? <- Considerar uma opção de FILEOK/FILENOTOK
+    }
+
+    private void uploadNotification(int status,OmniFile omniFile,User user) {
+        if(status == Constants.OP_S_STARTED) {
+            omniServer.editUserActivity(user, Constants.OP_UPLOAD);
+        } else {
+            if(status == Constants.OP_S_FINISHED) {
+                omniServer.editUserActivity(user, Constants.INACTIVE);
+                //TODO: E se a transf falhar? <- Considerar uma opção de FILEOK/FILENOTOK
+            }
+        }
+    }
+
+    private void deleteNotification(int status,OmniFile omniFile,User user) {
+        if(status == Constants.OP_S_STARTED) {
+            omniServer.editUserActivity(user, Constants.OP_DELETE);
+        } else {
+            if(status == Constants.OP_S_FINISHED) {
+                omniServer.editUserActivity(user, Constants.INACTIVE);
+                //TODO: Review this method
             }
         }
     }

@@ -17,7 +17,6 @@ public class ProcessClient extends Thread {
     final private Socket socket;
     final private OmniServer omniServer;
     private User user;
-    private OmniFile omniFile;
 
     public ProcessClient(Socket socket,OmniServer omniServer) {
         this.socket = socket;
@@ -32,8 +31,8 @@ public class ProcessClient extends Thread {
 
                     if (request instanceof Request) {
                         switch (request.getCmd()) {
-                            case cmdAuthenticate:
-                                autheticate(request);
+                            case cmdAuthentication:
+                                authetication(request);
                                 break;
                             case cmdSendFile:
                                 upload(request);
@@ -49,12 +48,8 @@ public class ProcessClient extends Thread {
                 } catch (ClassNotFoundException e) {
                 } catch (InterruptedException e) {
                 } catch (IOException e) {
-                    if(user != null) {
+                    if(user != null)
                         omniServer.removeUserActivity(user);
-                    }
-                    if(omniFile != null) {
-                        omniServer.remoteAccessToFile(user);
-                    }
                 }
             }
         } finally {
@@ -73,7 +68,7 @@ public class ProcessClient extends Thread {
         } catch (IOException e) { }
     }
 
-    private void autheticate(Request req) {
+    private void authetication(Request req) {
         User user = (User) req.getArgsList().get(0);
         ArrayList args = new ArrayList();
         boolean validLogin = omniServer.login(user);
@@ -84,7 +79,7 @@ public class ProcessClient extends Thread {
         }
 
         args.add(validLogin);
-        Request response = new Request(Constants.CMD.cmdAuthenticate,args);
+        Request response = new Request(Constants.CMD.cmdAuthentication,args);
         sendMessage(response);
     }
 
@@ -92,10 +87,10 @@ public class ProcessClient extends Thread {
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
         ArrayList args = new ArrayList();
         args.add(Constants.OP_UPLOAD);
-
+        System.out.println("Uploading: " +  omniFile.toString());
         if(!omniServer.fileExists(omniFile) && (omniServer.getNumberOfRepositories() != 0)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
-            args.add(omniRepository.getAddressServer());
+            args.add(omniRepository.getLocalAddr().getHostAddress());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
             omniServer.addFile(omniFile);
@@ -118,10 +113,6 @@ public class ProcessClient extends Thread {
             args.add(omniRepository.getAddressServer());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
-
-            this.omniFile = omniFile;
-            omniServer.editUserActivity(user, Constants.OP_UPLOAD);
-            omniServer.addAccessToFile(user,omniFile); //TODO: Get out
         } else {
             args.add(null);
             args.add(null);
@@ -135,14 +126,19 @@ public class ProcessClient extends Thread {
     private void delete(Request request){
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
         ArrayList args = new ArrayList();
+        args.add(omniFile);
+        Request repositoryResponse;
 
         if(omniServer.fileExists(omniFile) && !omniServer.fileBeingAccessed(omniFile))
         {
-            args.add(omniFile);
+            repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
+            omniServer.deleteBroadcast(repositoryResponse);
+            omniServer.removeFile(omniFile);
+            args.add(Constants.FILEOK);
+        } else {
+            args.add(Constants.FILENOTOK);
         }
-
-        Request response = new Request(Constants.CMD.cmdDeleteFile,args);
-        omniServer.deleteBroadcast(response);
-        omniServer.removeFile(omniFile); //TODO: Get out
+        Request clientResponse = new Request(Constants.CMD.cmdDeleteFile,args);
+        sendMessage(clientResponse);
     }
 }

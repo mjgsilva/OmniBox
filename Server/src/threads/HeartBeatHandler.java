@@ -17,6 +17,7 @@ public class HeartBeatHandler extends Thread {
     public void run() {
         while(true) {
             try {
+                System.out.println(omniServer.getNumberOfRepositories());
             Thread.sleep(Constants.EXPIRE_TIME);
             } catch (InterruptedException e) { }
             omniServer.removeExpiredRepositories();

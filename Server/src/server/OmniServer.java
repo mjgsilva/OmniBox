@@ -141,7 +141,7 @@ public class OmniServer extends CommunicationAdapter {
         filesDB.addAccessToFile(user,omniFile);
     }
 
-    public void remoteAccessToFile(final User user) {
+    public void removeAccessToFile(final User user) {
         filesDB.removeAccessToFile(user);
     }
 }
