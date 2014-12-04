@@ -5,6 +5,7 @@ import logic.state.StateInterface;
 import logic.state.WaitAuthentication;
 import shared.Constants;
 import shared.OmniFile;
+import shared.User;
 
 import java.io.*;
 import java.net.*;
@@ -29,6 +30,7 @@ public class Client extends Observable implements ClientInterface {
     private OmniFile fileToUpload = null;
     private Socket repositorySocket = null;
     //private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
+    private User user;
 
 
     /**
@@ -183,5 +185,14 @@ public class Client extends Observable implements ClientInterface {
 
     public void setRepositorySocket(Socket repositorySocket) {
         this.repositorySocket = repositorySocket;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

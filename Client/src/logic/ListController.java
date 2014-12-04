@@ -78,10 +78,10 @@ public class ListController extends CommunicationAdapter {
   
                             if ((Boolean) args.get(3) && repositoryAddress != null && repositoryPort != 0) {
                                 client.setRepositorySocket(new Socket(repositoryAddress, repositoryPort));
-                                if (operation == Constants.OP_SEND_FILE) {
+                                if (operation == Constants.OP_UPLOAD) {
                                     // Client has to be on state WaitAnswer for this to work correctly
                                     client.defineSendRequest(client.getFileToUpload());
-                                } else if (operation == Constants.OP_GET_FILE) {
+                                } else if (operation == Constants.OP_DOWNLOAD) {
                                     // Client has to be on state WaitAnswer for this to work correctly
                                     client.defineGetRequest(new OmniFile(ListPanel.getFilesList().getSelectedValue()));
                                 }

@@ -1,11 +1,15 @@
 package logic.state;
 
 import logic.Client;
+import shared.Constants;
 import shared.FileOperations;
 import shared.OmniFile;
+import shared.Request;
+import ui.graphic.ErrorDialog;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Waits for user to confirm the result of previous chosen operation.
@@ -52,16 +56,27 @@ public class WaitAnswer extends StateAdapter {
             @Override
             public void run() {
                 try {
+                    // Tell repository what kind of operation I'm requesting
+                    ArrayList<Object> temp = new ArrayList<Object>();
+                    temp.add(fileToSend.getFileName());
+                    temp.add(client.getUser());
+                    Request request = new Request(Constants.CMD.cmdSendFile, temp);
+                    sendTCPMessage(s, request);
+                    // Send file to repository
                     FileOperations.readFileToSocket(s, fileToSend);
                     // Rename file
                     new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").renameTo(new OmniFile(fileToSend.getFileName()));
                 } catch (IOException e) {
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    new ErrorDialog(null, "Error transfering file to repository");
                 } finally {
                     // Close repository socket when over
                     try {
                         client.getRepositorySocket().close();
                     } catch (IOException e) {}
                     client.setRepositorySocket(null);
+                    client.setFileToUpload(null);
                 }
             }
         }).start();

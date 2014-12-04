@@ -92,9 +92,9 @@ public class MainFrame extends JFrame implements Observer {
             panel.add(label, BorderLayout.WEST);
 
             JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));
-            JTextField username = new JTextField("");
+            JTextField username = new JTextField("danilo");
             controls.add(username);
-            JPasswordField password = new JPasswordField("");
+            JPasswordField password = new JPasswordField("danilo123");
             controls.add(password);
             panel.add(controls, BorderLayout.CENTER);
 
@@ -127,8 +127,9 @@ public class MainFrame extends JFrame implements Observer {
         } else if (cm.getCurrentState() instanceof WaitRequest) {
             // Enable components
             setEnabled(true);
-        } else if (cm.getCurrentState() instanceof WaitAnswer) {
             cm.setFileToUpload(null);
+        } else if (cm.getCurrentState() instanceof WaitAnswer) {
+
         }
     }
 }

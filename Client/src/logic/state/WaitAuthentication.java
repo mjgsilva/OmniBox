@@ -24,15 +24,16 @@ public class WaitAuthentication extends StateAdapter {
         parameters.add(new User(username, password));
 
         // If there's any error, stays in this state and then its UI responsibility to prompt an error message
-        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdAuthenticate, parameters));
+        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdAuthentication, parameters));
 
         // Wait for answer
         Request request = getTCPMessage(client.getServerSocket());
 
-        if (request.getCmd() == Constants.CMD.cmdAuthenticate) {
-            if ((Boolean)request.getArgsList().get(0))
+        if (request.getCmd() == Constants.CMD.cmdAuthentication) {
+            if ((Boolean)request.getArgsList().get(0)) {
+                client.setUser(new User(username, password));
                 return new WaitRequest(client);
-            else
+            } else
                 throw new IOException("Invalid username or password.");
         }
 
