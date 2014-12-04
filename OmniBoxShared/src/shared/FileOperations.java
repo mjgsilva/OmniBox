@@ -23,11 +23,11 @@ public class FileOperations {
      * @throws IOException If there's an error with file/socket operations
      * @throws FileNotFoundException If file already exists
      */
-    public static File saveFileFromSocket(Socket socket, String destinyDirectoryPath) throws FileNotFoundException, IOException {
+    public static OmniFile saveFileFromSocket(Socket socket, String destinyDirectoryPath) throws FileNotFoundException, IOException {
         FileOutputStream fos;
         byte[] chunk = new byte[Constants.MAX_SIZE];
         int nBytes;
-        String temporaryFileName = destinyDirectoryPath + "temp" + new Date();
+        String temporaryFileName = destinyDirectoryPath;// + "temp" + new Date();
 
         fos = new FileOutputStream(temporaryFileName);
 
@@ -35,7 +35,8 @@ public class FileOperations {
             fos.write(chunk,0,nBytes);
         }
 
-        return new File(temporaryFileName);
+
+        return new OmniFile(temporaryFileName);
     }
 
     /**

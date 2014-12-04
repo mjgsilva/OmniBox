@@ -159,7 +159,6 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
         OmniFile tempFile= null;
         tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
-
         fileList.add(tempFile);
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName,user);
         oppNum--;
