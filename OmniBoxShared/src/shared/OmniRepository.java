@@ -41,7 +41,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public OmniRepository(int port) throws IOException {
         this.port = port;
         this.serverPort = port;
-        this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.port);
+        this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, port);
         this.filesDirectory = "";
         this.localAddr = InetAddress.getLocalHost();
         socket = new ServerSocket(port);
@@ -103,13 +103,14 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     //END-Gets
 
 
-    public void sendNotification(int operation, int status,String fileName,User user){
+    public void sendNotification(int operation, int status,String fileName,User user,Boolean isSuccessful){
         try {
             ArrayList<Object> tempList = new ArrayList<Object>();
             tempList.add(operation);
             tempList.add(status);
             tempList.add(new OmniFile(fileName));
             tempList.add(user);
+            tempList.add(isSuccessful);
             Request reqTemp = new Request(Constants.CMD.cmdNotification,tempList);
 
             sendUDPMessage(socketUDP,serverAddr,serverPort,reqTemp);
@@ -123,7 +124,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public void deleteFile(String fileName,User user){
 
         oppNum++;
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName,user);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName,user,true);
         //find file and delete
         for(OmniFile file : fileList){
             if(file.getFileName().equalsIgnoreCase(fileName))
@@ -132,35 +133,45 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 fileList.remove(file);
             }
         }
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName,user);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName,user,true);
         oppNum--;
     }
 
     public void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
 
         oppNum++;
-        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED,omnifile.getFileName(),user);
+        sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile.getFileName(),user,true);
         //find file and send
         for(OmniFile file : fileList){
             if(file.equals(omnifile))
             {
-                FileOperations.readFileToSocket(socket, file);
+                try {
+                    FileOperations.readFileToSocket(socket, file);
+                }catch (Exception e){
+                    sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile.getFileName(),user,false);
+                }
                 break;
             }
         }
-        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED,omnifile.getFileName(),user);
+        sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,true);
         oppNum--;
     }
 
     public void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
 
         oppNum++;
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName,user);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName,user,true);
 
         OmniFile tempFile= null;
-        tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
+        try {
+            tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
+        }catch (Exception e){
+            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,tempFile.getFileName(),user,false);
+        }
+
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName,user,true);
+
         fileList.add(tempFile);
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName,user);
         oppNum--;
     }
 
