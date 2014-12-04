@@ -3,6 +3,7 @@ package threads;
 import shared.OmniFile;
 import shared.OmniRepository;
 import shared.Request;
+import shared.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,17 +27,19 @@ public class ProcessClient extends Thread {
     public void run() {
         switch (request.getCmd()) {
             case cmdDeleteFile:
-                omniRepository.deleteFile((String) request.getArgsList().get(0));
+                omniRepository.deleteFile((String) request.getArgsList().get(0),(User)request.getArgsList().get(1));
             case cmdGetFile:
                 try {
                     //Send a file to a client
-                    omniRepository.sendFile(socketToClient, omniRepository.getOmniFileByName((String) request.getArgsList().get(0)));
+                    System.out.println("SendFile from "+socketToClient.getInetAddress().getAddress());
+                    omniRepository.sendFile(socketToClient, omniRepository.getOmniFileByName((String) request.getArgsList().get(0)),(User)request.getArgsList().get(1));
                 } catch (InterruptedException e) {
                 } catch (IOException e) {
                 }
             case cmdSendFile:
                 try {
-                    omniRepository.getFile(socketToClient, (String) request.getArgsList().get(0));
+                    System.out.println("GetFile from "+socketToClient.getInetAddress().getAddress());
+                    omniRepository.getFile(socketToClient, (String) request.getArgsList().get(0),(User)request.getArgsList().get(1));
                 } catch (IOException e) {
                 } catch (InterruptedException e) {
                 } catch (ClassNotFoundException e) {

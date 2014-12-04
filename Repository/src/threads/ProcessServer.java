@@ -1,9 +1,6 @@
 package threads;
 
-import shared.Constants;
-import shared.OmniFile;
-import shared.OmniRepository;
-import shared.Request;
+import shared.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -41,10 +38,10 @@ public class ProcessServer extends Thread  {
                         //Create socket with addr and port that server send in notification request
                         Socket socketTemp= new Socket((String)request.getArgsList().get(1),(Integer)request.getArgsList().get(2));
 
-                        omniRepository.sendFile(socketTemp, omniRepository.getOmniFileByName((String) request.getArgsList().get(3)));
+                        omniRepository.sendFile(socketTemp, omniRepository.getOmniFileByName((String) request.getArgsList().get(3)),null);
                     }
                 case cmdDeleteFile:
-                    omniRepository.deleteFile((String) request.getArgsList().get(0));
+                    omniRepository.deleteFile((String) request.getArgsList().get(0),null);
                 default:
             }
 

@@ -103,11 +103,13 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     //END-Gets
 
 
-    public void sendNotification(int operation, int status,String fileName){
+    public void sendNotification(int operation, int status,String fileName,User user){
         try {
             ArrayList<Object> tempList = new ArrayList<Object>();
             tempList.add(operation);
             tempList.add(status);
+            tempList.add(new OmniFile(fileName));
+            tempList.add(user);
             Request reqTemp = new Request(Constants.CMD.cmdNotification,tempList);
 
             sendUDPMessage(socketUDP,serverAddr,serverPort,reqTemp);
@@ -118,10 +120,10 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         }
     }
 
-    public void deleteFile(String fileName){
+    public void deleteFile(String fileName,User user){
 
         oppNum++;
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName,user);
         //find file and delete
         for(OmniFile file : fileList){
             if(file.getFileName().equalsIgnoreCase(fileName))
@@ -130,14 +132,14 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 fileList.remove(file);
             }
         }
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName,user);
         oppNum--;
     }
 
-    public void sendFile(Socket socket,OmniFile omnifile) throws IOException, InterruptedException {
+    public void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
 
         oppNum++;
-        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED,omnifile.getFileName());
+        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_STARTED,omnifile.getFileName(),user);
         //find file and send
         for(OmniFile file : fileList){
             if(file.equals(omnifile))
@@ -146,20 +148,20 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 break;
             }
         }
-        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED,omnifile.getFileName());
+        sendNotification(Constants.OP_SEND_FILE,Constants.OP_S_FINISHED,omnifile.getFileName(),user);
         oppNum--;
     }
 
-    public void getFile(Socket socket, String fileName) throws IOException, InterruptedException, ClassNotFoundException {
+    public void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
 
         oppNum++;
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName,user);
 
         OmniFile tempFile= null;
-        tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + File.separator + fileName);
+        tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
 
         fileList.add(tempFile);
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName,user);
         oppNum--;
     }
 
