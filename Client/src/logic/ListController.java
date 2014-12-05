@@ -69,12 +69,6 @@ public class ListController extends CommunicationAdapter {
                             int operation = (Integer)(args.get(0));
                             String repositoryAddress = (String) args.get(1);
                             int repositoryPort = ((Integer) args.get(2)) == null ? 0 : (Integer) args.get(2);
-
-                            // For tests: Client - Repository
-                            //operation = Constants.OP_SEND_FILE;
-                            //repositoryAddress="10.65.201.232";
-                            //repositoryPort=6000;
-
   
                             if ((Boolean) args.get(3) && repositoryAddress != null && repositoryPort != 0) {
                                 client.setRepositorySocket(new Socket(repositoryAddress, repositoryPort));

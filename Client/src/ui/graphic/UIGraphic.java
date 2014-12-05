@@ -2,6 +2,8 @@ package ui.graphic;
 
 import logic.Client;
 import shared.Constants;
+import shared.NetworkAddress;
+import sun.security.pkcs.ContentInfo;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -58,19 +60,6 @@ public class UIGraphic {
                 System.exit(0);
             }
         }
-
-        /*try {
-            this.client.getServerSocket().setSoTimeout(Constants.TIMEOUT);
-        } catch (SocketException e) {
-            if (!client.getServerSocket().isClosed()) {
-                try {
-                    client.getServerSocket().close();
-                } catch (IOException e1) {
-                    new ErrorDialog(null, "Socket error. System is shutting down.\nTry again later.");
-                }
-                new ErrorDialog(null, "Socket error. System is shutting down.\nTry again later.");
-            }
-        }*/
 
         System.out.println("Starting graphical interface...\n");
 
