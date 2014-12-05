@@ -1,9 +1,13 @@
 package database;
 
+import server.OmniServer;
 import shared.Constants;
+import shared.Request;
 import shared.User;
 
 import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +19,7 @@ public class UsersDB {
     final private String fileDB;
     private HashSet<User> users = new HashSet<User>();
     private HashMap<User,Integer> usersActivity = new HashMap<User,Integer>();
+    private HashMap<User,Socket> usersSocket = new HashMap<User,Socket>();
 
     public UsersDB(String fileDB) {
         this.fileDB = fileDB;
@@ -25,7 +30,7 @@ public class UsersDB {
             users.add(user);
     }
 
-    public boolean login(final User user) {
+    public synchronized boolean login(final User user) {
         boolean isValid = false;
         if(users.contains(user)) {
             for(Iterator<User> it = users.iterator(); it.hasNext();) {
@@ -41,16 +46,34 @@ public class UsersDB {
         return isValid;
     }
 
-    public void addUserActivity(final User user) {
+    public synchronized void addUserActivity(final User user) {
         usersActivity.put(user, Constants.INACTIVE);
     }
 
-    public void editUserActivity(final User user,Integer activity) {
+    public synchronized void editUserActivity(final User user,Integer activity) {
         usersActivity.put(user,activity);
     }
 
-    public void remoteUserActivity(final User user) {
+    public synchronized void remoteUserActivity(final User user) {
         usersActivity.remove(user);
+    }
+
+    public synchronized void addSocket(final User user, final Socket socket) {
+        usersSocket.put(user,socket);
+    }
+
+    public synchronized void removeSocket(final User user) {
+        usersSocket.remove(user);
+    }
+
+    public synchronized void notifyUsers(ArrayList filesList, OmniServer omniServer) {
+        Request response = new Request(Constants.CMD.cmdRefreshList,filesList);
+        for(User user : users) {
+            try {
+                omniServer.sendTCPMessage(usersSocket.get(user), response);
+            } catch(InterruptedException e) {
+            } catch(IOException e) { }
+        }
     }
 
     public void serializeDB() throws IOException {

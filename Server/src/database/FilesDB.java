@@ -4,9 +4,7 @@ import shared.OmniFile;
 import shared.OmniRepository;
 import shared.User;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by OmniBox on 08/11/14.
@@ -20,29 +18,37 @@ public class FilesDB {
         filesBeingAccessed = new HashMap<User,OmniFile>();
     }
 
-    public void addFile(final OmniFile omniFile) {
+    public synchronized void addFile(final OmniFile omniFile) {
         files.add(omniFile);
 
     }
 
-    public boolean fileExists(OmniFile omniFile) {
+    public synchronized boolean fileExists(OmniFile omniFile) {
         return files.contains(omniFile);
     }
 
-    public void removeFile(final OmniFile omniFile) {
+    public synchronized void removeFile(final OmniFile omniFile) {
         files.remove(omniFile);
     }
 
-    public boolean isFileBeingAccessed(final OmniFile omniFile) {
+    public synchronized ArrayList fileList() {
+        ArrayList fileList = new ArrayList<OmniFile>();
+        for(OmniFile omniFile : files) {
+            fileList.add(omniFile);
+        }
+        return fileList;
+    }
+
+    public synchronized boolean isFileBeingAccessed(final OmniFile omniFile) {
         return filesBeingAccessed.containsValue(omniFile);
     }
 
-    public void addAccessToFile(final User user, final OmniFile omniFile) {
+    public synchronized void addAccessToFile(final User user, final OmniFile omniFile) {
         if(!filesBeingAccessed.containsKey(user))
             filesBeingAccessed.put(user,omniFile);
     }
 
-    public void removeAccessToFile(final User user) {
+    public synchronized void removeAccessToFile(final User user) {
         filesBeingAccessed.remove(user);
     }
 
