@@ -90,10 +90,13 @@ public class ProcessClient extends Thread {
         System.out.println("Uploading: " +  omniFile.toString());
         if(!omniServer.fileExists(omniFile) && (omniServer.getNumberOfRepositories() != 0)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
+<<<<<<< HEAD
+=======
+            System.out.println("Repository -> " + omniRepository.getLocalAddr().getHostAddress() + " " + omniRepository.getPort());
+>>>>>>> 566f7dc... Server integration progress
             args.add(omniRepository.getLocalAddr().getHostAddress());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
-            omniServer.addFile(omniFile);
         } else {
             args.add(null);
             args.add(null);
@@ -110,7 +113,12 @@ public class ProcessClient extends Thread {
 
         if(omniServer.fileExists(omniFile)) {
             OmniRepository omniRepository = omniServer.getDownloadSource(omniFile);
+<<<<<<< HEAD
             args.add(omniRepository.getAddressServer());
+=======
+            System.out.println("Repository -> " + omniRepository.getLocalAddr().getHostAddress() + " " + omniRepository.getPort());
+            args.add(omniRepository.getLocalAddr().getHostAddress());
+>>>>>>> 566f7dc... Server integration progress
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
         } else {

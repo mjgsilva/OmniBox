@@ -94,6 +94,22 @@ public class OmniServer extends CommunicationAdapter {
         usersDB.remoteUserActivity(user);
     }
 
+<<<<<<< HEAD
+=======
+    public void addSocket(final User user,final Socket socket) {
+        usersDB.addSocket(user, socket);
+    }
+
+    public void removeSocket(final User user) {
+        usersDB.removeSocket(user);
+    }
+
+    public void notifyClients() {
+        System.out.println("Notify!");
+        usersDB.notifyUsers(filesDB.fileList(),this);
+    }
+
+>>>>>>> 566f7dc... Server integration progress
     //RepositoriesDB
     public void addRepository(final OmniRepository omniRepository) {
         repositoriesDB.addRepo(omniRepository);

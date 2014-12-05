@@ -40,6 +40,7 @@ public class ProcessRepository extends Thread {
                 } catch (ClassNotFoundException e) {
                 } catch (InterruptedException e) {
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         } finally{
@@ -50,7 +51,11 @@ public class ProcessRepository extends Thread {
     private void ProcessHeartBeat(Request request) {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
         omniServer.addRepository(omniRepository);
+<<<<<<< HEAD
         System.out.println("Ligou-se! " + omniRepository.getLocalAddr().getHostAddress().toString());
+=======
+        System.out.println("Ligou-se! " + omniRepository.getLocalAddr().getHostAddress() + " / " + omniRepository.getPort());
+>>>>>>> 566f7dc... Server integration progress
     }
 
     private void ProcessNotification(Request request) {
@@ -60,10 +65,17 @@ public class ProcessRepository extends Thread {
         User user = (User)request.getArgsList().get(3);
 
         if(operationType == Constants.OP_DOWNLOAD) {
+<<<<<<< HEAD
             downloadNotification(status,omniFile,user);
         } else {
             if(operationType == Constants.OP_UPLOAD) {
                 uploadNotification(status,omniFile,user);
+=======
+            downloadNotification(status,omniFile,user,isSucessful,omniRepository);
+        } else {
+            if(operationType == Constants.OP_UPLOAD) {
+                uploadNotification(status,omniFile,user,omniRepository);
+>>>>>>> 566f7dc... Server integration progress
             } else {
                 if(operationType == Constants.OP_DELETE) {
                     deleteNotification(status,omniFile,user);
@@ -73,7 +85,11 @@ public class ProcessRepository extends Thread {
         }
     }
 
+<<<<<<< HEAD
     private void downloadNotification(int status,OmniFile omniFile,User user) {
+=======
+    private void uploadNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
+>>>>>>> 566f7dc... Server integration progress
         if(status == Constants.OP_S_STARTED) {
             omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
             omniServer.addAccessToFile(user, omniFile);
@@ -86,13 +102,23 @@ public class ProcessRepository extends Thread {
         //TODO: E se a transf falhar? <- Considerar uma opção de FILEOK/FILENOTOK
     }
 
+<<<<<<< HEAD
     private void uploadNotification(int status,OmniFile omniFile,User user) {
+=======
+    private void downloadNotification(int status,OmniFile omniFile,User user,Boolean isSucessful,OmniRepository omniRepository) {
+>>>>>>> 566f7dc... Server integration progress
         if(status == Constants.OP_S_STARTED) {
             omniServer.editUserActivity(user, Constants.OP_UPLOAD);
         } else {
             if(status == Constants.OP_S_FINISHED) {
                 omniServer.editUserActivity(user, Constants.INACTIVE);
+<<<<<<< HEAD
                 //TODO: E se a transf falhar? <- Considerar uma opção de FILEOK/FILENOTOK
+=======
+                if(isSucessful && (omniFile!=null)) {
+                    omniServer.addFile(omniFile);
+                }
+>>>>>>> 566f7dc... Server integration progress
             }
         }
     }

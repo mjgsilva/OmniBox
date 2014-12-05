@@ -53,6 +53,28 @@ public class UsersDB {
         usersActivity.remove(user);
     }
 
+<<<<<<< HEAD
+=======
+    public synchronized void addSocket(final User user, final Socket socket) {
+        usersSocket.put(user,socket);
+    }
+
+    public synchronized void removeSocket(final User user) {
+        usersSocket.remove(user);
+    }
+
+    public synchronized void notifyUsers(ArrayList filesList, OmniServer omniServer) {
+        Request response = new Request(Constants.CMD.cmdRefreshList,filesList);
+        for(User user : users) {
+            try {
+                omniServer.sendTCPMessage(usersSocket.get(user), response);
+                System.out.println("User: " + user + " Socket: " + usersSocket.get(user).getInetAddress());
+            } catch(InterruptedException e) {
+            } catch(IOException e) { }
+        }
+    }
+
+>>>>>>> 566f7dc... Server integration progress
     public void serializeDB() throws IOException {
         FileOutputStream fos = new FileOutputStream(fileDB);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
