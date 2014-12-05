@@ -4,6 +4,7 @@ import shared.OmniFile;
 import shared.OmniRepository;
 import shared.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,6 +36,14 @@ public class FilesDB {
 
     public boolean isFileBeingAccessed(final OmniFile omniFile) {
         return filesBeingAccessed.containsValue(omniFile);
+    }
+
+    public synchronized ArrayList fileList() {
+        ArrayList fileList = new ArrayList<OmniFile>();
+        for(OmniFile omniFile : files) {
+            fileList.add(omniFile);
+        }
+        return fileList;
     }
 
     public void addAccessToFile(final User user, final OmniFile omniFile) {
