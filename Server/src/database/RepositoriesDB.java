@@ -39,7 +39,7 @@ public class RepositoriesDB {
         timers.put(omniRepository,System.currentTimeMillis());
     }
 
-    public int getNumberOfRepositories() {
+    public synchronized int getNumberOfRepositories() {
         return repositories.size();
     }
 

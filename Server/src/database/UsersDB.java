@@ -71,6 +71,7 @@ public class UsersDB {
         for(User user : users) {
             try {
                 omniServer.sendTCPMessage(usersSocket.get(user), response);
+                System.out.println("User: " + user + " Socket: " + usersSocket.get(user).getInetAddress());
             } catch(InterruptedException e) {
             } catch(IOException e) { }
         }

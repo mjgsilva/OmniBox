@@ -100,6 +100,7 @@ public class OmniServer extends CommunicationAdapter {
     }
 
     public void notifyClients() {
+        System.out.println("Notify!");
         usersDB.notifyUsers(filesDB.fileList(),this);
     }
 

@@ -40,6 +40,7 @@ public class ProcessRepository extends Thread {
                 } catch (ClassNotFoundException e) {
                 } catch (InterruptedException e) {
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         } finally{
@@ -50,7 +51,7 @@ public class ProcessRepository extends Thread {
     private void ProcessHeartBeat(Request request) {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
         omniServer.addRepository(omniRepository);
-        System.out.println("Ligou-se! " + omniRepository.getLocalAddr().getHostAddress().toString() + " / " + omniRepository.getPort());
+        System.out.println("Ligou-se! " + omniRepository.getLocalAddr().getHostAddress() + " / " + omniRepository.getPort());
     }
 
     private void ProcessNotification(Request request) {
@@ -63,10 +64,10 @@ public class ProcessRepository extends Thread {
 
 
         if(operationType == Constants.OP_DOWNLOAD) {
-            downloadNotification(status,omniFile,user,omniRepository);
+            downloadNotification(status,omniFile,user,isSucessful,omniRepository);
         } else {
             if(operationType == Constants.OP_UPLOAD) {
-                uploadNotification(status,omniFile,user,isSucessful,omniRepository);
+                uploadNotification(status,omniFile,user,omniRepository);
             } else {
                 if(operationType == Constants.OP_DELETE) {
                     deleteNotification(status,omniFile,user,omniRepository);
@@ -75,7 +76,7 @@ public class ProcessRepository extends Thread {
         }
     }
 
-    private void downloadNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
+    private void uploadNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
         if(status == Constants.OP_S_STARTED) {
             omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
             omniServer.addAccessToFile(user, omniFile);
@@ -88,14 +89,14 @@ public class ProcessRepository extends Thread {
         omniServer.addRepository(omniRepository);
     }
 
-    private void uploadNotification(int status,OmniFile omniFile,User user,Boolean isSucessful,OmniRepository omniRepository) {
+    private void downloadNotification(int status,OmniFile omniFile,User user,Boolean isSucessful,OmniRepository omniRepository) {
         if(status == Constants.OP_S_STARTED) {
             omniServer.editUserActivity(user, Constants.OP_UPLOAD);
         } else {
             if(status == Constants.OP_S_FINISHED) {
                 omniServer.editUserActivity(user, Constants.INACTIVE);
-                if(!isSucessful) {
-                    omniServer.removeFile(omniFile);
+                if(isSucessful && (omniFile!=null)) {
+                    omniServer.addFile(omniFile);
                 }
             }
         }
