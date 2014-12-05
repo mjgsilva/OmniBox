@@ -30,10 +30,10 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     public OmniRepository(int port, String addressServer, String filesDirectory) throws IOException {
         this.port = port;
-        this.serverPort = port;
+        this.serverPort = 6000;//port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
-        this.localAddr = InetAddress.getLocalHost();
+        this.localAddr = NetworkAddress.getAddressAsString();
         socket = new ServerSocket(port);
         setUDPSocket();
     }
@@ -43,7 +43,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         this.serverPort = port;
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, port);
         this.filesDirectory = "";
-        this.localAddr = InetAddress.getLocalHost();
+        this.localAddr = NetworkAddress.getAddressAsString();
         socket = new ServerSocket(port);
         setUDPSocket();
     }
@@ -58,7 +58,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         //Socket Udp to communicate operations
         serverAddr = InetAddress.getByName(addressServer);
         socketUDP = new DatagramSocket();
-        socketUDP.setSoTimeout(Constants.TIMEOUT * 1000);
+        socketUDP.setSoTimeout(Constants.TIMEOUT);
     }
 
     //Gets
@@ -111,6 +111,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
             tempList.add(new OmniFile(fileName));
             tempList.add(user);
             tempList.add(isSuccessful);
+            tempList.add(this);
             Request reqTemp = new Request(Constants.CMD.cmdNotification,tempList);
 
             sendUDPMessage(socketUDP,serverAddr,serverPort,reqTemp);
@@ -148,7 +149,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 try {
                     FileOperations.readFileToSocket(socket, file);
                 }catch (Exception e){
-                    sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile.getFileName(),user,false);
+                    sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
                 }
                 break;
             }
@@ -166,7 +167,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         try {
             tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
         }catch (Exception e){
-            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,tempFile.getFileName(),user,false);
+            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile.getFileName(),user,false);
         }
 
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName,user,true);
