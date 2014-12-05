@@ -26,7 +26,7 @@ public class RepositoriesDB {
         availability = new PriorityBlockingQueue(10,new AvailabilityComparator());
     }
 
-    public void addRepo(final OmniRepository omniRepository) {
+    public synchronized void addRepo(final OmniRepository omniRepository) {
         repositories.remove(omniRepository);
         availability.remove(omniRepository);
         repositories.add(omniRepository);
@@ -34,16 +34,16 @@ public class RepositoriesDB {
         availability.offer(omniRepository);
     }
 
-    private void putTimer(final OmniRepository omniRepository) {
+    private synchronized void putTimer(final OmniRepository omniRepository) {
         Calendar now = Calendar.getInstance();
         timers.put(omniRepository,System.currentTimeMillis());
     }
 
-    public synchronized int getNumberOfRepositories() {
+    public int getNumberOfRepositories() {
         return repositories.size();
     }
 
-    public void removeExpiredRepositories() {
+    public synchronized void removeExpiredRepositories() {
         for(OmniRepository omniRepository : repositories) {
             if(timers.get(omniRepository) < System.currentTimeMillis() - Constants.EXPIRE_TIME) {
                 repositories.remove(omniRepository);
@@ -53,7 +53,7 @@ public class RepositoriesDB {
         }
     }
 
-    public void deleteBroadcast(final Request response) {
+    public synchronized void deleteBroadcast(final Request response) {
         for(OmniRepository omniRepository : repositories) {
             try {
                 InetAddress repositoryAddress = omniRepository.getLocalAddr();
@@ -68,7 +68,7 @@ public class RepositoriesDB {
         }
     }
 
-    public OmniRepository getDownloadSource(final OmniFile omniFile) {
+    public synchronized OmniRepository getDownloadSource(final OmniFile omniFile) {
         OmniRepository lessWorkLoadedRepository = getLessWorkLoadedRepository();
 
         if(lessWorkLoadedRepository.fileExists(omniFile)) {
@@ -83,7 +83,7 @@ public class RepositoriesDB {
          }
     }
 
-    public OmniRepository getLessWorkLoadedRepository() {
+    public synchronized OmniRepository getLessWorkLoadedRepository() {
         return availability.peek();
     }
 

@@ -47,16 +47,22 @@ public class ProcessClient extends Thread {
                     }
                 } catch (ClassNotFoundException e) {
                 } catch (InterruptedException e) {
+                    break;
                 } catch (IOException e) {
-                    if(user != null)
+                    if(user != null) {
                         omniServer.removeUserActivity(user);
+                        omniServer.removeSocket(user);
+                    }
+                    break;
                 }
             }
         } finally {
             try {
                 if (socket != null)
                     socket.close();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -68,7 +74,7 @@ public class ProcessClient extends Thread {
         } catch (IOException e) { }
     }
 
-    private void authetication(Request req) {
+    private synchronized void authetication(Request req) {
         User user = (User) req.getArgsList().get(0);
         ArrayList args = new ArrayList();
         boolean validLogin = omniServer.login(user);
@@ -76,27 +82,33 @@ public class ProcessClient extends Thread {
         if(validLogin) {
             this.user = user;
             omniServer.addUserActivity(user);
+            omniServer.addSocket(user,socket);
         }
 
         args.add(validLogin);
         Request response = new Request(Constants.CMD.cmdAuthentication,args);
         sendMessage(response);
+        fileList();
     }
 
-    private void upload(Request request) {
+    private synchronized void fileList() {
+        ArrayList args = omniServer.getFileList();
+        Request response = new Request(Constants.CMD.cmdRefreshList,args);
+        sendMessage(response);
+    }
+
+    private synchronized void upload(Request request) {
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
         ArrayList args = new ArrayList();
         args.add(Constants.OP_UPLOAD);
         System.out.println("Uploading: " +  omniFile.toString());
         if(!omniServer.fileExists(omniFile) && (omniServer.getNumberOfRepositories() != 0)) {
             OmniRepository omniRepository = omniServer.getLessWorkloadedRepository();
-<<<<<<< HEAD
-=======
-            System.out.println("Repository -> " + omniRepository.getLocalAddr().getHostAddress() + " " + omniRepository.getPort());
->>>>>>> 566f7dc... Server integration progress
+            System.out.println("Repository -> " + omniRepository.getLocalAddr());
             args.add(omniRepository.getLocalAddr().getHostAddress());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
+            omniServer.addFile(omniFile);
         } else {
             args.add(null);
             args.add(null);
@@ -106,19 +118,16 @@ public class ProcessClient extends Thread {
         sendMessage(response);
     }
 
-    private void download(Request request) {
+    private synchronized void download(Request request) {
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
         ArrayList args = new ArrayList();
         args.add(Constants.OP_DOWNLOAD);
 
+        System.out.println("Downloading: " +  omniFile.toString());
         if(omniServer.fileExists(omniFile)) {
             OmniRepository omniRepository = omniServer.getDownloadSource(omniFile);
-<<<<<<< HEAD
-            args.add(omniRepository.getAddressServer());
-=======
-            System.out.println("Repository -> " + omniRepository.getLocalAddr().getHostAddress() + " " + omniRepository.getPort());
+            System.out.println("Repository -> " + omniRepository.getLocalAddr());
             args.add(omniRepository.getLocalAddr().getHostAddress());
->>>>>>> 566f7dc... Server integration progress
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
         } else {
