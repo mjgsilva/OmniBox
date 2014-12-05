@@ -14,6 +14,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OmniServer extends CommunicationAdapter {
     final private int port;
@@ -42,14 +44,13 @@ public class OmniServer extends CommunicationAdapter {
             heartBeatHandler.start();
             while (true)
                 try {
-                socket = serverSocket.accept();
-                socket.setSoTimeout(Constants.TIMEOUT);
-                ProcessClient processClient = new ProcessClient(socket, this);
-                processClient.start();
-            } catch (IOException ioe) {
-                System.out.println("Error: " + ioe.getMessage());
-                return;
-            }
+                    socket = serverSocket.accept();
+                    ProcessClient processClient = new ProcessClient(socket, this);
+                    processClient.start();
+                } catch (IOException ioe) {
+                    System.out.println("Error: " + ioe.getMessage());
+                    return;
+                }
         } finally {
             try{
                 if(serverSocket!=null)
@@ -59,10 +60,6 @@ public class OmniServer extends CommunicationAdapter {
                 System.out.println("Error closing ServerSocket: " + ioe);
             }
         }
-    }
-
-    public DatagramSocket getDatagramSocket() {
-        return datagramSocket;
     }
 
     @Override
@@ -92,6 +89,18 @@ public class OmniServer extends CommunicationAdapter {
 
     public void removeUserActivity(final User user) {
         usersDB.remoteUserActivity(user);
+    }
+
+    public void addSocket(final User user,final Socket socket) {
+        usersDB.addSocket(user, socket);
+    }
+
+    public void removeSocket(final User user) {
+        usersDB.removeSocket(user);
+    }
+
+    public void notifyClients() {
+        usersDB.notifyUsers(filesDB.fileList(),this);
     }
 
     //RepositoriesDB
@@ -144,4 +153,9 @@ public class OmniServer extends CommunicationAdapter {
     public void removeAccessToFile(final User user) {
         filesDB.removeAccessToFile(user);
     }
+
+    public ArrayList getFileList() {
+        return filesDB.fileList();
+    }
+
 }
