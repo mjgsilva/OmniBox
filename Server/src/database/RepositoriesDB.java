@@ -35,11 +35,10 @@ public class RepositoriesDB {
     }
 
     private synchronized void putTimer(final OmniRepository omniRepository) {
-        Calendar now = Calendar.getInstance();
         timers.put(omniRepository,System.currentTimeMillis());
     }
 
-    public int getNumberOfRepositories() {
+    public synchronized int getNumberOfRepositories() {
         return repositories.size();
     }
 
@@ -68,19 +67,63 @@ public class RepositoriesDB {
         }
     }
 
+    public void replicationProcess(final OmniFile omniFile) {
+        OmniRepository source;
+        OmniRepository destination;
+
+        synchronized (this) {
+            source = getDownloadSource(omniFile);
+            destination = getSource(omniFile,false);
+        }
+
+        if(destination != null) { // == null; File already exists in all the repositories
+            InetAddress sourceAddress = source.getLocalAddr();
+            int sourcePort = source.getPort();
+
+            ArrayList args = new ArrayList();
+            args.add(omniFile);
+            args.add(destination.getLocalAddr().getHostAddress()); //TODO: Ask mister Serrano
+            args.add(source.getPort());
+            Request response = new Request(Constants.CMD.cmdRepositoryAddress, args);
+
+            try {
+                DatagramSocket tempSocket = new DatagramSocket();
+                source.sendUDPMessage(tempSocket, sourceAddress, sourcePort, response);
+                tempSocket.close(); //TODO: Review this
+            } catch (InterruptedException e) {
+            } catch (IOException e) {
+            }
+        }
+    }
+
     public synchronized OmniRepository getDownloadSource(final OmniFile omniFile) {
         OmniRepository lessWorkLoadedRepository = getLessWorkLoadedRepository();
 
         if(lessWorkLoadedRepository.fileExists(omniFile)) {
             return lessWorkLoadedRepository;
         } else {
-            PriorityQueue<OmniRepository> temporaryPQ = new PriorityQueue<OmniRepository>(10,new AvailabilityComparator());
-            for(OmniRepository omniRepository : repositories) {
-                if(omniRepository.fileExists(omniFile))
+            return getSource(omniFile,true);
+         }
+    }
+
+    /**
+     *
+     * @param omniFile
+     * @param fileExists
+     * @return The workloaded Repository where the file exists or where the file not exists
+     */
+    private synchronized OmniRepository getSource(final OmniFile omniFile,final boolean fileExists) {
+        PriorityQueue<OmniRepository> temporaryPQ = new PriorityQueue<OmniRepository>(10,new AvailabilityComparator());
+        for(OmniRepository omniRepository : repositories) {
+            if(fileExists) {
+                if (omniRepository.fileExists(omniFile))
+                    temporaryPQ.offer(omniRepository);
+            } else {
+                if (!omniRepository.fileExists(omniFile))
                     temporaryPQ.offer(omniRepository);
             }
-            return temporaryPQ.peek();
-         }
+        }
+        return temporaryPQ.peek();
     }
 
     public synchronized OmniRepository getLessWorkLoadedRepository() {

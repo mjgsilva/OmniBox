@@ -70,6 +70,10 @@ public class ProcessRepository extends Thread {
             } else {
                 if(operationType == Constants.OP_DELETE) {
                     deleteNotification(status,omniFile,user,omniRepository);
+                } else {
+                    if(operationType == Constants.OP_REPLICATION) {
+                        replicationNotification(status,omniFile);
+                    }
                 }
             }
         }
@@ -101,6 +105,7 @@ public class ProcessRepository extends Thread {
         }
         omniServer.addRepository(omniRepository);
         omniServer.notifyClients();
+        omniServer.replicationProcess(omniFile);
     }
 
     private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
@@ -113,5 +118,9 @@ public class ProcessRepository extends Thread {
         }
         omniServer.addRepository(omniRepository);
         omniServer.notifyClients();
+    }
+
+    private void replicationNotification(int status,OmniFile omniFile) {
+        omniServer.replicationProcess(omniFile);
     }
 }

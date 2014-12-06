@@ -21,20 +21,19 @@ public class FilesDB {
         filesBeingAccessed = new HashMap<User,OmniFile>();
     }
 
-    public void addFile(final OmniFile omniFile) {
+    public synchronized void addFile(final OmniFile omniFile) {
         files.add(omniFile);
-
     }
 
-    public boolean fileExists(OmniFile omniFile) {
+    public synchronized boolean fileExists(OmniFile omniFile) {
         return files.contains(omniFile);
     }
 
-    public void removeFile(final OmniFile omniFile) {
+    public synchronized void removeFile(final OmniFile omniFile) {
         files.remove(omniFile);
     }
 
-    public boolean isFileBeingAccessed(final OmniFile omniFile) {
+    public synchronized boolean isFileBeingAccessed(final OmniFile omniFile) {
         return filesBeingAccessed.containsValue(omniFile);
     }
 
@@ -46,21 +45,13 @@ public class FilesDB {
         return fileList;
     }
 
-    public void addAccessToFile(final User user, final OmniFile omniFile) {
+    public synchronized void addAccessToFile(final User user, final OmniFile omniFile) {
         if(!filesBeingAccessed.containsKey(user))
             filesBeingAccessed.put(user,omniFile);
     }
 
-    public void removeAccessToFile(final User user) {
+    public synchronized void removeAccessToFile(final User user) {
         filesBeingAccessed.remove(user);
     }
 
-    public void rebuildSet(final HashSet<OmniRepository> omniRepositories) {
-        files.clear();
-        for (OmniRepository omniRepository : omniRepositories) {
-            for (OmniFile omniFile : omniRepository.getFileList()) {
-                addFile(omniFile);
-            }
-        }
-    }
 }

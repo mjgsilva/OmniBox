@@ -125,8 +125,11 @@ public class OmniServer extends CommunicationAdapter {
     }
 
     public void deleteBroadcast(final Request response) {
-
         repositoriesDB.deleteBroadcast(response);
+    }
+
+    public void replicationProcess(final OmniFile omniFile) {
+        repositoriesDB.replicationProcess(omniFile);
     }
 
     //FilesDB
