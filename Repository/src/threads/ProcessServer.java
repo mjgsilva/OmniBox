@@ -32,13 +32,13 @@ public class ProcessServer extends Thread  {
             System.out.println("Get UDP Message");
 
             switch (request.getCmd()) {
-                case cmdNotification:
+                case cmdRepositoryAddress:
                     if((Integer)request.getArgsList().get(0) == Constants.OP_REPLICATION)
                     {
                         //Create socket with addr and port that server send in notification request
-                        Socket socketTemp= new Socket((String)request.getArgsList().get(1),(Integer)request.getArgsList().get(2));
+                        Socket socketTemp= new Socket((String)request.getArgsList().get(2),(Integer)request.getArgsList().get(3));
 
-                        omniRepository.sendFile(socketTemp, omniRepository.getOmniFileByName((String) request.getArgsList().get(3)),null);
+                        omniRepository.sendFile(socketTemp, omniRepository.getOmniFileByName(((OmniFile)request.getArgsList().get(1)).getFileName()),null);
                     }
                 case cmdDeleteFile:
                     omniRepository.deleteFile((String) request.getArgsList().get(0),null);

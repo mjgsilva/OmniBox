@@ -5,6 +5,7 @@ import threads.HeartBeat;
 import threads.ProcessServer;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -33,7 +34,7 @@ public class Repository {
                 port = Integer.parseInt(args[0]);
                 address = args[1].trim();
                 filesDirectory = args[2].trim();
-                repo = new OmniRepository(port,address,filesDirectory);
+                repo = new OmniRepository(port,address,filesDirectory, InetAddress.getByName(args[3]));
                 answerClient = new AnswerClient(repo);
                 answerClient.start();
                 new HeartBeat(repo).start();

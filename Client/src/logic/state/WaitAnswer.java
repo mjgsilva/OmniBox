@@ -32,8 +32,9 @@ public class WaitAnswer extends StateAdapter {
                 try {
                     // Tell repository what kind of operation I'm requesting
                     ArrayList<Object> temp = new ArrayList<Object>();
-                    //temp.add(fileToGet);
-                    temp.add(new OmniFile("oMaior.txt"));
+                    temp.add(fileToGet);
+                    // TODO - Provisório o que está em baixo
+                    //temp.add(new OmniFile("oMaior.txt"));
                     temp.add(client.getUser());
                     Request request = new Request(Constants.CMD.cmdGetFile, temp);
                     sendTCPMessage(s, request);

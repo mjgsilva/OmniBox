@@ -39,4 +39,20 @@ public final class NetworkAddress {
 
         return null;
     }
+
+    public static InetAddress getNetworkInetAddr() {
+        NetworkInterface en0 = null;
+        try {
+            en0 = NetworkInterface.getByName("en0");
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        Enumeration<InetAddress> adrs = en0.getInetAddresses();
+        while (adrs.hasMoreElements()) {
+            InetAddress adr = adrs.nextElement();
+            if (adr instanceof Inet4Address)
+                return adr;
+        }
+        return null;
+    }
 }

@@ -28,12 +28,13 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     private int oppNum = 0;
 
-    public OmniRepository(int port, String addressServer, String filesDirectory) throws IOException {
+    public OmniRepository(int port, String addressServer, String filesDirectory, InetAddress myIp) throws IOException {
         this.port = port;
         this.serverPort = 6000;//port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
-        this.localAddr = InetAddress.getLocalHost();
+        //this.localAddr = InetAddress.getLocalHost();
+        this.localAddr = myIp;
         socket = new ServerSocket(port);
         setUDPSocket();
     }
@@ -43,7 +44,8 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         this.serverPort = port;
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, port);
         this.filesDirectory = "";
-        this.localAddr = InetAddress.getLocalHost();
+        //this.localAddr = InetAddress.getLocalHost();
+        this.localAddr = NetworkAddress.getNetworkInetAddr();
         socket = new ServerSocket(port);
         setUDPSocket();
     }

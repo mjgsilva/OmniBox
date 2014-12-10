@@ -71,6 +71,7 @@ public class ListController extends CommunicationAdapter {
                             int repositoryPort = ((Integer) args.get(2)) == null ? 0 : (Integer) args.get(2);
   
                             if ((Boolean) args.get(3) && repositoryAddress != null && repositoryPort != 0) {
+                                System.out.println("Repo addr: " + repositoryAddress + "\nRepo port: " + repositoryPort + "\n");
                                 client.setRepositorySocket(new Socket(repositoryAddress, repositoryPort));
                                 if (operation == Constants.OP_UPLOAD) {
                                     // Client has to be on state WaitAnswer for this to work correctly
