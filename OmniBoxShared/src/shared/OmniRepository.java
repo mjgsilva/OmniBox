@@ -140,8 +140,8 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 fileList.remove(file);
             }
         }
-        //sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName,user,true);
         oppNum--;
+        //sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,file, user,true);
     }
 
     public void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
@@ -182,7 +182,10 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
         fileList.add(tempFile);
         oppNum--;
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
+        if(user != null)
+            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
+        else
+            sendNotification(Constants.OP_REPLICATION,Constants.OP_S_STARTED,tempFile,null,true);
 
     }
 
