@@ -36,7 +36,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         //this.localAddr = InetAddress.getLocalHost();
         this.localAddr = myIp;
         socket = new ServerSocket(port);
-        setUDPSocket();
+        setUDPSocket(port);
     }
 
     public OmniRepository(int port) throws IOException {
@@ -47,7 +47,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         //this.localAddr = InetAddress.getLocalHost();
         this.localAddr = NetworkAddress.getNetworkInetAddr();
         socket = new ServerSocket(port);
-        setUDPSocket();
+        setUDPSocket(port);
     }
 
     public InetAddress getLocalAddr() {return localAddr;}
@@ -56,11 +56,11 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         return socketUDP;
     }
 
-    private void setUDPSocket() throws SocketException, UnknownHostException {
+    private void setUDPSocket(int port) throws SocketException, UnknownHostException {
         //Socket Udp to communicate operations
         serverAddr = InetAddress.getByName(addressServer);
-        socketUDP = new DatagramSocket();
-        socketUDP.setSoTimeout(Constants.TIMEOUT);
+        socketUDP = new DatagramSocket(port);
+        //socketUDP.setSoTimeout(Constants.TIMEOUT);
     }
 
     //Gets
@@ -105,12 +105,16 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     //END-Gets
 
 
-    public void sendNotification(int operation, int status,String fileName,User user,Boolean isSuccessful){
-        try {
+    //public void sendNotification(int operation, int status,String fileName,User user,Boolean isSuccessful){
+    public void sendNotification(int operation, int status,OmniFile omniFile,User user,Boolean isSuccessful){
+            try {
             ArrayList<Object> tempList = new ArrayList<Object>();
             tempList.add(operation);
             tempList.add(status);
-            tempList.add(new OmniFile(fileName));
+            /* OmniFile omniTemp = new OmniFile(fileName);
+            System.out.println(omniTemp.getFileSize());
+            tempList.add(omniTemp); */
+                tempList.add(omniFile);
             tempList.add(user);
             tempList.add(isSuccessful);
             tempList.add(this);
@@ -136,7 +140,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 fileList.remove(file);
             }
         }
-        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName,user,true);
+        //sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,fileName,user,true);
         oppNum--;
     }
 
@@ -151,13 +155,14 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 try {
                     FileOperations.readFileToSocket(socket, file);
                 }catch (Exception e){
-                    sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
+                    // sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
+                    sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,false);
                 }
                 break;
             }
         }
-        sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,true);
         oppNum--;
+        sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,true);
     }
 
     public void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
@@ -169,13 +174,16 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         try {
             tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
         }catch (Exception e){
-            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile.getFileName(),user,false);
+            //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile.getFileName(),user,false);
+            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,false);
         }
 
-        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,fileName,user,true);
+        System.out.println("GetFile-> TempSize:" + tempFile.getFileSize());
 
         fileList.add(tempFile);
         oppNum--;
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
+
     }
 
     public boolean fileExists(OmniFile omniFile) {

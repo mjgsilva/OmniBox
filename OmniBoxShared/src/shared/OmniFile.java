@@ -50,8 +50,8 @@ public class OmniFile extends File implements Serializable {
         OmniFile omniFile = (OmniFile) o;
 
         if (fileSize != omniFile.fileSize) return false;
-        if (creationDate != null ? !creationDate.equals(omniFile.creationDate) : omniFile.creationDate != null)
-            return false;
+        //if (creationDate != null ? !creationDate.equals(omniFile.creationDate) : omniFile.creationDate != null)
+        //    return false;
         if (fileExtension != null ? !fileExtension.equals(omniFile.fileExtension) : omniFile.fileExtension != null)
             return false;
         if (fileName != null ? !fileName.equals(omniFile.fileName) : omniFile.fileName != null) return false;
@@ -63,7 +63,7 @@ public class OmniFile extends File implements Serializable {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + fileName.hashCode();
-        result = 31 * result + creationDate.hashCode();
+        //result = 31 * result + creationDate.hashCode();
         result = 31 * result + fileExtension.hashCode();
         result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
         return result;

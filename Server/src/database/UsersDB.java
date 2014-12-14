@@ -68,11 +68,12 @@ public class UsersDB {
 
     public synchronized void notifyUsers(ArrayList filesList, OmniServer omniServer) {
         Request response = new Request(Constants.CMD.cmdRefreshList,filesList);
-        for(User user : users) {
+
+        for(User user : usersSocket.keySet()) {
             try {
-                omniServer.sendTCPMessage(usersSocket.get(user), response);
-            } catch(InterruptedException e) {
-            } catch(IOException e) { }
+            omniServer.sendTCPMessage(usersSocket.get(user), response);
+        } catch(InterruptedException e) {
+        } catch(IOException e) { e.printStackTrace(); }
         }
     }
 

@@ -23,14 +23,14 @@ public class Repository {
         AnswerClient answerClient;
 
         if(args.length != 1){
-            if (args.length != 3) {
+            if (args.length != 4) {
                 System.out.println("Syntax: java <port> <address> <filesDirectory> // java <port>");
                 return;
             }
         }
 
         switch (args.length) {
-            case 3:
+            case 4:
                 port = Integer.parseInt(args[0]);
                 address = args[1].trim();
                 filesDirectory = args[2].trim();
@@ -39,7 +39,7 @@ public class Repository {
                 answerClient.start();
                 new HeartBeat(repo).start();
                 //new DirectoryHandler(repo).start();
-                new ProcessServer(repo);
+                new ProcessServer(repo).start();
                 break;
             case 1:
                 port = Integer.parseInt(args[1]);
@@ -48,7 +48,7 @@ public class Repository {
                 new AnswerClient(repo).start();
                 new HeartBeat(repo).start();
                 //new DirectoryHandler(repo).start();
-                new ProcessServer(repo);
+                new ProcessServer(repo).start();
                 break;
             default:
                 return;

@@ -1,10 +1,9 @@
 package threads;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-//import com.sun.tools.internal.jxc.apt.Const;
 import server.OmniServer;
 import shared.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 
@@ -12,11 +11,9 @@ import java.net.DatagramSocket;
  * Created by OmniBox on 13/11/14.
  */
 public class ProcessRepository extends Thread {
-    private final DatagramSocket socket;
     private final OmniServer omniServer;
 
     public ProcessRepository(DatagramSocket socket, OmniServer omniServer) throws IOException{
-        this.socket = socket;
         this.omniServer = omniServer;
     }
 
@@ -25,8 +22,8 @@ public class ProcessRepository extends Thread {
         try {
             while (true) {
                 try {
-                    Request request = omniServer.getUDPMessage(socket);
-
+                    Request request = omniServer.getUDPMessage(omniServer.getDatagramSocket());
+                    //TODO: Should validate this on getUDPMessage?
                     if (request instanceof Request) {
                         switch (request.getCmd()) {
                             case cmdHeartBeat:
@@ -39,11 +36,13 @@ public class ProcessRepository extends Thread {
                     }
                 } catch (ClassNotFoundException e) {
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         } finally{
-
+            //close socket
         }
     }
 
@@ -58,15 +57,15 @@ public class ProcessRepository extends Thread {
         int status = (Integer)request.getArgsList().get(1);
         OmniFile omniFile = (OmniFile)request.getArgsList().get(2);
         User user = (User)request.getArgsList().get(3);
-        boolean isSucessful = (Boolean)request.getArgsList().get(4);
+        boolean isSuccessful = (Boolean)request.getArgsList().get(4);
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(5);
 
 
         if(operationType == Constants.OP_DOWNLOAD) {
-            downloadNotification(status,omniFile,user,omniRepository);
+            downloadFromClientNotification(status, omniFile, user, isSuccessful, omniRepository);
         } else {
             if(operationType == Constants.OP_UPLOAD) {
-                uploadNotification(status,omniFile,user,isSucessful,omniRepository);
+                uploadToClientNotification(status, omniFile, user, omniRepository);
             } else {
                 if(operationType == Constants.OP_DELETE) {
                     deleteNotification(status,omniFile,user,omniRepository);
@@ -79,45 +78,56 @@ public class ProcessRepository extends Thread {
         }
     }
 
-    private void downloadNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
-        if(status == Constants.OP_S_STARTED) {
-            omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
-            omniServer.addAccessToFile(user, omniFile);
-        } else {
-            if(status == Constants.OP_S_FINISHED) {
-                omniServer.editUserActivity(user, Constants.INACTIVE);
-                omniServer.removeAccessToFile(user);
-            }
-        }
+    private void uploadToClientNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
         omniServer.addRepository(omniRepository);
-    }
-
-    private void uploadNotification(int status,OmniFile omniFile,User user,Boolean isSucessful,OmniRepository omniRepository) {
-        if(status == Constants.OP_S_STARTED) {
-            omniServer.editUserActivity(user, Constants.OP_UPLOAD);
-        } else {
-            if(status == Constants.OP_S_FINISHED) {
-                omniServer.editUserActivity(user, Constants.INACTIVE);
-                if(!isSucessful) {
-                    omniServer.removeFile(omniFile);
+        if(user != null) {
+            if (status == Constants.OP_S_STARTED) {
+                omniServer.editUserActivity(user, Constants.OP_DOWNLOAD);
+                omniServer.addAccessToFile(user, omniFile);
+            } else {
+                if (status == Constants.OP_S_FINISHED) {
+                    omniServer.editUserActivity(user, Constants.INACTIVE);
+                    omniServer.removeAccessToFile(user);
                 }
             }
         }
+    }
+
+    private void downloadFromClientNotification(int status,OmniFile omniFile,User user,Boolean isSuccessful,OmniRepository omniRepository) {
+        System.out.println("* OmniRepository notification received *");
         omniServer.addRepository(omniRepository);
-        omniServer.notifyClients();
-        omniServer.replicationProcess(omniFile);
+        if(user != null) {
+            if (status == Constants.OP_S_STARTED) {
+                omniServer.editUserActivity(user, Constants.OP_UPLOAD);
+            } else {
+                if (status == Constants.OP_S_FINISHED) {
+                    omniServer.editUserActivity(user, Constants.INACTIVE);
+                    if (!isSuccessful) {
+                        omniServer.removeFile(omniFile);
+                    } else {
+                        omniServer.notifyClients();
+                        System.out.println("* Notification for replication *");
+                        System.out.println(omniFile.getFileName() + "/" + omniFile.getFileExtension() + "/" + omniFile.getFileSize());
+                        System.out.println(omniFile.getPath() + "/" + omniFile.length());
+                        omniServer.replicationProcess(omniFile);
+                    }
+                }
+            }
+        }
     }
 
     private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
-        if(status == Constants.OP_S_STARTED) {
-            omniServer.editUserActivity(user, Constants.OP_DELETE);
-        } else {
-            if(status == Constants.OP_S_FINISHED) {
-                omniServer.editUserActivity(user, Constants.INACTIVE);
-            }
-        }
         omniServer.addRepository(omniRepository);
         omniServer.notifyClients();
+        if(user != null) {
+            if (status == Constants.OP_S_STARTED) {
+                omniServer.editUserActivity(user, Constants.OP_DELETE);
+            } else {
+                if (status == Constants.OP_S_FINISHED) {
+                    omniServer.editUserActivity(user, Constants.INACTIVE);
+                }
+            }
+        }
     }
 
     private void replicationNotification(int status,OmniFile omniFile) {

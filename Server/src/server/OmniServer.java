@@ -28,7 +28,7 @@ public class OmniServer extends CommunicationAdapter {
     public OmniServer(int port, UsersDB usersDB) {
         this.port = port;
         this.usersDB = usersDB;
-        repositoriesDB = new RepositoriesDB();
+        repositoriesDB = new RepositoriesDB(this);
         filesDB = new FilesDB();
     }
 
@@ -60,6 +60,11 @@ public class OmniServer extends CommunicationAdapter {
                 System.out.println("Error closing ServerSocket: " + ioe);
             }
         }
+    }
+
+    //TODO: Check this out
+    public DatagramSocket getDatagramSocket() {
+        return datagramSocket;
     }
 
     @Override
