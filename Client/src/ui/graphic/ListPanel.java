@@ -67,6 +67,10 @@ public class ListPanel extends JPanel implements Observer {
         filesList = l;
     }
 
+    public void delElements() {
+        listModel.removeAllElements();
+    }
+
     public void addItemToList(String item) {
         listModel.addElement(item);
     }

@@ -84,7 +84,7 @@ public class ListController extends CommunicationAdapter {
                                 new ErrorDialog(null, "Server didn't authorize the operation.");
                             break;
                         case cmdRefreshList:
-                            ListPanel.getFilesList().removeAll();
+                            filesList.delElements();
                             ArrayList<Object> temp = request.getArgsList();
                             for (Object aux : temp) {
                                 filesList.addItemToList(((OmniFile) aux).getFileName());
