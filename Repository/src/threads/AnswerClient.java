@@ -24,16 +24,9 @@ public class AnswerClient extends Thread{
             try {
                 //Accept socket to communicate
                 socketToClient = omniRepository.getSocket().accept();
-                //Get Request to execute
-                Request request = omniRepository.getTCPMessage(socketToClient);
-                System.out.println("Get Request from "+socketToClient.getInetAddress().getHostAddress()+" Request:"+request.getCmd().toString());
                 //Launch thread to process client
-                new ProcessClient(socketToClient, omniRepository, request).start();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                new ProcessClient(socketToClient, omniRepository).start();
             } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }

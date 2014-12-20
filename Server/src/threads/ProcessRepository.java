@@ -96,21 +96,21 @@ public class ProcessRepository extends Thread {
     private void downloadFromClientNotification(int status,OmniFile omniFile,User user,Boolean isSuccessful,OmniRepository omniRepository) {
         System.out.println("* OmniRepository notification received *");
         omniServer.addRepository(omniRepository);
-        if(user != null) {
-            if (status == Constants.OP_S_STARTED) {
+        if (status == Constants.OP_S_STARTED) {
+            if(user != null)
                 omniServer.editUserActivity(user, Constants.OP_UPLOAD);
-            } else {
-                if (status == Constants.OP_S_FINISHED) {
+        } else {
+            if (status == Constants.OP_S_FINISHED) {
+                if(user!=null)
                     omniServer.editUserActivity(user, Constants.INACTIVE);
-                    if (!isSuccessful) {
-                        omniServer.removeFile(omniFile);
-                    } else {
-                        omniServer.notifyClients();
-                        System.out.println("* Notification for replication *");
-                        System.out.println(omniFile.getFileName() + "/" + omniFile.getFileExtension() + "/" + omniFile.getFileSize());
-                        System.out.println(omniFile.getPath() + "/" + omniFile.length());
-                        omniServer.replicationProcess(omniFile);
-                    }
+                if (!isSuccessful) {
+                    omniServer.removeFile(omniFile);
+                } else {
+                    if(user!=null) omniServer.notifyClients();
+                    System.out.println("* Notification for replication *");
+                    System.out.println(omniFile.getFileName() + "/" + omniFile.getFileExtension() + "/" + omniFile.getFileSize());
+                    System.out.println(omniFile.getPath() + "/" + omniFile.length());
+                    omniServer.replicationProcess(omniFile);
                 }
             }
         }

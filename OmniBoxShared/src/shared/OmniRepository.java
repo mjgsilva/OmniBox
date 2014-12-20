@@ -182,10 +182,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
         fileList.add(tempFile);
         oppNum--;
-        if(user != null)
-            sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
-        else
-            sendNotification(Constants.OP_REPLICATION,Constants.OP_S_STARTED,tempFile,null,true);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
 
     }
 
