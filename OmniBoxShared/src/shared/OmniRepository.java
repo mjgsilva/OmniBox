@@ -153,6 +153,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                     FileOperations.readFileToSocket(socket, file);
                     socket.close();
                 }catch (Exception e){
+                    socket.close();
                     // sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
                     sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,false);
                 }
