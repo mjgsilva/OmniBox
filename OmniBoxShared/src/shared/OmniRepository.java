@@ -129,7 +129,11 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         oppNum++;
         sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,omniFile,user,true);
 
-        omniFile.delete();
+        for(OmniFile file : fileList){
+            if(file.equals(omniFile))
+                file.delete();
+        }
+
         fileList.remove(omniFile);
 
         oppNum--;
