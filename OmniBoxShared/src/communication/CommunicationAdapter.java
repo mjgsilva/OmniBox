@@ -13,6 +13,9 @@ import java.util.NoSuchElementException;
  */
 public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
 
+    ObjectInputStream in;
+    ObjectOutputStream out;
+
     /**
      * This method sends the only available muticast message and waits for response.
      *
@@ -58,14 +61,14 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
 
     @Override
     public void sendTCPMessage(Socket socket, Request cmd) throws InterruptedException, IOException {
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
         out.writeObject(cmd);
         out.flush();
     }
 
     @Override
     public Request getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException {
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+        in = new ObjectInputStream(socket.getInputStream());
         return (Request)in.readObject();
     }
 
