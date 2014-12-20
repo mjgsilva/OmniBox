@@ -49,7 +49,6 @@ public class ProcessRepository extends Thread {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
         omniRepository.setLocalAdd((String) request.getArgsList().get(request.getArgsList().size() - 1));
         omniServer.addRepository(omniRepository);
-        System.out.println("Ligou-se! " + omniRepository.getLocalAddr() + " / " + omniRepository.getPort());
     }
 
     private void ProcessNotification(Request request) {
@@ -69,10 +68,6 @@ public class ProcessRepository extends Thread {
             } else {
                 if(operationType == Constants.OP_DELETE) {
                     deleteNotification(status,omniFile,user,omniRepository);
-                } else {
-                    if(operationType == Constants.OP_REPLICATION) {
-                        replicationNotification(status,omniFile);
-                    }
                 }
             }
         }
@@ -105,11 +100,11 @@ public class ProcessRepository extends Thread {
                     omniServer.editUserActivity(user, Constants.INACTIVE);
                 if (!isSuccessful) {
                     omniServer.removeFile(omniFile);
+                    omniServer.notifyClients();
                 } else {
-                    if(user!=null) omniServer.notifyClients();
-                    System.out.println("* Notification for replication *");
-                    System.out.println(omniFile.getFileName() + "/" + omniFile.getFileExtension() + "/" + omniFile.getFileSize());
-                    System.out.println(omniFile.getPath() + "/" + omniFile.length());
+                    if(user!=null)
+                        omniServer.notifyClients();
+                    System.out.println("* Replicating *");
                     omniServer.replicationProcess(omniFile);
                 }
             }
@@ -119,7 +114,7 @@ public class ProcessRepository extends Thread {
     private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
         omniServer.addRepository(omniRepository);
         omniServer.notifyClients();
-        if(user != null) {
+        if (user != null) {
             if (status == Constants.OP_S_STARTED) {
                 omniServer.editUserActivity(user, Constants.OP_DELETE);
             } else {
@@ -128,9 +123,5 @@ public class ProcessRepository extends Thread {
                 }
             }
         }
-    }
-
-    private void replicationNotification(int status,OmniFile omniFile) {
-        omniServer.replicationProcess(omniFile);
     }
 }
