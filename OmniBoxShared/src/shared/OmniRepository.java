@@ -166,14 +166,15 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
 
         oppNum++;
-        //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,fileName,user,true);
+        //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,null,user,true);
 
         OmniFile tempFile= null;
         try {
-            tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
+            tempFile = FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
             socket.close();
         }catch (Exception e){
-            //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile.getFileName(),user,false);
+            tempFile.delete();
+            socket.close();
             sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,false);
         }
 
