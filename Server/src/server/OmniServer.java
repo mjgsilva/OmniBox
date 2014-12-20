@@ -4,17 +4,22 @@ import communication.CommunicationAdapter;
 import database.FilesDB;
 import database.RepositoriesDB;
 import database.UsersDB;
+import service.StatusBoardServiceImpl;
 import shared.*;
 import threads.HeartBeatHandler;
 import threads.ProcessClient;
 import threads.ProcessMulticast;
 import threads.ProcessRepository;
-
 import java.io.IOException;
-import java.net.*;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 public class OmniServer extends CommunicationAdapter {
     final private int port;
@@ -23,6 +28,7 @@ public class OmniServer extends CommunicationAdapter {
     final private UsersDB usersDB;
     final private RepositoriesDB repositoriesDB;
     final private FilesDB filesDB;
+    private StatusBoardServiceImpl statusBoardService;
 
     public OmniServer(int port, UsersDB usersDB) {
         this.port = port;
@@ -43,13 +49,14 @@ public class OmniServer extends CommunicationAdapter {
             processMulticast.start();
             processRepository.start();
             heartBeatHandler.start();
+            startRMIService();
             while (true)
                 try {
                     socket = serverSocket.accept();
                     ProcessClient processClient = new ProcessClient(socket, this);
                     processClient.start();
-                } catch (IOException ioe) {
-                    System.out.println("Error: " + ioe.getMessage());
+                } catch (IOException e) {
+                    System.out.println("Error: " + e.getMessage());
                     return;
                 }
         } catch (Exception e) {e.printStackTrace();} finally {
@@ -78,6 +85,40 @@ public class OmniServer extends CommunicationAdapter {
 
     @Override
     public void sendUDPMessage(DatagramSocket datagramSocket,InetAddress inetAddress,int port,Request cmd) throws InterruptedException, IOException { super.sendUDPMessage(datagramSocket,inetAddress,port,cmd); }
+
+    private void startRMIService() {
+        try {
+            Registry registry;
+            try {
+                registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+            } catch (RemoteException e) {
+                registry = LocateRegistry.getRegistry();
+            }
+            statusBoardService = new StatusBoardServiceImpl();
+            registry.bind("StatusBoardService", statusBoardService);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendServiceNotification() { statusBoardService.notifyObservers(getNotification()); }
+
+    public String getNotification() {
+        StringBuilder notification = new StringBuilder();
+        notification.append("*** Users: " + usersDB.getNumberOfLoggedUsers() + " / " +usersDB.getNumberOfUsers() + " ***" + "\n");
+        notification.append(usersDB.getUsersActivity());
+        notification.append("*** Files: " + filesDB.getNumberOfFilesBeingAccessed() + " / " + filesDB.getNumberOfFiles() + " ***" + "\n");
+        for(OmniFile omniFile : filesDB.getFiles()) {
+            notification.append(omniFile.getFileName() + " : " + repositoriesDB.getNumberOfReplicas(omniFile) + "\n");
+        }
+        notification.append("*** Repositories: " + repositoriesDB.getNumberOfRepositories() + " ***" + "\n");
+        for(OmniRepository omniRepository : repositoriesDB.getRepositories()) {
+            notification.append(omniRepository.getLocalAddr() + " : " + omniRepository.getPort() + "\n");
+        }
+        return notification.toString();
+    }
 
     //UsersDB
     public boolean login(final User user) {
@@ -153,8 +194,6 @@ public class OmniServer extends CommunicationAdapter {
     }
 
     public void rebuildFileList(final OmniRepository omniRepository) { filesDB.rebuildFileList(omniRepository); }
-
-    public void rebuildFileList(final HashSet<OmniRepository> omniRepositories) { filesDB.rebuildFileList(omniRepositories); }
 
     public boolean fileBeingAccessed(final OmniFile omniFile) {
         return filesDB.isFileBeingAccessed(omniFile);

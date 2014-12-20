@@ -86,6 +86,7 @@ public class ProcessRepository extends Thread {
                 }
             }
         }
+        omniServer.sendServiceNotification();
     }
 
     private void downloadFromClientNotification(int status,OmniFile omniFile,User user,Boolean isSuccessful,OmniRepository omniRepository) {
@@ -109,6 +110,7 @@ public class ProcessRepository extends Thread {
                 }
             }
         }
+        omniServer.sendServiceNotification();
     }
 
     private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
@@ -123,5 +125,6 @@ public class ProcessRepository extends Thread {
                 }
             }
         }
+        omniServer.sendServiceNotification();
     }
 }

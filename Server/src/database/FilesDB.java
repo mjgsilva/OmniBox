@@ -29,6 +29,10 @@ public class FilesDB {
         return files.contains(omniFile);
     }
 
+    public synchronized int getNumberOfFiles() { return files.size(); }
+
+    public synchronized int getNumberOfFilesBeingAccessed() { return filesBeingAccessed.size(); }
+
     public synchronized void removeFile(final OmniFile omniFile) {
         files.remove(omniFile);
     }
@@ -45,18 +49,13 @@ public class FilesDB {
         return fileList;
     }
 
+    public synchronized HashSet<OmniFile> getFiles() {
+        return files;
+    }
+
     public synchronized void rebuildFileList(final OmniRepository omniRepository) {
         for (OmniFile omniFile : omniRepository.getFileList()) {
             addFile(omniFile);
-        }
-    }
-
-    public synchronized void rebuildFileList(final HashSet<OmniRepository> omniRepositories) {
-        files.clear();
-        for (OmniRepository omniRepository : omniRepositories) {
-            for (OmniFile omniFile : omniRepository.getFileList()) {
-                addFile(omniFile);
-            }
         }
     }
 
