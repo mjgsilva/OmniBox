@@ -5,6 +5,7 @@ import shared.OmniFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Observable;
 
 /**
@@ -91,4 +92,6 @@ public class ClientModel extends Observable implements ClientInterface {
     public void setSelectedFile(OmniFile selectedFile) {
         this.selectedFile = selectedFile;
     }
+
+    public ArrayList<OmniFile> getFilesList() {return client.getFileList();}
 }

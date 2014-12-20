@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
@@ -76,16 +77,19 @@ public class ButtonsPanel extends JPanel implements Observer {
         getButton.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {
+                String filePath = "";
                 try {
-                    String filePath = ListPanel.getFilesList().getSelectedValue();
+                    filePath = ListPanel.getFilesList().getSelectedValue();
+                    int index = ListPanel.getFilesList().getSelectedIndex();
                     if (filePath != null) {
-                        cm.defineGetRequest(new OmniFile(filePath));
+                        cm.defineGetRequest(cm.getFilesList().get(index));
                     } else {
                         new ErrorDialog(null, "No file selected.\n" +
                                 "Please select one from the list.");
                     }
                 } catch (InterruptedException e1) {
                     // TODO - Verify if file was created, if yes then I have to delete it if there was an error.
+                    new File(filePath).delete();
                     new ErrorDialog(null, e1.getMessage());
                 } catch (IOException e1) {
                     new ErrorDialog(null, e1.getMessage());

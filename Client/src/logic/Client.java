@@ -29,7 +29,7 @@ public class Client extends Observable implements ClientInterface {
     private Socket serverSocket;
     private OmniFile fileToUpload = null;
     private Socket repositorySocket = null;
-    //private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
+    private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
     private User user;
 
 
@@ -194,5 +194,13 @@ public class Client extends Observable implements ClientInterface {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ArrayList<OmniFile> getFileList() {
+        return fileList;
+    }
+
+    public void setFileList(ArrayList<OmniFile> fileList) {
+        this.fileList = fileList;
     }
 }

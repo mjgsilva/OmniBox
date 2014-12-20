@@ -86,9 +86,15 @@ public class ListController extends CommunicationAdapter {
                         case cmdRefreshList:
                             filesList.delElements();
                             ArrayList<Object> temp = request.getArgsList();
+
+                            for (int i = 0; i < client.getFileList().size(); i++)
+                                client.getFileList().remove(i);
+
                             for (Object aux : temp) {
-                                filesList.addItemToList(((OmniFile) aux).getFileName());
+                                filesList.addItemToList(((OmniFile)aux).getFileName());
+                                client.getFileList().add((OmniFile)aux);
                             }
+
                             break;
                         default:
                             break;

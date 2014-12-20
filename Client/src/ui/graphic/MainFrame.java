@@ -7,6 +7,7 @@ import logic.state.WaitAuthentication;
 import logic.state.WaitRequest;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Observable;
@@ -129,7 +130,7 @@ public class MainFrame extends JFrame implements Observer {
             setEnabled(true);
             cm.setFileToUpload(null);
         } else if (cm.getCurrentState() instanceof WaitAnswer) {
-
+            //setEnabled(false);
         }
     }
 }
