@@ -34,6 +34,7 @@ public class RepositoriesDB {
     public synchronized void addRepo(final OmniRepository omniRepository) {
         if(!repositories.contains(omniRepository)) {
             omniServer.rebuildFileList(omniRepository);
+            omniServer.sendServiceNotification();
         }
         repositories.remove(omniRepository);
         availability.remove(omniRepository);
@@ -151,6 +152,15 @@ public class RepositoriesDB {
             }
         }
         return temporaryPQ.peek();
+    }
+
+    public synchronized int getNumberOfReplicas(final OmniFile omniFile) {
+        int replicas = 0;
+        for(OmniRepository omniRepository : repositories) {
+            if(omniRepository.fileExists(omniFile))
+                replicas++;
+        }
+        return replicas;
     }
 
     public synchronized OmniRepository getLessWorkLoadedRepository() {

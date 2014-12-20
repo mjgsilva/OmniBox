@@ -46,6 +46,35 @@ public class UsersDB {
         return isValid;
     }
 
+    private String activityAux(int action) {
+        if(action == Constants.OP_DOWNLOAD)
+            return "Downloading";
+        else
+            if (action == Constants.OP_UPLOAD)
+                return "Uploading";
+            else
+                if(action == Constants.OP_DELETE)
+                    return "Deleting";
+                else
+                    if(action == Constants.INACTIVE)
+                        return "Inactive";
+        return "Unknown Action";
+    }
+
+    public synchronized String getUsersActivity() {
+        StringBuilder notification = new StringBuilder();
+
+        for(User user: usersActivity.keySet()) {
+            notification.append(user.getUsername() + " -> " + activityAux(usersActivity.get(user)) + "\n");
+        }
+
+        return notification.toString();
+    }
+
+    public synchronized int getNumberOfUsers() { return users.size(); }
+
+    public synchronized int getNumberOfLoggedUsers() { return usersSocket.size(); }
+
     public synchronized void addUserActivity(final User user) {
         usersActivity.put(user, Constants.INACTIVE);
     }
