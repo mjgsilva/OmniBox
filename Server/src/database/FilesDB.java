@@ -45,6 +45,21 @@ public class FilesDB {
         return fileList;
     }
 
+    public synchronized void rebuildFileList(final OmniRepository omniRepository) {
+        for (OmniFile omniFile : omniRepository.getFileList()) {
+            addFile(omniFile);
+        }
+    }
+
+    public synchronized void rebuildFileList(final HashSet<OmniRepository> omniRepositories) {
+        files.clear();
+        for (OmniRepository omniRepository : omniRepositories) {
+            for (OmniFile omniFile : omniRepository.getFileList()) {
+                addFile(omniFile);
+            }
+        }
+    }
+
     public synchronized void addAccessToFile(final User user, final OmniFile omniFile) {
         if(!filesBeingAccessed.containsKey(user))
             filesBeingAccessed.put(user,omniFile);

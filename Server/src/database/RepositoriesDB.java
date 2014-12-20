@@ -32,10 +32,9 @@ public class RepositoriesDB {
     }
 
     public synchronized void addRepo(final OmniRepository omniRepository) {
-        System.out.println("* Adding repo *");
-        System.out.println(omniRepository.getLocalAddr()+":"+omniRepository.getPort());
-        System.out.println("* Removing repo *");
-        System.out.println("Contains? " + repositories.contains(omniRepository));
+        if(!repositories.contains(omniRepository)) {
+            omniServer.rebuildFileList(omniRepository);
+        }
         repositories.remove(omniRepository);
         availability.remove(omniRepository);
         repositories.add(omniRepository);
@@ -50,6 +49,8 @@ public class RepositoriesDB {
     public synchronized int getNumberOfRepositories() {
         return repositories.size();
     }
+
+    public synchronized HashSet<OmniRepository> getRepositories() { return repositories; }
 
     public synchronized void removeExpiredRepositories() {
         Iterator<Map.Entry<OmniRepository,Long>> it = timers.entrySet().iterator();
@@ -92,7 +93,6 @@ public class RepositoriesDB {
                 System.out.println("* No sources available *");
             } else {
                 try {
-                    System.out.println("* Replicating *");
                     System.out.println(source.getLocalAddr()+":"+source.getPort() + "->" + destination.getLocalAddr()+":"+destination.getPort());
 
                     InetAddress sourceAddress = null;
@@ -102,7 +102,6 @@ public class RepositoriesDB {
                     ArrayList args = new ArrayList();
                     args.add(Constants.OP_REPLICATION);
                     args.add(omniFile);
-                    System.out.println("Sending this as address -> " + destination.getLocalAddr());
                     args.add(destination.getLocalAddr());
                     args.add(destination.getPort());
                     Request response = new Request(Constants.CMD.cmdRepositoryAddress, args);
@@ -139,25 +138,16 @@ public class RepositoriesDB {
     private synchronized OmniRepository getSource(final OmniFile omniFile,final boolean fileExists) {
         PriorityQueue<OmniRepository> temporaryPQ = new PriorityQueue<OmniRepository>(10,new AvailabilityComparator());
         for(OmniRepository omniRepository : repositories) {
-            System.out.println("Number of Repos: " + repositories.size());
             if(fileExists) {
-                System.out.println("Searching for *file exists*");
-                System.out.println("OmniRep: " + omniRepository.getLocalAddr()+":"+omniRepository.getPort());
-                System.out.println("OmniRep filelist size:" + omniRepository.getFileList().size());
-                for(OmniFile omniFileFromList : omniRepository.getFileList())
-                {
-                    System.out.println(omniFileFromList.getFileName()+":"+omniFileFromList.getFileExtension()+":"+omniFileFromList.getFileSize());
-                }
                 if (omniRepository.fileExists(omniFile)) {
                     System.out.println("File exists on: " + omniRepository.getLocalAddr() + ":" + omniRepository.getPort());
                     temporaryPQ.offer(omniRepository);
-                } else {
-                    System.out.println("*file failed exists*");
                 }
             } else {
-                System.out.println("Searching for *file NOT exists*");
-                if (!omniRepository.fileExists(omniFile))
+                if (!omniRepository.fileExists(omniFile)) {
+                    System.out.println("This repo needs the file: " + omniRepository.getLocalAddr() + ":" + omniRepository.getPort());
                     temporaryPQ.offer(omniRepository);
+                }
             }
         }
         return temporaryPQ.peek();

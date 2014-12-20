@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class OmniServer extends CommunicationAdapter {
@@ -112,6 +113,8 @@ public class OmniServer extends CommunicationAdapter {
         repositoriesDB.addRepo(omniRepository);
     }
 
+    public HashSet<OmniRepository> getRepositories() { return repositoriesDB.getRepositories(); }
+
     public int getNumberOfRepositories() {
         return repositoriesDB.getNumberOfRepositories();
     }
@@ -148,6 +151,10 @@ public class OmniServer extends CommunicationAdapter {
     public void removeFile(final OmniFile omniFile) {
         filesDB.removeFile(omniFile);
     }
+
+    public void rebuildFileList(final OmniRepository omniRepository) { filesDB.rebuildFileList(omniRepository); }
+
+    public void rebuildFileList(final HashSet<OmniRepository> omniRepositories) { filesDB.rebuildFileList(omniRepositories); }
 
     public boolean fileBeingAccessed(final OmniFile omniFile) {
         return filesDB.isFileBeingAccessed(omniFile);
