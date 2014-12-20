@@ -155,7 +155,7 @@ public class ProcessClient extends Thread {
         } else {
             args.add(Constants.FILENOTOK);
         }
-        Request clientResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-        sendMessage(clientResponse);
+        //Request clientResponse = new Request(Constants.CMD.cmdDeleteFile,args);
+        //sendMessage(clientResponse);
     }
 }

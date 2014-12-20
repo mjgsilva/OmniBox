@@ -3,9 +3,12 @@ package ui.graphic;
 import logic.ClientModel;
 import logic.ListController;
 import logic.state.WaitRequest;
+import shared.OmniFile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,6 +21,7 @@ public class ListPanel extends JPanel implements Observer {
     Box vertical;
     private static JList<String> filesList;
     DefaultListModel<String> listModel = new DefaultListModel<String>();
+    public static boolean isListControllerStarted = false;
 
     public ListPanel(ClientModel cm) {
         this.cm = cm;
@@ -55,6 +59,26 @@ public class ListPanel extends JPanel implements Observer {
                 cm.sendNotification();
             }
         });*/
+
+        filesList.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                JList l = (JList)e.getSource();
+                ListModel m = l.getModel();
+                int index = l.locationToIndex(e.getPoint());
+                if( index>-1 ) {
+                    //l.setToolTipText(m.getElementAt(index).toString());
+                    l.setToolTipText(messageToShow(cm.getFilesList().get(index)));
+                }
+            }
+
+            private String messageToShow(OmniFile omniFile) {
+                return "Name: " + omniFile.getFileName() +
+                        "\n Extension: " + omniFile.getFileExtension() +
+                        "\n Size: " + omniFile.getFileSize() + "bytes"; // +
+                        //"\nModified at: " + omniFile.getLastModified();
+            }
+        });
     }
 
     public static synchronized JList<String> getFilesList() {
@@ -75,8 +99,10 @@ public class ListPanel extends JPanel implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        if (cm.getCurrentState() instanceof WaitRequest)
+        if (cm.getCurrentState() instanceof WaitRequest && !isListControllerStarted) {
             lc.startListController();
+            isListControllerStarted = true;
+        }
     }
 }
 

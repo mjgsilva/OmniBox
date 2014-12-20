@@ -91,7 +91,7 @@ public class ListController extends CommunicationAdapter {
                                 client.getFileList().remove(i);
 
                             for (Object aux : temp) {
-                                filesList.addItemToList(((OmniFile)aux).getFileName());
+                                filesList.addItemToList(((OmniFile) aux).getFileName());
                                 client.getFileList().add((OmniFile)aux);
                             }
 
@@ -107,6 +107,8 @@ public class ListController extends CommunicationAdapter {
                     System.exit(-1);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
+                } finally {
+                    ListPanel.isListControllerStarted = false;
                 }
             }
         }
