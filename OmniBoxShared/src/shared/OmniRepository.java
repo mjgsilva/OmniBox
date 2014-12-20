@@ -38,8 +38,8 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     public OmniRepository(int port) throws IOException {
         this.port = port;
-        this.serverPort = port;
-        this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, port);
+        this.serverPort = 6000;
+        this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.serverPort);
         this.filesDirectory = "";
         socket = new ServerSocket(port);
         setUDPSocket(port);
@@ -51,7 +51,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private void setUDPSocket(int port) throws SocketException, UnknownHostException {
         //Socket Udp to communicate operations
         serverAddr = InetAddress.getByName(addressServer);
-        socketUDP = new DatagramSocket(port);
+        socketUDP = new DatagramSocket(port, serverAddr);
         //socketUDP.setSoTimeout(Constants.TIMEOUT);
     }
 
@@ -125,7 +125,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         }
     }
 
-    public void deleteFile(OmniFile omniFile,User user){
+    public synchronized void deleteFile(OmniFile omniFile,User user){
 
         oppNum++;
        // sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName,user,true);
@@ -141,7 +141,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,omniFile, user,true);
     }
 
-    public void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
+    public synchronized void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
 
         oppNum++;
         //sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile.getFileName(),user,true);
@@ -164,7 +164,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,true);
     }
 
-    public void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
+    public synchronized void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
 
         oppNum++;
         //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,null,user,true);

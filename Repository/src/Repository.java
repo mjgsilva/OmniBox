@@ -42,7 +42,7 @@ public class Repository {
                 new ProcessServer(repo).start();
                 break;
             case 1:
-                port = Integer.parseInt(args[1]);
+                port = Integer.parseInt(args[0]);
 
                 repo = new OmniRepository(port);
                 new AnswerClient(repo).start();

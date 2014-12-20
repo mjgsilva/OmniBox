@@ -7,13 +7,11 @@ import database.UsersDB;
 import shared.*;
 import threads.HeartBeatHandler;
 import threads.ProcessClient;
+import threads.ProcessMulticast;
 import threads.ProcessRepository;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,8 +37,10 @@ public class OmniServer extends CommunicationAdapter {
         Socket socket;
 
         try {
+            ProcessMulticast processMulticast = new ProcessMulticast(port);
             ProcessRepository processRepository = new ProcessRepository(datagramSocket,this);
             HeartBeatHandler heartBeatHandler = new HeartBeatHandler(this);
+            processMulticast.start();
             processRepository.start();
             heartBeatHandler.start();
             while (true)
@@ -52,7 +52,7 @@ public class OmniServer extends CommunicationAdapter {
                     System.out.println("Error: " + ioe.getMessage());
                     return;
                 }
-        } finally {
+        } catch (Exception e) {e.printStackTrace();} finally {
             try{
                 if(serverSocket!=null)
                     serverSocket.close();
@@ -89,7 +89,7 @@ public class OmniServer extends CommunicationAdapter {
     }
 
     public void editUserActivity(final User user, final Integer activityType) {
-        usersDB.editUserActivity(user,activityType);
+        usersDB.editUserActivity(user, activityType);
     }
 
     public void removeUserActivity(final User user) {
@@ -105,7 +105,7 @@ public class OmniServer extends CommunicationAdapter {
     }
 
     public void notifyClients() {
-        usersDB.notifyUsers(filesDB.fileList(),this);
+        usersDB.notifyUsers(filesDB.fileList(), this);
     }
 
     //RepositoriesDB

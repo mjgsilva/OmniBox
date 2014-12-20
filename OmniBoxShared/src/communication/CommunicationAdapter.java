@@ -53,6 +53,7 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
         }
 
         multicastSocket.leaveGroup(group);
+        multicastSocket.close();
 
         return response;
     }
