@@ -4,8 +4,7 @@ import communication.CommunicationAdapter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * Created by OmniBox on 02/11/14.
@@ -128,15 +127,11 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public synchronized void deleteFile(OmniFile omniFile,User user){
 
         oppNum++;
-       // sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName,user,true);
-        //find file and delete
-        for(OmniFile file : fileList){
-            if(file.equals(omniFile))
-            {
-                file.delete();
-                fileList.remove(file);
-            }
-        }
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,omniFile,user,true);
+
+        omniFile.delete();
+        fileList.remove(omniFile);
+
         oppNum--;
         sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,omniFile, user,true);
     }
@@ -144,20 +139,17 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public synchronized void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
 
         oppNum++;
-        //sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile.getFileName(),user,true);
+        sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile,user,true);
         //find file and send
-        for(OmniFile file : fileList){
-            if(file.equals(omnifile))
-            {
-                try {
-                    FileOperations.readFileToSocket(socket, file);
-                    socket.close();
-                }catch (Exception e){
-                    socket.close();
-                    // sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
-                    sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,false);
-                }
-                break;
+        if(fileList.contains(omnifile))
+        {
+            try {
+                FileOperations.readFileToSocket(socket, omnifile);
+                socket.close();
+            }catch (Exception e){
+                socket.close();
+                // sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
+                sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,false);
             }
         }
         oppNum--;
@@ -167,7 +159,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public synchronized void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
 
         oppNum++;
-        //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,null,user,true);
+        sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,null,user,true);
 
         OmniFile tempFile= null;
         try {
