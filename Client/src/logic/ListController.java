@@ -78,7 +78,7 @@ public class ListController extends CommunicationAdapter {
                                     client.defineSendRequest(client.getFileToUpload());
                                 } else if (operation == Constants.OP_DOWNLOAD) {
                                     // Client has to be on state WaitAnswer for this to work correctly
-                                    client.defineGetRequest(new OmniFile(ListPanel.getFilesList().getSelectedValue()));
+                                    client.defineGetRequest(client.getFileList().get(ListPanel.getFilesList().getSelectedIndex()));
                                 }
                             } else
                                 new ErrorDialog(null, "Server didn't authorize the operation.");
