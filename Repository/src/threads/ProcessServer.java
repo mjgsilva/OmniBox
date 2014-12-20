@@ -1,10 +1,11 @@
 package threads;
 
-import shared.*;
+import shared.Constants;
+import shared.OmniFile;
+import shared.OmniRepository;
+import shared.Request;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.*;
 import java.util.ArrayList;
 
@@ -57,7 +58,7 @@ public class ProcessServer extends Thread  {
                         }
                         break;
                     case cmdDeleteFile:
-                        omniRepository.deleteFile((String) request.getArgsList().get(0), null);
+                        omniRepository.deleteFile((OmniFile) request.getArgsList().get(0), null);
                         break;
                 }
 

@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public class OmniFile extends File implements Serializable {
     private final String fileName;
+    private final String fileDirectory;
     private final Date creationDate;
     private final String fileExtension;
     private final long fileSize;
@@ -17,6 +18,7 @@ public class OmniFile extends File implements Serializable {
         super(pathname);
 
         fileName = getName();
+        fileDirectory = getDirectory();
         creationDate = new Date(lastModified());
         if (fileName.lastIndexOf(".") > 0)
             fileExtension = fileName.substring(fileName.lastIndexOf("."));
@@ -27,6 +29,12 @@ public class OmniFile extends File implements Serializable {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public String getDirectory(){
+        String absolutePath = this.getAbsolutePath();
+        String filePath = absolutePath;
+        return filePath.substring(0,absolutePath.lastIndexOf(File.separator));
     }
 
     public Date getCreationDate() {
@@ -70,6 +78,6 @@ public class OmniFile extends File implements Serializable {
 
     @Override
     public String toString() {
-        return super.toString();
+        return getFileName();
     }
 }

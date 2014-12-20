@@ -1,12 +1,10 @@
 package communication;
 
 import shared.Constants;
-import shared.OmniFile;
 import shared.Request;
 
 import java.io.*;
 import java.net.*;
-import java.util.NoSuchElementException;
 
 /**
  * Created by OmniBox on 03-11-2014.
@@ -62,6 +60,7 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     @Override
     public void sendTCPMessage(Socket socket, Request cmd) throws InterruptedException, IOException {
         out = new ObjectOutputStream(socket.getOutputStream());
+        out.flush();
         out.writeObject(cmd);
         out.flush();
     }

@@ -125,20 +125,20 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         }
     }
 
-    public void deleteFile(String fileName,User user){
+    public void deleteFile(OmniFile omniFile,User user){
 
         oppNum++;
        // sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,fileName,user,true);
         //find file and delete
         for(OmniFile file : fileList){
-            if(file.getFileName().equalsIgnoreCase(fileName))
+            if(file.equals(omniFile))
             {
                 file.delete();
                 fileList.remove(file);
             }
         }
         oppNum--;
-        //sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,file, user,true);
+        sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,omniFile, user,true);
     }
 
     public void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {

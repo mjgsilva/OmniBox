@@ -26,35 +26,40 @@ public class WaitAnswer extends StateAdapter {
     @Override
     public StateInterface defineGetRequest(final OmniFile fileToGet) throws IOException, InterruptedException, ClassNotFoundException {
         final Socket s = client.getRepositorySocket();
-        (new Thread() {
+        try {
+            // Tell repository what kind of operation I'm requesting
+            ArrayList<Object> temp = new ArrayList<Object>();
+            temp.add(fileToGet);
+            // TODO - Provisório o que está em baixo
+            //temp.add(new OmniFile("oMaior.txt"));
+            temp.add(client.getUser());
+            Request request = new Request(Constants.CMD.cmdGetFile, temp);
+            sendTCPMessage(s, request);
+            OmniFile omniFile = FileOperations.saveFileFromSocket(s, client.getLocalDirectoryPath() +fileToGet.getFileName());
+            // Rename file
+            //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").renameTo(new OmniFile(fileToGet.getFileName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Error saving file - Delete it
+            //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").delete();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").delete();
+        } finally {
+            // Close repository socket when over
+            try {
+                s.close();
+            } catch (IOException e) {
+            }
+            client.setRepositorySocket(null);
+        }
+       /* (new Thread() {
             @Override
             public void run() {
-                try {
-                    // Tell repository what kind of operation I'm requesting
-                    ArrayList<Object> temp = new ArrayList<Object>();
-                    temp.add(fileToGet);
-                    // TODO - Provisório o que está em baixo
-                    //temp.add(new OmniFile("oMaior.txt"));
-                    temp.add(client.getUser());
-                    Request request = new Request(Constants.CMD.cmdGetFile, temp);
-                    sendTCPMessage(s, request);
-                    FileOperations.saveFileFromSocket(s, client.getLocalDirectoryPath() + OmniFile.separator);
-                    // Rename file
-                    new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").renameTo(new OmniFile(fileToGet.getFileName()));
-                } catch (IOException e) {
-                    // Error saving file - Delete it
-                    new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").delete();
-                } catch (InterruptedException e) {
-                    new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").delete();
-                } finally {
-                    // Close repository socket when over
-                    try {
-                        client.getRepositorySocket().close();
-                    } catch (IOException e) {}
-                    client.setRepositorySocket(null);
+
                 }
             }
-        }).start();
+        }).start();*/
 
         return new WaitRequest(client);
     }
@@ -83,7 +88,7 @@ public class WaitAnswer extends StateAdapter {
                 } finally {
                     // Close repository socket when over
                     try {
-                        client.getRepositorySocket().close();
+                        s.close();
                     } catch (IOException e) {}
                     client.setRepositorySocket(null);
                     client.setFileToUpload(null);

@@ -6,7 +6,6 @@ import shared.OmniFile;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
@@ -61,8 +60,9 @@ public class ButtonsPanel extends JPanel implements Observer {
 
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     try {
-                        cm.setFileToUpload(new OmniFile(fc.getSelectedFile().getName()));
-                        cm.defineSendRequest(new OmniFile(fc.getSelectedFile().getAbsolutePath()));
+                        OmniFile omniFile = new OmniFile(fc.getSelectedFile().getAbsolutePath());
+                        cm.setFileToUpload(omniFile);
+                        cm.defineSendRequest(omniFile);
                     } catch (InterruptedException e1) {
                         new ErrorDialog(null, e1.getMessage());
                     } catch (IOException e1) {
@@ -105,7 +105,7 @@ public class ButtonsPanel extends JPanel implements Observer {
                 try {
                     String filePath = ListPanel.getFilesList().getSelectedValue();
                     if (filePath != null) {
-                        cm.defineRemoveRequest(new OmniFile(filePath));
+                        cm.defineRemoveRequest(cm.getFilesList().get(ListPanel.getFilesList().getSelectedIndex()));
                     } else {
                         new ErrorDialog(null, "No file selected.\nPlease select one from the list.");
                     }

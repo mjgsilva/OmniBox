@@ -5,8 +5,6 @@ import logic.ListController;
 import logic.state.WaitRequest;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
@@ -50,13 +48,13 @@ public class ListPanel extends JPanel implements Observer {
         //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(vertical);
 
-        filesList.addListSelectionListener(new ListSelectionListener() {
+       /* filesList.addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent listSelectionEvent) {
                 cm.setSelectedIndex(filesList.getSelectedIndex());
                 cm.sendNotification();
             }
-        });
+        });*/
     }
 
     public static synchronized JList<String> getFilesList() {

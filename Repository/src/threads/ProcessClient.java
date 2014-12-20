@@ -34,7 +34,7 @@ public class ProcessClient extends Thread {
 
             switch (request.getCmd()) {
                 case cmdDeleteFile:
-                    omniRepository.deleteFile((String) request.getArgsList().get(0), (User) request.getArgsList().get(1));
+                    omniRepository.deleteFile((OmniFile) request.getArgsList().get(0), (User) request.getArgsList().get(1));
                     break;
                 case cmdGetFile:
                     //Send a file to a client
