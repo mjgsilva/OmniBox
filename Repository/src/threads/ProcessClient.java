@@ -28,40 +28,35 @@ public class ProcessClient extends Thread {
         Request request = null;
         try {
             request = omniRepository.getTCPMessage(socketToClient);
+
+
+            System.out.println("Get Request from " + socketToClient.getInetAddress().getHostAddress() + " Request:" + request.getCmd().toString());
+
+            switch (request.getCmd()) {
+                case cmdDeleteFile:
+                    omniRepository.deleteFile((String) request.getArgsList().get(0), (User) request.getArgsList().get(1));
+                    break;
+                case cmdGetFile:
+                    //Send a file to a client
+                    System.out.println("SendFile from " + socketToClient.getInetAddress().getHostAddress());
+                    omniRepository.sendFile(socketToClient, omniRepository.getOmniFileByName((String) request.getArgsList().get(0)), (User) request.getArgsList().get(1));
+
+                    break;
+                case cmdSendFile:
+                    System.out.println("PC | GetFile " + request.getArgsList().get(0) + " from " + socketToClient.getInetAddress().getHostAddress());
+                    omniRepository.getFile(socketToClient, (String) request.getArgsList().get(0), (User) request.getArgsList().get(1));
+
+                    break;
+                default:
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        } finally {
 
-        System.out.println("Get Request from " + socketToClient.getInetAddress().getHostAddress() + " Request:" + request.getCmd().toString());
-
-        switch (request.getCmd()) {
-            case cmdDeleteFile:
-                omniRepository.deleteFile((String) request.getArgsList().get(0), (User) request.getArgsList().get(1));
-                break;
-            case cmdGetFile:
-                try {
-                    //Send a file to a client
-                    System.out.println("SendFile from " + socketToClient.getInetAddress().getHostAddress());
-                    omniRepository.sendFile(socketToClient, omniRepository.getOmniFileByName((String) request.getArgsList().get(0)), (User) request.getArgsList().get(1));
-                } catch (InterruptedException e) {
-                } catch (IOException e) {
-                }
-                break;
-            case cmdSendFile:
-                try {
-                    System.out.println("PC | GetFile " + request.getArgsList().get(0) + " from " + socketToClient.getInetAddress().getHostAddress());
-                    omniRepository.getFile(socketToClient, (String) request.getArgsList().get(0), (User) request.getArgsList().get(1));
-                } catch (IOException e) {
-                } catch (InterruptedException e) {
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
         }
     }
 }

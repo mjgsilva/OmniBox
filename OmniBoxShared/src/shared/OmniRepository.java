@@ -1,8 +1,6 @@
 package shared;
 import communication.CommunicationAdapter;
-import shared.FileOperations;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.*;
@@ -153,6 +151,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
             {
                 try {
                     FileOperations.readFileToSocket(socket, file);
+                    socket.close();
                 }catch (Exception e){
                     // sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
                     sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,false);
@@ -172,6 +171,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         OmniFile tempFile= null;
         try {
             tempFile = (OmniFile) FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
+            socket.close();
         }catch (Exception e){
             //sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile.getFileName(),user,false);
             sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,false);

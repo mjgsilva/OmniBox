@@ -45,7 +45,6 @@ public class OmniFile extends File implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
 
         OmniFile omniFile = (OmniFile) o;
 
@@ -61,7 +60,7 @@ public class OmniFile extends File implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
+        int result=0;
         result = 31 * result + fileName.hashCode();
         //result = 31 * result + creationDate.hashCode();
         result = 31 * result + fileExtension.hashCode();
