@@ -1,6 +1,5 @@
 package threads;
 
-import com.sun.tools.internal.jxc.apt.Const;
 import shared.*;
 
 import java.io.ByteArrayInputStream;

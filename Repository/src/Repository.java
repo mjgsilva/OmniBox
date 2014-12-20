@@ -23,18 +23,18 @@ public class Repository {
         AnswerClient answerClient;
 
         if(args.length != 1){
-            if (args.length != 4) {
+            if (args.length != 3) {
                 System.out.println("Syntax: java <port> <address> <filesDirectory> // java <port>");
                 return;
             }
         }
 
         switch (args.length) {
-            case 4:
+            case 3:
                 port = Integer.parseInt(args[0]);
                 address = args[1].trim();
                 filesDirectory = args[2].trim();
-                repo = new OmniRepository(port,address,filesDirectory, InetAddress.getByName(args[3]));
+                repo = new OmniRepository(port,address,filesDirectory, "");
                 answerClient = new AnswerClient(repo);
                 answerClient.start();
                 new HeartBeat(repo).start();

@@ -103,6 +103,8 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
 
         cmdTemp = (Request)(in.readObject());
 
+        cmdTemp.getArgsList().add(packet.getAddress().getHostAddress());
+
         return cmdTemp;
     }
 }

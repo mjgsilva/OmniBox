@@ -48,8 +48,9 @@ public class ProcessRepository extends Thread {
 
     private void ProcessHeartBeat(Request request) {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
+        omniRepository.setLocalAdd((String) request.getArgsList().get(request.getArgsList().size() - 1));
         omniServer.addRepository(omniRepository);
-        System.out.println("Ligou-se! " + omniRepository.getLocalAddr().getHostAddress().toString() + " / " + omniRepository.getPort());
+        System.out.println("Ligou-se! " + omniRepository.getLocalAddr() + " / " + omniRepository.getPort());
     }
 
     private void ProcessNotification(Request request) {
@@ -59,7 +60,7 @@ public class ProcessRepository extends Thread {
         User user = (User)request.getArgsList().get(3);
         boolean isSuccessful = (Boolean)request.getArgsList().get(4);
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(5);
-
+        omniRepository.setLocalAdd((String) request.getArgsList().get(request.getArgsList().size() - 1));
 
         if(operationType == Constants.OP_DOWNLOAD) {
             downloadFromClientNotification(status, omniFile, user, isSuccessful, omniRepository);

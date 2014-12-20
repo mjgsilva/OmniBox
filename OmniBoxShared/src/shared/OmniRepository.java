@@ -19,7 +19,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private int serverPort;
     private transient ServerSocket socket;
     private InetAddress serverAddr;
-    private InetAddress localAddr;
+    private String localAddr;
     private transient DatagramSocket socketUDP;
     private transient DatagramPacket packet;
     private String filesDirectory;
@@ -28,12 +28,11 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     private int oppNum = 0;
 
-    public OmniRepository(int port, String addressServer, String filesDirectory, InetAddress myIp) throws IOException {
+    public OmniRepository(int port, String addressServer, String filesDirectory, String myIp) throws IOException {
         this.port = port;
         this.serverPort = 6000;//port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
-        //this.localAddr = InetAddress.getLocalHost();
         this.localAddr = myIp;
         socket = new ServerSocket(port);
         setUDPSocket(port);
@@ -44,17 +43,12 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         this.serverPort = port;
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, port);
         this.filesDirectory = "";
-        //this.localAddr = InetAddress.getLocalHost();
-        this.localAddr = NetworkAddress.getNetworkInetAddr();
         socket = new ServerSocket(port);
         setUDPSocket(port);
     }
 
-    public InetAddress getLocalAddr() {return localAddr;}
-    public InetAddress getServerAddr() {return serverAddr;}
-    public DatagramSocket getSocketUDP() {
-        return socketUDP;
-    }
+
+    public void setLocalAdd(String addr) {this.localAddr = addr;}
 
     private void setUDPSocket(int port) throws SocketException, UnknownHostException {
         //Socket Udp to communicate operations
@@ -64,6 +58,11 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     }
 
     //Gets
+    public String getLocalAddr() {return localAddr;}
+    public InetAddress getServerAddr() {return serverAddr;}
+    public DatagramSocket getSocketUDP() {
+        return socketUDP;
+    }
 
     public ServerSocket getSocket() {
         return socket;
