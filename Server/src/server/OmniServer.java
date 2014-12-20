@@ -62,7 +62,6 @@ public class OmniServer extends CommunicationAdapter {
         }
     }
 
-    //TODO: Check this out
     public DatagramSocket getDatagramSocket() {
         return datagramSocket;
     }

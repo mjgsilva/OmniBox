@@ -10,6 +10,7 @@ import shared.Request;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
@@ -50,17 +51,6 @@ public class RepositoriesDB {
         return repositories.size();
     }
 
-    //TODO: Stackoverflow - Iterator + Remove -> Use javadoc to justify
-    /*public synchronized void removeExpiredRepositories() {
-        for(OmniRepository omniRepository : repositories) {
-            if(timers.get(omniRepository) < System.currentTimeMillis() - Constants.EXPIRE_TIME) {
-                repositories.remove(omniRepository);
-                timers.remove(omniRepository);
-                availability.remove(omniRepository);
-            }
-        }
-    } */
-
     public synchronized void removeExpiredRepositories() {
         Iterator<Map.Entry<OmniRepository,Long>> it = timers.entrySet().iterator();
         while(it.hasNext()) {
@@ -76,12 +66,12 @@ public class RepositoriesDB {
     public synchronized void deleteBroadcast(final Request response) {
         for(OmniRepository omniRepository : repositories) {
             try {
-                InetAddress repositoryAddress = omniRepository.getLocalAddr();
+                InetAddress repositoryAddress = InetAddress.getByName(omniRepository.getLocalAddr());
                 int repositoryPort = omniRepository.getPort();
 
                 DatagramSocket tempSocket = new DatagramSocket();
                 omniRepository.sendUDPMessage(tempSocket,repositoryAddress,repositoryPort,response);
-                //tempSocket.close(); //TODO: Review this
+                tempSocket.close();
             } catch (InterruptedException e) {
             } catch (IOException e) {
             }
@@ -101,24 +91,22 @@ public class RepositoriesDB {
             if(source == null) {
                 System.out.println("* No sources available *");
             } else {
-
-                System.out.println("* Replicating *");
-                System.out.println(source.getLocalAddr()+":"+source.getPort() + "->" + destination.getLocalAddr()+":"+destination.getPort());
-
-                InetAddress sourceAddress = source.getLocalAddr();
-                int sourcePort = source.getPort();
-
-                ArrayList args = new ArrayList();
-                args.add(Constants.OP_REPLICATION);
-                args.add(omniFile);
-                System.out.println("Sending this as address -> " + destination.getLocalAddr().getHostAddress());
-                args.add(destination.getLocalAddr().getHostAddress()); //TODO: Ask mister Serrano
-                args.add(destination.getPort());
-                Request response = new Request(Constants.CMD.cmdRepositoryAddress, args);
-
                 try {
+                    System.out.println("* Replicating *");
+                    System.out.println(source.getLocalAddr()+":"+source.getPort() + "->" + destination.getLocalAddr()+":"+destination.getPort());
+
+                    InetAddress sourceAddress = null;
+                    sourceAddress = InetAddress.getByName(source.getLocalAddr());
+                    int sourcePort = source.getPort();
+
+                    ArrayList args = new ArrayList();
+                    args.add(Constants.OP_REPLICATION);
+                    args.add(omniFile);
+                    System.out.println("Sending this as address -> " + destination.getLocalAddr());
+                    args.add(destination.getLocalAddr());
+                    args.add(destination.getPort());
+                    Request response = new Request(Constants.CMD.cmdRepositoryAddress, args);
                     omniServer.sendUDPMessage(omniServer.getDatagramSocket(), sourceAddress, sourcePort, response);
-                    //    tempSocket.close(); //TODO: Review this
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -134,7 +122,7 @@ public class RepositoriesDB {
         OmniRepository lessWorkLoadedRepository = getLessWorkLoadedRepository();
 
         if(lessWorkLoadedRepository.fileExists(omniFile)) {
-            System.out.println(lessWorkLoadedRepository.getLocalAddr().getHostAddress()+":"+lessWorkLoadedRepository.getPort());
+            System.out.println(lessWorkLoadedRepository.getLocalAddr()+":"+lessWorkLoadedRepository.getPort());
             return lessWorkLoadedRepository;
         } else {
             System.out.println("Searching the sources for: " + omniFile.getFileName());

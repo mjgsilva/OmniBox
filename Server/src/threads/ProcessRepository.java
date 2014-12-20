@@ -23,7 +23,6 @@ public class ProcessRepository extends Thread {
             while (true) {
                 try {
                     Request request = omniServer.getUDPMessage(omniServer.getDatagramSocket());
-                    //TODO: Should validate this on getUDPMessage?
                     if (request instanceof Request) {
                         switch (request.getCmd()) {
                             case cmdHeartBeat:
