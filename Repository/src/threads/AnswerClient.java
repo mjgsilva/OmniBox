@@ -1,7 +1,6 @@
 package threads;
 
 import shared.OmniRepository;
-import shared.Request;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -25,6 +24,8 @@ public class AnswerClient extends Thread{
                 //Accept socket to communicate
                 socketToClient = omniRepository.getSocket().accept();
                 //Launch thread to process client
+                System.out.println("Client/Repo is closed:"+ socketToClient.isClosed());
+                System.out.println("Client/Repo:"+ socketToClient.getInetAddress().getHostAddress()+"/Port:"+socketToClient.getPort());
                 new ProcessClient(socketToClient, omniRepository).start();
             } catch (IOException e) {
                 e.printStackTrace();
