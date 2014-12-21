@@ -10,9 +10,7 @@ import shared.Request;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
@@ -44,7 +42,7 @@ public class RepositoriesDB {
     }
 
     private synchronized void putTimer(final OmniRepository omniRepository) {
-        timers.put(omniRepository,System.currentTimeMillis());
+        timers.put(omniRepository, System.currentTimeMillis());
     }
 
     public synchronized int getNumberOfRepositories() {
@@ -72,12 +70,20 @@ public class RepositoriesDB {
                 int repositoryPort = omniRepository.getPort();
 
                 DatagramSocket tempSocket = new DatagramSocket();
-                omniRepository.sendUDPMessage(tempSocket,repositoryAddress,repositoryPort,response);
+                omniRepository.setNotifyWatcher(false);
+                omniRepository.sendUDPMessage(tempSocket, repositoryAddress, repositoryPort, response);
                 tempSocket.close();
+
             } catch (InterruptedException e) {
             } catch (IOException e) {
             }
         }
+
+
+        for(OmniRepository omniRepository : repositories) {
+                omniRepository.setNotifyWatcher(true);
+        }
+
     }
 
     public void replicationProcess(final OmniFile omniFile) {

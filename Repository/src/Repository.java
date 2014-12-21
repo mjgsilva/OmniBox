@@ -1,6 +1,5 @@
 import shared.OmniRepository;
 import threads.AnswerClient;
-import threads.DirectoryHandler;
 import threads.HeartBeat;
 import threads.ProcessServer;
 
@@ -36,7 +35,7 @@ public class Repository {
                 answerClient = new AnswerClient(repo);
                 answerClient.start();
                 new HeartBeat(repo).start();
-                new DirectoryHandler(repo).start();
+               // new DirectoryHandler(repo).start();
                 new ProcessServer(repo).start();
                 break;
             case 1:
@@ -45,7 +44,7 @@ public class Repository {
                 repo = new OmniRepository(port);
                 new AnswerClient(repo).start();
                 new HeartBeat(repo).start();
-                new DirectoryHandler(repo).start();
+                //new DirectoryHandler(repo).start();
                 new ProcessServer(repo).start();
                 break;
             default:

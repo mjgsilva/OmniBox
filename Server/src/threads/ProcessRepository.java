@@ -5,6 +5,7 @@ import shared.*;
 
 import java.io.IOException;
 import java.net.DatagramSocket;
+import java.util.ArrayList;
 
 /**
  * Created by OmniBox on 13/11/14.
@@ -69,7 +70,10 @@ public class ProcessRepository extends Thread {
                     if(user != null) {
                         deleteNotification(status, omniFile, user, omniRepository);
                     }else{
-                        this.omniServer.deleteBroadcast(request);
+                        ArrayList args = new ArrayList();
+                        args.add(omniFile);
+                        Request repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
+                        this.omniServer.deleteBroadcast(repositoryResponse);
                         this.omniServer.removeFile(omniFile);
                     }
 

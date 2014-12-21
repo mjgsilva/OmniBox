@@ -20,6 +20,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private transient DatagramSocket socketUDP;
     private String filesDirectory;
     private final HashSet<OmniFile> fileList = new HashSet();
+    private boolean notifyWatcher=true;
 
 
     private int oppNum = 0;
@@ -55,6 +56,13 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     }
 
     //Gets
+    public boolean getNotifyWatcher() {
+        return notifyWatcher;
+    }
+    public void setNotifyWatcher(boolean notifyWatcher) {
+        this.notifyWatcher = notifyWatcher;
+    }
+
     public String getLocalAddr() {return localAddr;}
     public InetAddress getServerAddr() {return serverAddr;}
     public DatagramSocket getSocketUDP() {
@@ -122,7 +130,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     }
 
     public synchronized void deleteFile(OmniFile omniFile,User user){
-
+        notifyWatcher = false;
         oppNum++;
         sendNotification(Constants.OP_DELETE,Constants.OP_S_STARTED,omniFile,user,true);
 
@@ -135,6 +143,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
         oppNum--;
         sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,omniFile, user,true);
+        notifyWatcher = true;
     }
 
     public synchronized void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {

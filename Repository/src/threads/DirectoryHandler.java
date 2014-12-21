@@ -49,95 +49,105 @@ public class DirectoryHandler extends Thread{
             WatchKey key = null;
             while(true) {
                 key = this.watcher.take();
+                if(omniRepository.getNotifyWatcher()) {
 
-                WatchEvent.Kind<?> kind = null;
-                for(WatchEvent<?> watchEvent : key.pollEvents()) {
-                    // Get the type of the event
-                    kind = watchEvent.kind();
-                    if (OVERFLOW == kind) {
-                        continue; //loop
-                    } else if (ENTRY_CREATE == kind) {
-                        // A new Path was created
-                        Path newPath = ((WatchEvent<Path>) watchEvent).context();
-                        if(!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")){
-                            //create a tempFile based on event
-                            Path child = this.dirPath.resolve(newPath);
-                            String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
-                            tempFile = new OmniFile(omniRepository.getFilesDirectory()+fileNameWithPath);
-                            //add file to fileList of repository
-                            omniRepository.getFileList().add(tempFile);
-                            cmdTemp.getArgsList().clear();
-                            cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
-                            cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
-                            cmdTemp.getArgsList().add(tempFile);
-                            cmdTemp.getArgsList().add(null);
-                            cmdTemp.getArgsList().add(true);
-                            cmdTemp.getArgsList().add(omniRepository);
+                    WatchEvent.Kind<?> kind = null;
+                    for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                        // Get the type of the event
+                        kind = watchEvent.kind();
+                        if (OVERFLOW == kind) {
+                            continue; //loop
+                        } else if (ENTRY_CREATE == kind) {
+                            // A new Path was created
+                            Path newPath = ((WatchEvent<Path>) watchEvent).context();
+                            if (!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")) {
+                                //create a tempFile based on event
+                                Path child = this.dirPath.resolve(newPath);
+                                String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
+                                tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
+                                if (tempFile == null) {
 
-                            //Send a notification request to Server
-                            omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
-                            // Output
-                            System.out.println("New path created: " + newPath);
+                                    tempFile = new OmniFile(omniRepository.getFilesDirectory() + fileNameWithPath);
+                                    //add file to fileList of repository
+                                    omniRepository.getFileList().add(tempFile);
+                                    cmdTemp.getArgsList().clear();
+                                    cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
+                                    cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
+                                    cmdTemp.getArgsList().add(tempFile);
+                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(true);
+                                    cmdTemp.getArgsList().add(omniRepository);
+
+                                    //Send a notification request to Server
+                                    omniRepository.sendUDPMessage(omniRepository.getSocketUDP(), omniRepository.getServerAddr(), omniRepository.getServerPort(), cmdTemp);
+                                    // Output
+                                    System.out.println("New path created: " + newPath);
+                                }
+                            }
+
+                        } else if (ENTRY_MODIFY == kind) {
+                            Path newPath = ((WatchEvent<Path>) watchEvent).context();
+                            if (!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")) {
+                                //First Delete File
+                                Path child = this.dirPath.resolve(newPath);
+                                String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
+                                tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
+                                if (tempFile != null) {
+                                    cmdTemp.getArgsList().clear();
+                                    cmdTemp.getArgsList().add(Constants.OP_DELETE);
+                                    cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
+                                    cmdTemp.getArgsList().add(tempFile);
+                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(true);
+                                    cmdTemp.getArgsList().add(omniRepository);
+
+                                    //Send a notification request to Server
+                                    omniRepository.sendUDPMessage(omniRepository.getSocketUDP(), omniRepository.getServerAddr(), omniRepository.getServerPort(), cmdTemp);
+
+                                    //New OmniFile
+                                    //create a tempFile based on event
+                                    fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
+                                    tempFile = new OmniFile(omniRepository.getFilesDirectory() + fileNameWithPath);
+                                    //add file to fileList of repository
+                                    omniRepository.getFileList().add(tempFile);
+                                    cmdTemp.getArgsList().clear();
+                                    cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
+                                    cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
+                                    cmdTemp.getArgsList().add(tempFile);
+                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(true);
+                                    cmdTemp.getArgsList().add(omniRepository);
+
+                                    //Send a notification request to Server
+                                    omniRepository.sendUDPMessage(omniRepository.getSocketUDP(), omniRepository.getServerAddr(), omniRepository.getServerPort(), cmdTemp);
+                                    // Output
+                                    System.out.println("File Modified: " + newPath);
+                                }
+                            }
+
+                        } else if (ENTRY_DELETE == kind) {
+                            Path newPath = ((WatchEvent<Path>) watchEvent).context();
+                            if (!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")) {
+                                Path child = this.dirPath.resolve(newPath);
+                                String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
+                                tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
+                                if (tempFile != null) {
+                                    cmdTemp.getArgsList().clear();
+                                    cmdTemp.getArgsList().add(Constants.OP_DELETE);
+                                    cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
+                                    cmdTemp.getArgsList().add(tempFile);
+                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(true);
+                                    cmdTemp.getArgsList().add(omniRepository);
+
+                                    //Send a notification request to Server
+                                    omniRepository.sendUDPMessage(omniRepository.getSocketUDP(), omniRepository.getServerAddr(), omniRepository.getServerPort(), cmdTemp);
+                                    // Output
+                                    System.out.println("File Deleted: " + newPath);
+                                }
+                            }
+
                         }
-
-                    } else if (ENTRY_MODIFY == kind){
-                        Path newPath = ((WatchEvent<Path>) watchEvent).context();
-                        if(!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")){
-                            //First Delete File
-                            Path child = this.dirPath.resolve(newPath);
-                            String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
-                            tempFile = new OmniFile(omniRepository.getFilesDirectory()+fileNameWithPath);
-                            cmdTemp.getArgsList().clear();
-                            cmdTemp.getArgsList().add(Constants.OP_DELETE);
-                            cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
-                            cmdTemp.getArgsList().add(tempFile);
-                            cmdTemp.getArgsList().add(null);
-                            cmdTemp.getArgsList().add(true);
-                            cmdTemp.getArgsList().add(omniRepository);
-
-                            //Send a notification request to Server
-                            omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
-
-                            //New OmniFile
-                            //create a tempFile based on event
-                            fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
-                            tempFile = new OmniFile(omniRepository.getFilesDirectory()+fileNameWithPath);
-                            //add file to fileList of repository
-                            omniRepository.getFileList().add(tempFile);
-                            cmdTemp.getArgsList().clear();
-                            cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
-                            cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
-                            cmdTemp.getArgsList().add(tempFile);
-                            cmdTemp.getArgsList().add(null);
-                            cmdTemp.getArgsList().add(true);
-                            cmdTemp.getArgsList().add(omniRepository);
-
-                            //Send a notification request to Server
-                            omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
-                            // Output
-                            System.out.println("File Modified: " + newPath);
-                        }
-
-                    } else if (ENTRY_DELETE == kind){
-                        Path newPath = ((WatchEvent<Path>) watchEvent).context();
-                        if(!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")){
-                            Path child = this.dirPath.resolve(newPath);
-                            String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
-                            tempFile = new OmniFile(omniRepository.getFilesDirectory()+fileNameWithPath);
-                            cmdTemp.getArgsList().clear();
-                            cmdTemp.getArgsList().add(Constants.OP_DELETE);
-                            cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
-                            cmdTemp.getArgsList().add(tempFile);
-                            cmdTemp.getArgsList().add(null);
-                            cmdTemp.getArgsList().add(true);
-                            cmdTemp.getArgsList().add(omniRepository);
-
-                            //Send a notification request to Server
-                            omniRepository.sendUDPMessage(omniRepository.getSocketUDP(),omniRepository.getServerAddr(),omniRepository.getServerPort(),cmdTemp);
-                            // Output
-                            System.out.println("File Deleted: " + newPath);
-                        }
-
                     }
                 }
 
