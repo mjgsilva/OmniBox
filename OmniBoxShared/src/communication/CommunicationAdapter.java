@@ -62,15 +62,22 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     @Override
     public void sendTCPMessage(Socket socket, Request cmd) throws InterruptedException, IOException {
         out = new ObjectOutputStream(socket.getOutputStream());
-        out.flush();
         out.writeObject(cmd);
         out.flush();
     }
 
     @Override
     public Request getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException {
+        Object obj;
+        Request req = null;
+
         in = new ObjectInputStream(socket.getInputStream());
-        return (Request)in.readObject();
+        obj = in.readObject();
+
+        if(obj instanceof Request)
+            req = (Request)obj;
+
+        return req;
     }
 
     @Override
@@ -114,19 +121,28 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
         Request cmdTemp=null;
         ObjectInputStream in = null;
         DatagramPacket packet = null;
-        int size = 0;
+        Object first, second;
 
         packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE);
         socket.receive(packet);
         in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
-        size = (Integer)(in.readObject());
 
-        packet = new DatagramPacket(new byte[size], size);
-        socket.receive(packet);
-        in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
-        cmdTemp = (Request)(in.readObject());
-        cmdTemp.getArgsList().add(packet.getAddress().getHostAddress());
+        first = in.readObject();
 
+        if(first instanceof Integer) {
+            int size = (Integer)first;
+
+            packet = new DatagramPacket(new byte[size], size);
+            socket.receive(packet);
+            in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+
+            second = in.readObject();
+
+            if(second instanceof Request) {
+                cmdTemp = (Request) (in.readObject());
+                cmdTemp.getArgsList().add(packet.getAddress().getHostAddress());
+            }
+        }
         return cmdTemp;
     }
 }
