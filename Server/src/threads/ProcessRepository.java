@@ -3,7 +3,6 @@ package threads;
 import server.OmniServer;
 import shared.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 
@@ -67,7 +66,13 @@ public class ProcessRepository extends Thread {
                 uploadToClientNotification(status, omniFile, user, omniRepository);
             } else {
                 if(operationType == Constants.OP_DELETE) {
-                    deleteNotification(status,omniFile,user,omniRepository);
+                    if(user != null) {
+                        deleteNotification(status, omniFile, user, omniRepository);
+                    }else{
+                        this.omniServer.deleteBroadcast(request);
+                        this.omniServer.removeFile(omniFile);
+                    }
+
                 }
             }
         }

@@ -18,7 +18,6 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private InetAddress serverAddr;
     private String localAddr;
     private transient DatagramSocket socketUDP;
-    private transient DatagramPacket packet;
     private String filesDirectory;
     private final HashSet<OmniFile> fileList = new HashSet();
 
@@ -37,7 +36,8 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
     public OmniRepository(int port) throws IOException {
         this.port = port;
-        this.serverPort = 6000;
+        this.serverPort = port;
+
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.serverPort);
         this.filesDirectory = "";
         socket = new ServerSocket(port);
@@ -107,10 +107,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
             ArrayList<Object> tempList = new ArrayList<Object>();
             tempList.add(operation);
             tempList.add(status);
-            /* OmniFile omniTemp = new OmniFile(fileName);
-            System.out.println(omniTemp.getFileSize());
-            tempList.add(omniTemp); */
-                tempList.add(omniFile);
+            tempList.add(omniFile);
             tempList.add(user);
             tempList.add(isSuccessful);
             tempList.add(this);

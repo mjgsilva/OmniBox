@@ -37,6 +37,11 @@ public class OmniFile extends File implements Serializable {
         return filePath.substring(0,absolutePath.lastIndexOf(File.separator));
     }
 
+    public static String extractFileName(String path){
+        String fileNameStr = path;
+        return fileNameStr.substring(path.lastIndexOf(File.separator)+1,path.length()-path.lastIndexOf(File.separator)-1);
+    }
+
     public Date getCreationDate() {
         return creationDate;
     }
@@ -72,7 +77,7 @@ public class OmniFile extends File implements Serializable {
         result = 31 * result + fileName.hashCode();
         //result = 31 * result + creationDate.hashCode();
         result = 31 * result + fileExtension.hashCode();
-        result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
+        //result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
         return result;
     }
 
