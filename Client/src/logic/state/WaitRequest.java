@@ -3,20 +3,13 @@ package logic.state;
 import communication.TCP;
 import logic.Client;
 import shared.Constants;
-import shared.FileOperations;
 import shared.OmniFile;
 import shared.Request;
 import ui.graphic.ErrorDialog;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.NoSuchElementException;
-
-import static shared.FileOperations.readFileToSocket;
-import static shared.FileOperations.saveFileFromSocket;
 
 /**
  * Waits for user to choose which operation to be performed.
@@ -38,6 +31,10 @@ public class WaitRequest extends StateAdapter implements TCP {
     @Override
     public StateInterface defineGetRequest(final OmniFile fileToGet) throws IOException, InterruptedException, ClassNotFoundException {
         ArrayList <OmniFile> filesToGet = new ArrayList<OmniFile>();
+        ArrayList <Object> cmdList = new ArrayList<Object>();
+        cmdList.add(fileToGet);
+        cmdList.add(client.getUser());
+        Request request = new Request(Constants.CMD.cmdGetFile,cmdList);
         Socket repositorySocket = null;
 
         new ErrorDialog(null, fileToGet.getFileName());
@@ -46,7 +43,7 @@ public class WaitRequest extends StateAdapter implements TCP {
         filesToGet.add(fileToGet);
 
         // Send request to get file with fileToGet as an arg and wait for repository address to be given
-        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdGetFile, filesToGet));
+        sendTCPMessage(client.getServerSocket(), request);
 
         return new WaitAnswer(client);
     }
@@ -59,11 +56,16 @@ public class WaitRequest extends StateAdapter implements TCP {
 
         new ErrorDialog(null, fileToSend.getFileName());
 
+        ArrayList <Object> cmdList = new ArrayList<Object>();
+        cmdList.add(fileToSend);
+        cmdList.add(client.getUser());
+        Request request = new Request(Constants.CMD.cmdSendFile,cmdList);
+
         // add fileToSend to request args
         filesToSend.add(fileToSend);
 
         // Send request to send file with fileToSend as an arg and wait for repository address to be given
-        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdSendFile, filesToSend));
+        sendTCPMessage(client.getServerSocket(), request);
 
         return new WaitAnswer(client);
     }
@@ -75,8 +77,13 @@ public class WaitRequest extends StateAdapter implements TCP {
         // add fileToRemove to request args
         filesToRemove.add(fileToRemove);
 
+        ArrayList <Object> cmdList = new ArrayList<Object>();
+        cmdList.add(fileToRemove);
+        cmdList.add(client.getUser());
+        Request request = new Request(Constants.CMD.cmdDeleteFile,cmdList);
+
         // Send request to remove file with fileToRemove as an arg
-        sendTCPMessage(client.getServerSocket(), new Request(Constants.CMD.cmdDeleteFile, filesToRemove));
+        sendTCPMessage(client.getServerSocket(), request);
 
         return this;
     }
