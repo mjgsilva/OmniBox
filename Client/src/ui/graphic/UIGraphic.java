@@ -1,12 +1,7 @@
 package ui.graphic;
 
 import logic.Client;
-import shared.Constants;
-import shared.NetworkAddress;
-import sun.security.pkcs.ContentInfo;
-
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.Scanner;
 
 /**

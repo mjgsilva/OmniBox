@@ -5,8 +5,6 @@ import threads.HeartBeat;
 import threads.ProcessServer;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
 
 /**
  * Created by OmniBox on 02/11/14.
@@ -38,7 +36,7 @@ public class Repository {
                 answerClient = new AnswerClient(repo);
                 answerClient.start();
                 new HeartBeat(repo).start();
-                //new DirectoryHandler(repo).start();
+                new DirectoryHandler(repo).start();
                 new ProcessServer(repo).start();
                 break;
             case 1:
@@ -47,7 +45,7 @@ public class Repository {
                 repo = new OmniRepository(port);
                 new AnswerClient(repo).start();
                 new HeartBeat(repo).start();
-                //new DirectoryHandler(repo).start();
+                new DirectoryHandler(repo).start();
                 new ProcessServer(repo).start();
                 break;
             default:
