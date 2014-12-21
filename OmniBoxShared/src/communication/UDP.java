@@ -27,8 +27,9 @@ public interface UDP {
      * @throws InterruptedException If timeout is reached
      * @throws IOException If there's any IO operation that failed
      */
-    public void sendUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port, Request cmd) throws InterruptedException, IOException;
+    public void sendUDPMessageSize(DatagramSocket socket, InetAddress inetAddress, int port, int size) throws InterruptedException, IOException;
 
+    public void sendUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port, Request cmd) throws InterruptedException, IOException;
 
     public Request getUDPMessage(DatagramSocket socket) throws InterruptedException, IOException, ClassNotFoundException;
 }

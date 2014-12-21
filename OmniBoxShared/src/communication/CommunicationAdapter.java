@@ -3,6 +3,7 @@ package communication;
 import shared.Constants;
 import shared.Request;
 
+import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 
@@ -89,8 +90,23 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
         out.writeObject(cmd);
 
         packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), inetAddress, port);
+        sendUDPMessageSize(socket,inetAddress,port,packet.getLength());
         socket.send(packet);
+    }
 
+    @Override
+    public void sendUDPMessageSize(DatagramSocket socket, InetAddress inetAddress, int port, int size) throws InterruptedException, IOException {
+        DatagramPacket packet = null;
+        ByteArrayOutputStream bOut = null;
+        ObjectOutputStream out = null;
+
+        bOut = new ByteArrayOutputStream();
+        out = new ObjectOutputStream(bOut);
+
+        out.writeObject(size);
+
+        packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), inetAddress, port);
+        socket.send(packet);
     }
 
     @Override
@@ -98,14 +114,17 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
         Request cmdTemp=null;
         ObjectInputStream in = null;
         DatagramPacket packet = null;
+        int size = 0;
 
         packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE);
         socket.receive(packet);
-
         in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
+        size = (Integer)(in.readObject());
 
+        packet = new DatagramPacket(new byte[size], size);
+        socket.receive(packet);
+        in = new ObjectInputStream(new ByteArrayInputStream(packet.getData()));
         cmdTemp = (Request)(in.readObject());
-
         cmdTemp.getArgsList().add(packet.getAddress().getHostAddress());
 
         return cmdTemp;
