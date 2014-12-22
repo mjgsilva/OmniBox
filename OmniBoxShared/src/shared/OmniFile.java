@@ -13,6 +13,7 @@ public class OmniFile extends File implements Serializable {
     private final Date creationDate;
     private final String fileExtension;
     private final long fileSize;
+    private long lastModified;
 
     public OmniFile(String pathname) {
         super(pathname);
@@ -25,6 +26,7 @@ public class OmniFile extends File implements Serializable {
         else
             fileExtension = "";
         fileSize = super.length();
+        lastModified = lastModified();
     }
 
     public String getFileName() {
@@ -34,7 +36,9 @@ public class OmniFile extends File implements Serializable {
     public String getDirectory(){
         String absolutePath = this.getAbsolutePath();
         String filePath = absolutePath;
-        return filePath.substring(0,absolutePath.lastIndexOf(File.separator));
+        filePath = filePath.substring(0,absolutePath.lastIndexOf(File.separator));
+
+        return filePath + File.separator;
     }
 
     public static String extractFileName(String path){
@@ -54,6 +58,10 @@ public class OmniFile extends File implements Serializable {
         return fileSize;
     }
 
+    public long getLastModified() {
+        return lastModified;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,11 +69,12 @@ public class OmniFile extends File implements Serializable {
 
         OmniFile omniFile = (OmniFile) o;
 
-        if (fileSize != omniFile.fileSize) return false;
+        //if (fileSize != omniFile.fileSize) return false;
         //if (creationDate != null ? !creationDate.equals(omniFile.creationDate) : omniFile.creationDate != null)
         //    return false;
-        if (fileExtension != null ? !fileExtension.equals(omniFile.fileExtension) : omniFile.fileExtension != null)
-            return false;
+        if (lastModified != omniFile.lastModified) return false;
+        //if (fileExtension != null ? !fileExtension.equals(omniFile.fileExtension) : omniFile.fileExtension != null)
+        //    return false;
         if (fileName != null ? !fileName.equals(omniFile.fileName) : omniFile.fileName != null) return false;
 
         return true;
@@ -76,8 +85,10 @@ public class OmniFile extends File implements Serializable {
         int result=0;
         result = 31 * result + fileName.hashCode();
         //result = 31 * result + creationDate.hashCode();
-        result = 31 * result + fileExtension.hashCode();
+        //result = 31 * result + fileExtension.hashCode();
         //result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
+        result = 31 * result + (int) (lastModified ^ (lastModified >>> 32));
+
         return result;
     }
 

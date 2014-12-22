@@ -166,14 +166,17 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,true);
     }
 
-    public synchronized void getFile(Socket socket, String fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
+    public synchronized void getFile(Socket socket, OmniFile fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
+        // Critic section (Watcher)
+        notifyWatcher = false;
 
         oppNum++;
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,null,user,true);
 
         OmniFile tempFile= null;
         try {
-            tempFile = FileOperations.saveFileFromSocket(socket, filesDirectory + fileName);
+            tempFile = FileOperations.saveFileFromSocket(socket, filesDirectory + fileName.getFileName());
+
             socket.close();
         }catch (Exception e){
             tempFile.delete();
@@ -184,9 +187,20 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         System.out.println("GetFile-> TempSize:" + tempFile.getFileSize());
 
         fileList.add(tempFile);
+
+        // Update last file added to list, so it has the same last Modified date. Because directory watcher is
+        // going to assume the setLastModified(...) bellow as a change on the directory.
+        for (OmniFile aux : fileList)
+            if (aux.equals(tempFile)) {
+                aux.setLastModified(fileName.getLastModified());
+                break;
+            }
+        tempFile.setLastModified(fileName.getLastModified());
+
         oppNum--;
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
 
+        notifyWatcher = true;
     }
 
     public boolean fileExists(OmniFile omniFile) {

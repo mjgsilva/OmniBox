@@ -26,7 +26,7 @@ public class RepositoriesDB {
         this.omniServer = omniServer;
         repositories = new HashSet<OmniRepository>();
         timers = new HashMap<OmniRepository, Long>();
-        availability = new PriorityBlockingQueue(10,new AvailabilityComparator());
+        availability = new PriorityBlockingQueue<OmniRepository>(10,new AvailabilityComparator());
     }
 
     public synchronized void addRepo(final OmniRepository omniRepository) {
@@ -75,7 +75,9 @@ public class RepositoriesDB {
                 tempSocket.close();
 
             } catch (InterruptedException e) {
+                e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -106,7 +108,7 @@ public class RepositoriesDB {
                     sourceAddress = InetAddress.getByName(source.getLocalAddr());
                     int sourcePort = source.getPort();
 
-                    ArrayList args = new ArrayList();
+                    ArrayList<Object> args = new ArrayList<Object>();
                     args.add(Constants.OP_REPLICATION);
                     args.add(omniFile);
                     args.add(destination.getLocalAddr());

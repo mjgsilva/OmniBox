@@ -44,7 +44,7 @@ public class ProcessClient extends Thread {
                     break;
                 case cmdSendFile:
                     System.out.println("PC | GetFile " + request.getArgsList().get(0) + " from " + socketToClient.getInetAddress().getHostAddress());
-                    omniRepository.getFile(socketToClient, (String) request.getArgsList().get(0), (User) request.getArgsList().get(1));
+                    omniRepository.getFile(socketToClient, (OmniFile) request.getArgsList().get(0), (User) request.getArgsList().get(1));
 
                     break;
                 default:

@@ -29,8 +29,12 @@ public class Request implements Serializable {
         String str = "Request " + cmd + "\n";
 
         if (argsList.size() > 0)
-            for (Object aux : argsList)
-                str += aux.toString() + " ";
+            for (Object aux : argsList) {
+                if (aux != null)
+                    str += aux.toString() + " ";
+                else
+                    str += " null ";
+            }
 
         return str;
     }

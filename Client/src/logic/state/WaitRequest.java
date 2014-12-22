@@ -64,7 +64,7 @@ public class WaitRequest extends StateAdapter implements TCP {
     public StateInterface defineRemoveRequest(OmniFile fileToRemove) throws IOException, InterruptedException {
         ArrayList <Object> cmdList = new ArrayList<Object>();
         cmdList.add(fileToRemove);
-        cmdList.add(client.getUser());
+        //cmdList.add(client.getUser());
         Request request = new Request(Constants.CMD.cmdDeleteFile,cmdList);
 
         new ErrorDialog(null, fileToRemove.getFileName());

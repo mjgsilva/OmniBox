@@ -23,7 +23,7 @@ public class ProcessRepository extends Thread {
             while (true) {
                 try {
                     Request request = omniServer.getUDPMessage(omniServer.getDatagramSocket());
-                    if (request instanceof Request) {
+                    if (request != null) {
                         switch (request.getCmd()) {
                             case cmdHeartBeat:
                                 ProcessHeartBeat(request);
@@ -34,6 +34,7 @@ public class ProcessRepository extends Thread {
                         }
                     }
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -42,6 +43,7 @@ public class ProcessRepository extends Thread {
             }
         } finally{
             //close socket
+            omniServer.getDatagramSocket().close();
         }
     }
 
@@ -114,6 +116,8 @@ public class ProcessRepository extends Thread {
                     omniServer.removeFile(omniFile);
                     omniServer.notifyClients();
                 } else {
+                    if (!omniServer.fileExists(omniFile))
+                        omniServer.addFile(omniFile);
                     if(user!=null)
                         omniServer.notifyClients();
                     System.out.println("* Replicating *");
@@ -133,6 +137,8 @@ public class ProcessRepository extends Thread {
             } else {
                 if (status == Constants.OP_S_FINISHED) {
                     omniServer.editUserActivity(user, Constants.INACTIVE);
+                    if (omniServer.fileExists(omniFile))
+                        omniServer.removeFile(omniFile);
                 }
             }
         }

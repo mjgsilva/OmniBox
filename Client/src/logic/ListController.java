@@ -1,6 +1,7 @@
 package logic;
 
 import communication.CommunicationAdapter;
+import logic.state.WaitRequest;
 import shared.Constants;
 import shared.OmniFile;
 import shared.Request;
@@ -83,8 +84,11 @@ public class ListController extends CommunicationAdapter {
                                     // Client has to be on state WaitAnswer for this to work correctly
                                     client.defineGetRequest(ListPanel.getFilesList().getSelectedValue());
                                 }
-                            } else
+                            } else {
+                                client.setRepositorySocket(null);
+                                client.setCurrentState(new WaitRequest(client));
                                 new ErrorDialog(null, "Server didn't authorize the operation.");
+                            }
                             break;
                         case cmdRefreshList:
                             filesList.delElements();
@@ -93,7 +97,6 @@ public class ListController extends CommunicationAdapter {
                             for (Object aux : temp) {
                                 filesList.addItemToList((OmniFile) aux);
                             }
-
                             break;
                         case cmdDeleteFile:
                             new ErrorDialog(null, "File " + ((OmniFile)request.getArgsList().get(0)).getFileName() + " deleted? " + (Boolean)request.getArgsList().get(1));

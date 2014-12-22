@@ -73,7 +73,7 @@ public class WaitAnswer extends StateAdapter {
                 try {
                     // Tell repository what kind of operation I'm requesting
                     ArrayList<Object> temp = new ArrayList<Object>();
-                    temp.add(fileToSend.getFileName());
+                    temp.add(fileToSend);
                     temp.add(client.getUser());
                     Request request = new Request(Constants.CMD.cmdSendFile, temp);
                     sendTCPMessage(s, request);

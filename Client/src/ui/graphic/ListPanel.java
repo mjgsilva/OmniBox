@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -81,8 +82,8 @@ public class ListPanel extends JPanel implements Observer {
                     fileInfoPanel.setFileInfoAttributes(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileName(),
                         "" + ((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileSize(),
                         ((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileExtension(),
-                        "not implemented yet");
-                        //((OmniFile)listSelectionEvent.getSource()).getFileLastModified());
+                        //"not implemented yet");
+                            new Date(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getLastModified()).toString());
                 else
                     fileInfoPanel.setFileInfoAttributes("", "", "", "");
             }

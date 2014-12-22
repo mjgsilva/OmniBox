@@ -71,6 +71,7 @@ public class ProcessClient extends Thread {
 
     private synchronized void sendMessage(Request response) {
         try {
+            System.out.println("Sending: " + response);
             omniServer.sendTCPMessage(socket, response);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -104,7 +105,7 @@ public class ProcessClient extends Thread {
 
     private synchronized void upload(Request request) {
         OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
-        ArrayList args = new ArrayList();
+        ArrayList<Object> args = new ArrayList<Object>();
         args.add(Constants.OP_UPLOAD);
         System.out.println("Uploading: " +  omniFile.toString());
         if(!omniServer.fileExists(omniFile) && (omniServer.getNumberOfRepositories() != 0)) {

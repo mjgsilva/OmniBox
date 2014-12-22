@@ -45,7 +45,7 @@ public class Repository {
                 repo = new OmniRepository(port);
                 new AnswerClient(repo).start();
                 new HeartBeat(repo).start();
-                new DirectoryHandler(repo).start();
+                //new DirectoryHandler(repo).start();
                 new ProcessServer(repo).start();
                 break;
             default:
