@@ -186,16 +186,18 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
         System.out.println("GetFile-> TempSize:" + tempFile.getFileSize());
 
-        fileList.add(tempFile);
-
         // Update last file added to list, so it has the same last Modified date. Because directory watcher is
         // going to assume the setLastModified(...) bellow as a change on the directory.
-        for (OmniFile aux : fileList)
+        tempFile.setLastModified(fileName.getLastModified());
+        fileList.add(tempFile);
+
+
+        /*for (OmniFile aux : fileList)
             if (aux.equals(tempFile)) {
                 aux.setLastModified(fileName.getLastModified());
                 break;
-            }
-        tempFile.setLastModified(fileName.getLastModified());
+            }*/
+
 
         oppNum--;
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
