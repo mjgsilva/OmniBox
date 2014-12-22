@@ -1,9 +1,6 @@
 package threads;
 
-import shared.Constants;
-import shared.OmniFile;
-import shared.OmniRepository;
-import shared.Request;
+import shared.*;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -18,6 +15,7 @@ public class DirectoryHandler extends Thread{
     OmniRepository omniRepository;
     WatchService watcher = null;
     Path dirPath;
+    User userWatcher;
 
     public DirectoryHandler(OmniRepository omniRepository) throws IOException {
         this.omniRepository = omniRepository;
@@ -33,6 +31,9 @@ public class DirectoryHandler extends Thread{
                 StandardWatchEventKinds.ENTRY_CREATE,
                 StandardWatchEventKinds.ENTRY_MODIFY,
                 StandardWatchEventKinds.ENTRY_DELETE);
+
+        //Create UserWatcher
+        userWatcher = new User("Watcher","Watcher123");
     }
 
     @Override
@@ -71,10 +72,10 @@ public class DirectoryHandler extends Thread{
                                     //add file to fileList of repository
                                     omniRepository.getFileList().add(tempFile);
                                     cmdTemp.getArgsList().clear();
-                                    cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
+                                    cmdTemp.getArgsList().add(Constants.OP_DOWNLOAD);
                                     cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                                     cmdTemp.getArgsList().add(tempFile);
-                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(userWatcher);
                                     cmdTemp.getArgsList().add(true);
                                     cmdTemp.getArgsList().add(omniRepository);
 
@@ -93,11 +94,12 @@ public class DirectoryHandler extends Thread{
                                 String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
                                 tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
                                 if (tempFile != null) {
+                                    omniRepository.getFileList().remove(tempFile);
                                     cmdTemp.getArgsList().clear();
                                     cmdTemp.getArgsList().add(Constants.OP_DELETE);
                                     cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                                     cmdTemp.getArgsList().add(tempFile);
-                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(userWatcher);
                                     cmdTemp.getArgsList().add(true);
                                     cmdTemp.getArgsList().add(omniRepository);
 
@@ -111,10 +113,10 @@ public class DirectoryHandler extends Thread{
                                     //add file to fileList of repository
                                     omniRepository.getFileList().add(tempFile);
                                     cmdTemp.getArgsList().clear();
-                                    cmdTemp.getArgsList().add(Constants.OP_UPLOAD);
+                                    cmdTemp.getArgsList().add(Constants.OP_DOWNLOAD);
                                     cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                                     cmdTemp.getArgsList().add(tempFile);
-                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(userWatcher);
                                     cmdTemp.getArgsList().add(true);
                                     cmdTemp.getArgsList().add(omniRepository);
 
@@ -132,11 +134,12 @@ public class DirectoryHandler extends Thread{
                                 String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
                                 tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
                                 if (tempFile != null) {
+                                    omniRepository.getFileList().remove(tempFile);
                                     cmdTemp.getArgsList().clear();
                                     cmdTemp.getArgsList().add(Constants.OP_DELETE);
                                     cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                                     cmdTemp.getArgsList().add(tempFile);
-                                    cmdTemp.getArgsList().add(null);
+                                    cmdTemp.getArgsList().add(userWatcher);
                                     cmdTemp.getArgsList().add(true);
                                     cmdTemp.getArgsList().add(omniRepository);
 
