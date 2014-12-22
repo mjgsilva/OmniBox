@@ -49,7 +49,7 @@ public class ProcessServer extends Thread  {
                             OmniFile omniFile = (OmniFile) request.getArgsList().get(1);
                             ArrayList args = new ArrayList();
 
-                            args.add(omniFile.getFileName());
+                            args.add(omniFile);
                             args.add(null);
                             Request req = new Request(Constants.CMD.cmdSendFile, args);
                             omniRepository.sendTCPMessage(socketTemp, req);
