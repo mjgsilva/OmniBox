@@ -33,8 +33,8 @@ public class FilesDB {
 
     public synchronized int getNumberOfFilesBeingAccessed() { return filesBeingAccessed.size(); }
 
-    public synchronized void removeFile(final OmniFile omniFile) {
-        files.remove(omniFile);
+    public synchronized boolean removeFile(final OmniFile omniFile) {
+        return files.remove(omniFile);
     }
 
     public synchronized boolean isFileBeingAccessed(final OmniFile omniFile) {

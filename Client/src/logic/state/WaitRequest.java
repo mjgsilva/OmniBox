@@ -30,17 +30,12 @@ public class WaitRequest extends StateAdapter implements TCP {
      */
     @Override
     public StateInterface defineGetRequest(final OmniFile fileToGet) throws IOException, InterruptedException, ClassNotFoundException {
-        ArrayList <OmniFile> filesToGet = new ArrayList<OmniFile>();
         ArrayList <Object> cmdList = new ArrayList<Object>();
         cmdList.add(fileToGet);
         cmdList.add(client.getUser());
         Request request = new Request(Constants.CMD.cmdGetFile,cmdList);
-        Socket repositorySocket = null;
 
         new ErrorDialog(null, fileToGet.getFileName());
-
-        // add fileToGet to request args
-        filesToGet.add(fileToGet);
 
         // Send request to get file with fileToGet as an arg and wait for repository address to be given
         sendTCPMessage(client.getServerSocket(), request);
@@ -50,8 +45,6 @@ public class WaitRequest extends StateAdapter implements TCP {
 
     @Override
     public StateInterface defineSendRequest(final OmniFile fileToSend) throws IOException, InterruptedException, ClassNotFoundException {
-        ArrayList <OmniFile> filesToSend = new ArrayList<OmniFile>();
-        Socket repositorySocket = null;
         client.setFileToUpload(fileToSend);
 
         new ErrorDialog(null, fileToSend.getFileName());
@@ -61,9 +54,6 @@ public class WaitRequest extends StateAdapter implements TCP {
         cmdList.add(client.getUser());
         Request request = new Request(Constants.CMD.cmdSendFile,cmdList);
 
-        // add fileToSend to request args
-        filesToSend.add(fileToSend);
-
         // Send request to send file with fileToSend as an arg and wait for repository address to be given
         sendTCPMessage(client.getServerSocket(), request);
 
@@ -71,21 +61,18 @@ public class WaitRequest extends StateAdapter implements TCP {
     }
 
     @Override
-    public StateInterface defineRemoveRequest(final OmniFile fileToRemove) throws IOException, InterruptedException {
-        ArrayList <OmniFile> filesToRemove = new ArrayList<OmniFile>();
-
-        // add fileToRemove to request args
-        filesToRemove.add(fileToRemove);
-
+    public StateInterface defineRemoveRequest(OmniFile fileToRemove) throws IOException, InterruptedException {
         ArrayList <Object> cmdList = new ArrayList<Object>();
         cmdList.add(fileToRemove);
         cmdList.add(client.getUser());
         Request request = new Request(Constants.CMD.cmdDeleteFile,cmdList);
 
+        new ErrorDialog(null, fileToRemove.getFileName());
+
         // Send request to remove file with fileToRemove as an arg
         sendTCPMessage(client.getServerSocket(), request);
 
-        return this;
+        return new WaitRequest(client);
     }
 
     @Override

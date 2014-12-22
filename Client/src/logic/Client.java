@@ -12,7 +12,6 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Observable;
 
-//import omniboxshared.shared.OmniFile;
 
 /**
  * This class represents the client program itself.
@@ -29,7 +28,6 @@ public class Client extends Observable implements ClientInterface {
     private Socket serverSocket;
     private OmniFile fileToUpload = null;
     private Socket repositorySocket = null;
-    private ArrayList<OmniFile> fileList = new ArrayList<OmniFile>();
     private User user;
 
 
@@ -89,6 +87,7 @@ public class Client extends Observable implements ClientInterface {
     public StateInterface getCurrentState() {
         return currentState;
     }
+    public void setCurrentState(StateInterface currentState) {this.currentState = currentState;}
 
     @Override
     public void defineAuthentication(String username, String password) throws IOException, InterruptedException, ClassNotFoundException {
@@ -144,29 +143,6 @@ public class Client extends Observable implements ClientInterface {
         this.localDirectoryPath = localDirectoryPath;
     }
 
-    /**
-     * Returns file list according to UIText expectancies.
-     * If fileList is empty returns "No files available on server"
-     *
-     * @return
-     */
-    /*public String getFileListToString() {
-        String list = "";
-
-        for (int i = 0; i < fileList.size(); i++)
-            list += (i + 1) + " - " + fileList.get(i).toString() + "\n";
-
-        return fileList.size() > 0 ? list : (list = "No files available on server");
-    }
-
-    public int getFileListSize() {
-        return fileList.size();
-    }
-
-    public File getFile(int index) {
-        return new File(fileList.get(index).getFileName());
-    }*/
-
     public Socket getServerSocket() {
         return serverSocket;
     }
@@ -194,13 +170,5 @@ public class Client extends Observable implements ClientInterface {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public ArrayList<OmniFile> getFileList() {
-        return fileList;
-    }
-
-    public void setFileList(ArrayList<OmniFile> fileList) {
-        this.fileList = fileList;
     }
 }

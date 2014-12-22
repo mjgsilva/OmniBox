@@ -88,19 +88,16 @@ public class WaitAnswer extends StateAdapter {
                 } finally {
                     // Close repository socket when over
                     try {
-                        s.close();
+                        if (s != null)
+                            s.close();
                     } catch (IOException e) {}
                     client.setRepositorySocket(null);
                     client.setFileToUpload(null);
+                    client.setCurrentState(new WaitRequest(client));
                 }
             }
         }).start();
 
         return new WaitRequest(client);
-    }
-
-    @Override
-    public StateInterface defineReturnToRequest() {
-        return super.defineReturnToRequest();
     }
 }

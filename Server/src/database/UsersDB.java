@@ -100,9 +100,12 @@ public class UsersDB {
 
         for(User user : usersSocket.keySet()) {
             try {
-            omniServer.sendTCPMessage(usersSocket.get(user), response);
-        } catch(InterruptedException e) {
-        } catch(IOException e) { e.printStackTrace(); }
+                omniServer.sendTCPMessage(usersSocket.get(user), response);
+            } catch(InterruptedException e) {
+                e.printStackTrace();
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

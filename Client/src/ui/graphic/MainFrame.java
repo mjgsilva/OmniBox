@@ -20,8 +20,6 @@ public class MainFrame extends JFrame implements Observer {
     private final ClientModel cm;
     private JPanel listPanel;
     private JPanel buttonsPanel;
-    private JPanel fileInfoPanel;
-    private Box horizontal;
 
     /**
      * This constructor expects that the client object has been previously built, under all
@@ -52,29 +50,15 @@ public class MainFrame extends JFrame implements Observer {
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
 
-        horizontal = Box.createHorizontalBox();
-
         listPanel = new ListPanel(cm);
         buttonsPanel = new ButtonsPanel(cm);
-        fileInfoPanel = new FileInfoPanel(cm);
 
-        listPanel.setBackground(Color.LIGHT_GRAY);
         buttonsPanel.setBackground(Color.LIGHT_GRAY);
-        fileInfoPanel.setBackground(Color.LIGHT_GRAY);
-        listPanel.setPreferredSize(new Dimension(350, 400));
-
-        horizontal.setPreferredSize(new Dimension(500, 400));
-        horizontal.setAlignmentX(CENTER_ALIGNMENT);
-        horizontal.setAlignmentY(CENTER_ALIGNMENT);
         buttonsPanel.setAlignmentX(CENTER_ALIGNMENT);
         buttonsPanel.setAlignmentY(CENTER_ALIGNMENT);
 
-
-        horizontal.add(listPanel);
-        horizontal.add(fileInfoPanel);
-
         // Add listPanel to Center and buttonsPanel to South
-        contentPane.add(horizontal, BorderLayout.CENTER);
+        contentPane.add(listPanel, BorderLayout.CENTER);
         contentPane.add(buttonsPanel, BorderLayout.SOUTH);
     }
 

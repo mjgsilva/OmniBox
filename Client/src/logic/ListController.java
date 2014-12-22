@@ -10,6 +10,7 @@ import ui.graphic.ListPanel;
 import javax.swing.*;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.StreamCorruptedException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ import static shared.Constants.CMD.*;
  */
 public class ListController extends CommunicationAdapter {
     private final Client client;
-    private final ArrayList<OmniFile> files = new ArrayList<OmniFile>();
+    //private final ArrayList<OmniFile> files = new ArrayList<OmniFile>();
     private final ListPanel filesList;
 
     public ListController(Client client, ListPanel filesList) {
@@ -61,15 +62,17 @@ public class ListController extends CommunicationAdapter {
                 try {
                     Request request = getTCPMessage(client.getServerSocket());
 
+                    System.out.println(request);
+
                     // Handle request
                     Constants.CMD cmd = request.getCmd();
                     switch (cmd) {
                         case cmdRepositoryAddress:
                             ArrayList<Object> args = request.getArgsList();
-                            int operation = (Integer)(args.get(0));
+                            int operation = (Integer) (args.get(0));
                             String repositoryAddress = (String) args.get(1);
                             int repositoryPort = ((Integer) args.get(2)) == null ? 0 : (Integer) args.get(2);
-  
+
                             if ((Boolean) args.get(3) && repositoryAddress != null && repositoryPort != 0) {
                                 System.out.println("Repo addr: " + repositoryAddress + "\nRepo port: " + repositoryPort + "\n");
                                 client.setRepositorySocket(new Socket(repositoryAddress, repositoryPort));
@@ -78,7 +81,7 @@ public class ListController extends CommunicationAdapter {
                                     client.defineSendRequest(client.getFileToUpload());
                                 } else if (operation == Constants.OP_DOWNLOAD) {
                                     // Client has to be on state WaitAnswer for this to work correctly
-                                    client.defineGetRequest(client.getFileList().get(ListPanel.getFilesList().getSelectedIndex()));
+                                    client.defineGetRequest(ListPanel.getFilesList().getSelectedValue());
                                 }
                             } else
                                 new ErrorDialog(null, "Server didn't authorize the operation.");
@@ -87,14 +90,13 @@ public class ListController extends CommunicationAdapter {
                             filesList.delElements();
                             ArrayList<Object> temp = request.getArgsList();
 
-                            for (int i = 0; i < client.getFileList().size(); i++)
-                                client.getFileList().remove(i);
-
                             for (Object aux : temp) {
-                                filesList.addItemToList(((OmniFile) aux).getFileName());
-                                client.getFileList().add((OmniFile)aux);
+                                filesList.addItemToList((OmniFile) aux);
                             }
 
+                            break;
+                        case cmdDeleteFile:
+                            new ErrorDialog(null, "File " + ((OmniFile)request.getArgsList().get(0)).getFileName() + " deleted? " + (Boolean)request.getArgsList().get(1));
                             break;
                         default:
                             break;
@@ -106,6 +108,8 @@ public class ListController extends CommunicationAdapter {
                     e.printStackTrace();
                     System.exit(-1);
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     ListPanel.isListControllerStarted = false;

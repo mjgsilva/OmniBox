@@ -24,4 +24,14 @@ public class Request implements Serializable {
         return argsList;
     }
 
+    @Override
+    public String toString() {
+        String str = "Request " + cmd + "\n";
+
+        if (argsList.size() > 0)
+            for (Object aux : argsList)
+                str += aux.toString() + " ";
+
+        return str;
+    }
 }

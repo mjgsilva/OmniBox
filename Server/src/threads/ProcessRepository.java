@@ -73,8 +73,10 @@ public class ProcessRepository extends Thread {
                         ArrayList args = new ArrayList();
                         args.add(omniFile);
                         Request repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-                        this.omniServer.deleteBroadcast(repositoryResponse);
-                        this.omniServer.removeFile(omniFile);
+                        if(this.omniServer.removeFile(omniFile)) {
+                            this.omniServer.deleteBroadcast(repositoryResponse);
+                            omniServer.notifyClients();
+                        }
                     }
 
                 }
@@ -124,7 +126,7 @@ public class ProcessRepository extends Thread {
 
     private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
         omniServer.addRepository(omniRepository);
-        omniServer.notifyClients();
+        //omniServer.notifyClients();
         if (user != null) {
             if (status == Constants.OP_S_STARTED) {
                 omniServer.editUserActivity(user, Constants.OP_DELETE);

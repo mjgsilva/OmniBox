@@ -92,6 +92,4 @@ public class ClientModel extends Observable implements ClientInterface {
     public void setSelectedFile(OmniFile selectedFile) {
         this.selectedFile = selectedFile;
     }
-
-    public ArrayList<OmniFile> getFilesList() {return client.getFileList();}
 }

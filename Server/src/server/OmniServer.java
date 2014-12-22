@@ -145,7 +145,7 @@ public class OmniServer extends CommunicationAdapter {
         usersDB.removeSocket(user);
     }
 
-    public void notifyClients() {
+    public synchronized void notifyClients() {
         usersDB.notifyUsers(filesDB.fileList(), this);
     }
 
@@ -189,8 +189,8 @@ public class OmniServer extends CommunicationAdapter {
         filesDB.addFile(omniFile);
     }
 
-    public void removeFile(final OmniFile omniFile) {
-        filesDB.removeFile(omniFile);
+    public boolean removeFile(final OmniFile omniFile) {
+        return filesDB.removeFile(omniFile);
     }
 
     public void rebuildFileList(final OmniRepository omniRepository) { filesDB.rebuildFileList(omniRepository); }

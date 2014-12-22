@@ -54,6 +54,13 @@ public class FileInfoPanel extends JPanel implements Observer {
         lastModification.setText("Name: " + lm);
     }
 
+    public void setFileInfoAttributes(String fileName, String fileSize, String fileExTension, String lastModification) {
+        this.fileName.setText(fileName);
+        this.fileSize.setText(fileSize);
+        this.fileExtension.setText(fileExTension);
+        this.lastModification.setText(lastModification);
+    }
+
     @Override
     public void update(Observable observable, Object o) {
         if (cm.getCurrentState() instanceof WaitAuthentication)

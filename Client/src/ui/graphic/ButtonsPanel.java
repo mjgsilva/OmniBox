@@ -79,10 +79,9 @@ public class ButtonsPanel extends JPanel implements Observer {
             public void mouseClicked(MouseEvent e) {
                 String filePath = "";
                 try {
-                    filePath = ListPanel.getFilesList().getSelectedValue();
                     int index = ListPanel.getFilesList().getSelectedIndex();
-                    if (filePath != null) {
-                        cm.defineGetRequest(cm.getFilesList().get(index));
+                    if (index != -1) {
+                        cm.defineGetRequest(ListPanel.getFilesList().getSelectedValue());
                     } else {
                         new ErrorDialog(null, "No file selected.\n" +
                                 "Please select one from the list.");
@@ -103,9 +102,9 @@ public class ButtonsPanel extends JPanel implements Observer {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    String filePath = ListPanel.getFilesList().getSelectedValue();
-                    if (filePath != null) {
-                        cm.defineRemoveRequest(cm.getFilesList().get(ListPanel.getFilesList().getSelectedIndex()));
+                    int index = ListPanel.getFilesList().getSelectedIndex();
+                    if (index != -1) {
+                        cm.defineRemoveRequest(ListPanel.getFilesList().getSelectedValue());
                     } else {
                         new ErrorDialog(null, "No file selected.\nPlease select one from the list.");
                     }

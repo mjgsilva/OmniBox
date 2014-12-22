@@ -23,32 +23,34 @@ public class ProcessClient extends Thread {
         this.omniServer = omniServer;
     }
 
+    @Override
     public void run() {
         try {
             while(true) {
                 try {
                     Request request = omniServer.getTCPMessage(socket);
 
-                    if (request instanceof Request) {
-                        switch (request.getCmd()) {
-                            case cmdAuthentication:
-                                authetication(request);
-                                break;
-                            case cmdSendFile:
-                                upload(request);
-                                break;
-                            case cmdGetFile:
-                                download(request);
-                                break;
-                            case cmdDeleteFile:
-                                delete(request);
-                                break;
-                        }
+                    switch (request.getCmd()) {
+                        case cmdAuthentication:
+                            authetication(request);
+                            break;
+                        case cmdSendFile:
+                            upload(request);
+                            break;
+                        case cmdGetFile:
+                            download(request);
+                            break;
+                        case cmdDeleteFile:
+                            delete(request);
+                            break;
                     }
                 } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 } catch (InterruptedException e) {
+                    e.printStackTrace();
                     break;
                 } catch (IOException e) {
+                    e.printStackTrace();
                     if(user != null) {
                         omniServer.removeUserActivity(user);
                         omniServer.removeSocket(user);
@@ -67,11 +69,14 @@ public class ProcessClient extends Thread {
     }
 
 
-    private void sendMessage(Request response) {
+    private synchronized void sendMessage(Request response) {
         try {
             omniServer.sendTCPMessage(socket, response);
         } catch (InterruptedException e) {
-        } catch (IOException e) { }
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private synchronized void authetication(Request req) {
@@ -140,22 +145,22 @@ public class ProcessClient extends Thread {
         sendMessage(response);
     }
 
-    private void delete(Request request){
-        OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
-        ArrayList args = new ArrayList();
-        args.add(omniFile);
-        Request repositoryResponse;
+    private synchronized void delete(Request request){
+            OmniFile omniFile = (OmniFile) request.getArgsList().get(0);
+            ArrayList<Object> args = new ArrayList<Object>();
+            args.add(omniFile);
+            Request repositoryResponse;
 
-        if(omniServer.fileExists(omniFile) && !omniServer.fileBeingAccessed(omniFile))
-        {
-            repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-            omniServer.deleteBroadcast(repositoryResponse);
-            omniServer.removeFile(omniFile);
-            args.add(Constants.FILEOK);
-        } else {
-            args.add(Constants.FILENOTOK);
-        }
-        //Request clientResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-        //sendMessage(clientResponse);
+            if (omniServer.fileExists(omniFile) && !omniServer.fileBeingAccessed(omniFile)) {
+                repositoryResponse = new Request(Constants.CMD.cmdDeleteFile, args);
+                omniServer.deleteBroadcast(repositoryResponse);
+                omniServer.removeFile(omniFile);
+                omniServer.notifyClients();
+                args.add(Constants.FILEOK);
+            } else {
+                args.add(Constants.FILENOTOK);
+            }
+            Request clientResponse = new Request(Constants.CMD.cmdDeleteFile,args);
+            sendMessage(clientResponse);
     }
 }
