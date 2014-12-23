@@ -21,6 +21,7 @@ public class HeartBeatHandler extends Thread {
                 Thread.sleep(Constants.EXPIRE_TIME);
             } catch (InterruptedException e) { }
             omniServer.removeExpiredRepositories();
+            omniServer.removeFilesWithNoSource();
         }
     }
 }

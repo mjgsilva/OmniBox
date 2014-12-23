@@ -29,6 +29,14 @@ public class FilesDB {
         return files.contains(omniFile);
     }
 
+    public synchronized void removeFilesWithNoSource(final RepositoriesDB repositoriesDB) {
+        for(Iterator<OmniFile> it = files.iterator();it.hasNext();) {
+            OmniFile omniFile = it.next();
+            if(repositoriesDB.getNumberOfReplicas(omniFile) == 0)
+                it.remove();
+        }
+    }
+
     public synchronized int getNumberOfFiles() { return files.size(); }
 
     public synchronized int getNumberOfFilesBeingAccessed() { return filesBeingAccessed.size(); }

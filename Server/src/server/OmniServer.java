@@ -154,8 +154,6 @@ public class OmniServer extends CommunicationAdapter {
         repositoriesDB.addRepo(omniRepository);
     }
 
-    public HashSet<OmniRepository> getRepositories() { return repositoriesDB.getRepositories(); }
-
     public int getNumberOfRepositories() {
         return repositoriesDB.getNumberOfRepositories();
     }
@@ -187,6 +185,11 @@ public class OmniServer extends CommunicationAdapter {
 
     public void addFile(final OmniFile omniFile) {
         filesDB.addFile(omniFile);
+    }
+
+    public void removeFilesWithNoSource() {
+        filesDB.removeFilesWithNoSource(repositoriesDB);
+        this.notifyClients();
     }
 
     public boolean removeFile(final OmniFile omniFile) {
