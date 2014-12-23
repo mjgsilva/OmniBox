@@ -147,14 +147,24 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     }
 
     public synchronized void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
-
+        OmniFile auxReal = omnifile;
         oppNum++;
+
         sendNotification(Constants.OP_UPLOAD,Constants.OP_S_STARTED,omnifile,user,true);
         //find file and send
         if(fileList.contains(omnifile))
         {
             try {
-                FileOperations.readFileToSocket(socket, omnifile);
+                // Get real file name, it migth contain $ signs
+                for (Iterator<OmniFile> it = fileList.iterator(); it.hasNext(); ) {
+                    OmniFile aux = it.next();
+                    if (aux.equals(omnifile)) {
+                        auxReal = new OmniFile(aux.getDirectory() + aux.getFileName());
+                        break;
+                    }
+                }
+
+                FileOperations.readFileToSocket(socket, auxReal);
                 socket.close();
             }catch (Exception e){
                 socket.close();
@@ -173,9 +183,16 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         oppNum++;
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_STARTED,null,user,true);
 
-        OmniFile tempFile= null;
+        OmniFile tempFile = null, aux = fileName;
+        String fileNameDelimitator = ""; // To differentiate files with the same name but different modification dates
         try {
-            tempFile = FileOperations.saveFileFromSocket(socket, filesDirectory + fileName.getFileName());
+            // If this is true, then there is a file on disk with the same name, but is different somehow
+            if (new OmniFile(filesDirectory + fileName.getFileName()).exists() &&
+                    !fileList.contains(fileName))
+                while((aux = new OmniFile(filesDirectory + fileName.getFileName() + fileNameDelimitator)).exists())
+                    fileNameDelimitator += "$"; // Adds dollar signs until file is unique
+
+            tempFile = FileOperations.saveFileFromSocket(socket, filesDirectory + aux.getFileName());
 
             socket.close();
         }catch (Exception e){

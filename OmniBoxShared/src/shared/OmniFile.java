@@ -5,6 +5,18 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * OmniFile class.
+ *
+ * An OmniFile is unique as long as its name and modification date are different.
+ * Dollar signs ($) should be added to the file name to differentiate files with the same name,
+ * but different modification dates.
+ *
+ * In the case of the OmniBox application, only the repository saves the files with the dollar
+ * signs, server and client don't know about this differentiation on the names.
+ *
+ * Note that: HashCode and Equals use only name without $'s and modification date. Creation date
+ * is not used for OS compatibility reasons.
+ *
  * Created by ©OmniBox on 02-11-2014.
  */
 public class OmniFile extends File implements Serializable {
@@ -13,7 +25,7 @@ public class OmniFile extends File implements Serializable {
     private final Date creationDate;
     private final String fileExtension;
     private final long fileSize;
-    private long lastModified;
+    //private long lastModified;
 
     public OmniFile(String pathname) {
         super(pathname);
@@ -26,7 +38,7 @@ public class OmniFile extends File implements Serializable {
         else
             fileExtension = "";
         fileSize = super.length();
-        lastModified = lastModified();
+        //lastModified = lastModified();
     }
 
     public String getFileName() {
@@ -59,7 +71,7 @@ public class OmniFile extends File implements Serializable {
     }
 
     public long getLastModified() {
-        return lastModified;
+        return lastModified();
     }
 
     @Override
@@ -72,10 +84,15 @@ public class OmniFile extends File implements Serializable {
         //if (fileSize != omniFile.fileSize) return false;
         //if (creationDate != null ? !creationDate.equals(omniFile.creationDate) : omniFile.creationDate != null)
         //    return false;
-        if (lastModified != omniFile.lastModified) return false;
+        if (lastModified() != omniFile.getLastModified()) return false;
         //if (fileExtension != null ? !fileExtension.equals(omniFile.fileExtension) : omniFile.fileExtension != null)
         //    return false;
-        if (fileName != null ? !fileName.equals(omniFile.fileName) : omniFile.fileName != null) return false;
+
+        //if (fileName != null ? !fileName.equals(omniFile.fileName) : omniFile.fileName != null) return false;
+
+        String realFileName = getOriginalFileName(fileName);
+        if (realFileName != null ? !realFileName.equals(getOriginalFileName(omniFile.fileName)) : getOriginalFileName(omniFile.fileName) != null)
+            return false;
 
         return true;
     }
@@ -83,11 +100,15 @@ public class OmniFile extends File implements Serializable {
     @Override
     public int hashCode() {
         int result=0;
-        result = 31 * result + fileName.hashCode();
+        String realFileName = getOriginalFileName(fileName);
+
+        result = 31 * result + realFileName.hashCode();
+        //result = 31 * result + fileName.hashCode();
+
         //result = 31 * result + creationDate.hashCode();
         //result = 31 * result + fileExtension.hashCode();
         //result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
-        result = 31 * result + (int) (lastModified ^ (lastModified >>> 32));
+        result = 31 * result + (int) (lastModified() ^ (lastModified() >>> 32));
 
         return result;
     }
@@ -95,5 +116,25 @@ public class OmniFile extends File implements Serializable {
     @Override
     public String toString() {
         return getFileName();
+    }
+
+    /**
+     * Returns original file name, without the $ signs that might have been added for duplicated file names.
+     *
+     * @param fileName
+     * @return
+     */
+    public static String getOriginalFileName(String fileName) {
+        char [] fileNameChars = fileName.toCharArray();
+        int cutIndex = 0;
+
+        for (int i = fileNameChars.length - 1; i >= 0; i--) {
+            if (fileNameChars[i] != '$') {
+                cutIndex = i;
+                break;
+            }
+        }
+
+        return fileName.substring(0, cutIndex+1);
     }
 }
