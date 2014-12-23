@@ -12,7 +12,7 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 /**
- * Created by danilo on 20-12-2014.
+ * Created by omnibox on 20-12-2014.
  */
 public class ProcessMulticast extends Thread {
     private MulticastSocket multicastSocket;
@@ -26,13 +26,9 @@ public class ProcessMulticast extends Thread {
     @Override
     public void run() {
         InetAddress group;
-        ObjectInputStream in;
-        Object obj;
         DatagramPacket pkt;
         ByteArrayOutputStream buff;
         ObjectOutputStream out;
-        String msgToSend = "127.0.0.1"; // Precisa ser o ip do servidor
-        int destinyPort;
 
         isRunning = true;
 
@@ -53,7 +49,7 @@ public class ProcessMulticast extends Thread {
 
                 buff = new ByteArrayOutputStream();
                 out = new ObjectOutputStream(buff);
-                out.writeObject(msgToSend);
+                out.writeObject(InetAddress.getLocalHost());
                 out.flush();
                 out.close();
 
@@ -67,13 +63,5 @@ public class ProcessMulticast extends Thread {
                 multicastSocket.close();
             }
         }
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public void setRunning(boolean isRunning) {
-        this.isRunning = isRunning;
     }
 }
