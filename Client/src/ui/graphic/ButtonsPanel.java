@@ -61,6 +61,8 @@ public class ButtonsPanel extends JPanel implements Observer {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     try {
                         OmniFile omniFile = new OmniFile(fc.getSelectedFile().getAbsolutePath());
+                        File file = fc.getSelectedFile();
+                        omniFile.setLastModified(file.lastModified());
                         cm.setFileToUpload(omniFile);
                         cm.defineSendRequest(omniFile);
                     } catch (InterruptedException e1) {

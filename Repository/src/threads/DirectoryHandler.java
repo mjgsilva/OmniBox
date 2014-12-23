@@ -95,9 +95,9 @@ public class DirectoryHandler extends Thread{
                                 String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
                                 tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
                                 if (tempFile != null) {
-                                    OmniFile f = new OmniFile(tempFile.getDirectory() + fileNameWithPath);
-                                    if (f.equals(tempFile)) // LastModified date is the same ? Then break
-                                        break;
+                                    //OmniFile f = new OmniFile(tempFile.getDirectory() + fileNameWithPath);
+                                    //if (f.equals(tempFile)) // LastModified date is the same ? Then break
+                                    //    break;
                                     omniRepository.getFileList().remove(tempFile);
                                     cmdTemp.getArgsList().clear();
                                     cmdTemp.getArgsList().add(Constants.OP_DELETE);
