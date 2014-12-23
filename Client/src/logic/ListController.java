@@ -8,16 +8,9 @@ import shared.Request;
 import ui.graphic.ErrorDialog;
 import ui.graphic.ListPanel;
 
-import javax.swing.*;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.StreamCorruptedException;
-import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Observable;
-
-import static shared.Constants.CMD.*;
 
 /** ListController class.
  * Responsible for handling the files list updates.
@@ -27,9 +20,17 @@ import static shared.Constants.CMD.*;
  */
 public class ListController extends CommunicationAdapter {
     private final Client client;
-    //private final ArrayList<OmniFile> files = new ArrayList<OmniFile>();
     private final ListPanel filesList;
 
+    /**
+     * ListController constructor.
+     *
+     * Receives client instance and ListPanel instance.
+     * ListPanel instance is used to manipulate the JList that is on ListPanel asynchronously.
+     *
+     * @param client
+     * @param filesList
+     */
     public ListController(Client client, ListPanel filesList) {
         this.client = client;
         this.filesList = filesList;

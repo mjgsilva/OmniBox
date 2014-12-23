@@ -78,7 +78,7 @@ public class FileInfoPanel extends JPanel implements Observer {
                 if (selectedFile == null)
                     return;
                 fileName.setText(selectedFile.getFileName());
-                fileSize.setText(((Long)selectedFile.getFileSize()).toString());
+                fileSize.setText(((Long)selectedFile.getFileSize()).toString() + " bytes");
                 fileExtension.setText(selectedFile.getFileExtension());
                 lastModification.setText(selectedFile.getCreationDate().toString());
             }

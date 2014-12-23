@@ -75,7 +75,8 @@ public class ProcessRepository extends Thread {
                         ArrayList args = new ArrayList();
                         args.add(omniFile);
                         Request repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-                        if(this.omniServer.removeFile(omniFile)) {
+                        //if(this.omniServer.removeFile(omniFile)) {
+                        if (this.omniServer.customRemoveFile(omniFile)) {
                             this.omniServer.deleteBroadcast(repositoryResponse);
                             omniServer.notifyClients();
                         }
@@ -137,8 +138,9 @@ public class ProcessRepository extends Thread {
             } else {
                 if (status == Constants.OP_S_FINISHED) {
                     omniServer.editUserActivity(user, Constants.INACTIVE);
-                    if (omniServer.fileExists(omniFile))
-                        omniServer.removeFile(omniFile);
+                    //if (omniServer.fileExists(omniFile))
+                    //    omniServer.removeFile(omniFile);
+                    omniServer.customRemoveFile(omniFile);
                 }
             }
         }

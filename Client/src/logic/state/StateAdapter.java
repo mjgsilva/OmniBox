@@ -13,7 +13,7 @@ import java.net.Socket;
 import java.util.NoSuchElementException;
 
 /**
- * State adapter so classes (states), who extends from the state
+ * State adapter, so classes (states), who extends from the state
  * machine, don't have to implement every method.
  *
  * Created by ©OmniBox on 01-11-2014.

@@ -26,40 +26,34 @@ public class WaitAnswer extends StateAdapter {
     @Override
     public StateInterface defineGetRequest(final OmniFile fileToGet) throws IOException, InterruptedException, ClassNotFoundException {
         final Socket s = client.getRepositorySocket();
+        OmniFile omniFile = null;
         try {
             // Tell repository what kind of operation I'm requesting
             ArrayList<Object> temp = new ArrayList<Object>();
             temp.add(fileToGet);
-            // TODO - Provisório o que está em baixo
-            //temp.add(new OmniFile("oMaior.txt"));
+
             temp.add(client.getUser());
             Request request = new Request(Constants.CMD.cmdGetFile, temp);
             sendTCPMessage(s, request);
-            OmniFile omniFile = FileOperations.saveFileFromSocket(s, client.getLocalDirectoryPath() +fileToGet.getFileName());
-            // Rename file
-            //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").renameTo(new OmniFile(fileToGet.getFileName()));
+            omniFile = FileOperations.saveFileFromSocket(s, client.getLocalDirectoryPath() +fileToGet.getFileName());
         } catch (IOException e) {
-            e.printStackTrace();
-            // Error saving file - Delete it
-            //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").delete();
+            // Error saving file, delete it
+            new ErrorDialog(null, "Error saving file to disk.");
+            omniFile.delete();
+            e.printStackTrace(); // TODO - DELETE THIS
         } catch (InterruptedException e) {
-            e.printStackTrace();
-            //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").delete();
+            new ErrorDialog(null, "Error saving file to disk.");
+            omniFile.delete();
+            e.printStackTrace(); // TODO - DELETE THIS
         } finally {
             // Close repository socket when over
             try {
                 s.close();
             } catch (IOException e) {
+                new ErrorDialog(null, "Error closing repository socket.");
             }
             client.setRepositorySocket(null);
         }
-       /* (new Thread() {
-            @Override
-            public void run() {
-
-                }
-            }
-        }).start();*/
 
         return new WaitRequest(client);
     }
@@ -79,12 +73,12 @@ public class WaitAnswer extends StateAdapter {
                     sendTCPMessage(s, request);
                     // Send file to repository
                     FileOperations.readFileToSocket(s, fileToSend);
-                    // Rename file
-                    //new OmniFile(client.getLocalDirectoryPath() + OmniFile.separator + "temp").renameTo(new OmniFile(fileToSend.getFileName()));
                 } catch (IOException e) {
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    e.printStackTrace(); // TODO - DELETE THIS
                     new ErrorDialog(null, "Error transfering file to repository");
+                } catch (InterruptedException e) {
+                    e.printStackTrace(); // TODO - DELETE THIS
+                    new ErrorDialog(null, "Error transferring file to repository");
                 } finally {
                     // Close repository socket when over
                     try {

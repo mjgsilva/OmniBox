@@ -25,7 +25,7 @@ public class OmniFile extends File implements Serializable {
     private final Date creationDate;
     private final String fileExtension;
     private final long fileSize;
-    //private long lastModified;
+    private long lastMod;
 
     public OmniFile(String pathname) {
         super(pathname);
@@ -38,7 +38,7 @@ public class OmniFile extends File implements Serializable {
         else
             fileExtension = "";
         fileSize = super.length();
-        //lastModified = lastModified();
+        lastMod = lastModified();
     }
 
     public String getFileName() {
@@ -51,6 +51,10 @@ public class OmniFile extends File implements Serializable {
         filePath = filePath.substring(0,absolutePath.lastIndexOf(File.separator));
 
         return filePath + File.separator;
+    }
+
+    public long getLastMod() {
+        return lastMod;
     }
 
     public static String extractFileName(String path){

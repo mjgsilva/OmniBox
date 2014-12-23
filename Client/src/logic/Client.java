@@ -84,6 +84,10 @@ public class Client extends Observable implements ClientInterface {
         }
     }
 
+    /**
+     *
+     * @return current state.
+     */
     public StateInterface getCurrentState() {
         return currentState;
     }
@@ -119,55 +123,115 @@ public class Client extends Observable implements ClientInterface {
         currentState = currentState.defineMulticastRequest();
     }
 
+    /**
+     * @return server port.
+     */
     public int getPort() {
         return port;
     }
 
+    /**
+     *
+     * @param port server port.
+     */
     public void setPort(int port) {
         this.port = port;
     }
 
+    /**
+     *
+     * @return server IP address.
+     */
     public String getServerIP() {
         return serverIP;
     }
 
+    /**
+     *
+     * @param serverIP new server IP address
+     */
     public void setServerIP(String serverIP) {
         this.serverIP = serverIP;
     }
 
+    /**
+     *
+     * @return local directory path
+     */
     public String getLocalDirectoryPath() {
         return localDirectoryPath;
     }
 
+    /**
+     * Sets local directory path.
+     * Just use this if this directory changes (For some reason...).
+     *
+     * @param localDirectoryPath local Direcotry Path
+     */
     public void setLocalDirectoryPath(String localDirectoryPath) {
         this.localDirectoryPath = localDirectoryPath;
     }
 
+    /**
+     *
+     * @return server socket.
+     */
     public Socket getServerSocket() {
         return serverSocket;
     }
 
+    /**
+     * File get is the one that is going to be sent.
+     * Should be set to null when file upload is complete.
+     *
+     * @return file to upload.
+     */
     public OmniFile getFileToUpload() {
         return fileToUpload;
     }
 
+    /**
+     * File set is the one that is going to be sent.
+     * Should be set to null when file upload is complete.
+     *
+     * @param fileToUpload file to upload.
+     */
     public void setFileToUpload(OmniFile fileToUpload) {
         this.fileToUpload = fileToUpload;
     }
 
+    /**
+     * This repository socket may vary. This should be set to null, when repository socket is
+     * disconnected.
+     *
+     * @return current repository socket.
+     */
     public Socket getRepositorySocket() {
         return this.repositorySocket;
     }
 
+    /**
+     * This repository socket may vary. This should be set to null, when repository socket is
+     * disconnected.
+     *
+     * @param repositorySocket set current repository socket.
+     */
     public void setRepositorySocket(Socket repositorySocket) {
         this.repositorySocket = repositorySocket;
     }
 
-
+    /**
+     *
+     * @return current logged in user. It might not be a valid login.
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     *
+     * @param user logged in user data. It might not be a valid login.
+     */
     public void setUser(User user) {
         this.user = user;
     }

@@ -68,4 +68,7 @@ public class FilesDB {
         filesBeingAccessed.remove(user);
     }
 
+    public synchronized void setFiles(HashSet<OmniFile> files) {
+        this.files = files;
+    }
 }

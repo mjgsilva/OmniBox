@@ -19,7 +19,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private String localAddr;
     private transient DatagramSocket socketUDP;
     private String filesDirectory;
-    private final HashSet<OmniFile> fileList = new HashSet();
+    private HashSet<OmniFile> fileList = new HashSet();
     private boolean notifyWatcher=true;
 
 
@@ -139,7 +139,11 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 file.delete();
         }
 
-        fileList.remove(omniFile);
+        // Erase file from disk if it exists in this repository directory
+        // If it does not exists delete() function returns false.
+        (new OmniFile(filesDirectory + omniFile.getFileName())).delete();
+        //fileList.remove(omniFile);
+        customRemoveFromFileList(omniFile);
 
         oppNum--;
         sendNotification(Constants.OP_DELETE,Constants.OP_S_FINISHED,omniFile, user,true);
@@ -244,5 +248,60 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         int result = port;
         result = 31 * result + localAddr.hashCode();
         return result;
+    }
+
+    /**
+     * Because delete event on watcher is catch after file is deleted from disk, it screws over
+     * the references on fileList. LastMod is created specific for this situations.
+     * We have to redo the fileList but not using the usual equals and hash code from OmniFile.
+     *
+     * @param tempFile file to be excluded from
+     */
+    /*public synchronized void customRemoveFromFileList(OmniFile tempFile) {
+        HashSet<OmniFile> newFileList = new HashSet<OmniFile>();
+        for (OmniFile aux : fileList) {
+            if (!aux.getFileName().equals(tempFile.getFileName()) || aux.getLastMod() != tempFile.getLastMod())
+                newFileList.add(aux);
+        }
+
+        fileList = newFileList;
+    }*/
+
+
+
+
+    /**
+     * Because delete event on watcher is catch after file is deleted from disk, it screws over
+     * the references on fileList. LastMod is created specific for this situations.
+     * We have to redo the fileList but not using the usual equals and hash code from OmniFile.
+     *
+     * <U>Note that</U> OmniFile/File lastModified saves milliseconds from epoch January first 1970
+     * til the day it was modified.
+     *
+     * <U><H2>Important</H2></U>
+     * LastMod from omniFile received, from repository, has the lastModified milliseconds from when the
+     * file was deleted from the repository. So if size is equal and value of lastModified of aux
+     * is inferior to the one on omniFile then we'll assume its the same file we're trying to delete.
+     *
+     * @param omniFile file to be excluded from file list
+     * @return flag true if file was removed, false otherwise
+     */
+    public synchronized boolean customRemoveFromFileList(OmniFile omniFile) {
+        HashSet<OmniFile> newFileList = new HashSet<OmniFile>();
+        boolean flag = false;
+        for (OmniFile aux : fileList) {
+            if ((aux.getFileName().equals(omniFile.getFileName()) && aux.getLastMod() == omniFile.getLastMod()) ||
+                    (aux.getFileName().equals(OmniFile.getOriginalFileName(omniFile.getFileName())) &&
+                    aux.getFileSize() == omniFile.getFileSize() &&
+                    aux.getLastModified() <= omniFile.getLastMod())) {
+                // File to exclude, so do nothing.
+                flag = true;
+            } else
+                newFileList.add(aux);
+        }
+
+        fileList = newFileList;
+
+        return flag;
     }
 }

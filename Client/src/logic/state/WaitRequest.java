@@ -35,8 +35,6 @@ public class WaitRequest extends StateAdapter implements TCP {
         cmdList.add(client.getUser());
         Request request = new Request(Constants.CMD.cmdGetFile,cmdList);
 
-        new ErrorDialog(null, fileToGet.getFileName());
-
         // Send request to get file with fileToGet as an arg and wait for repository address to be given
         sendTCPMessage(client.getServerSocket(), request);
 
@@ -46,8 +44,6 @@ public class WaitRequest extends StateAdapter implements TCP {
     @Override
     public StateInterface defineSendRequest(final OmniFile fileToSend) throws IOException, InterruptedException, ClassNotFoundException {
         client.setFileToUpload(fileToSend);
-
-        new ErrorDialog(null, fileToSend.getFileName());
 
         ArrayList <Object> cmdList = new ArrayList<Object>();
         cmdList.add(fileToSend);
@@ -64,10 +60,7 @@ public class WaitRequest extends StateAdapter implements TCP {
     public StateInterface defineRemoveRequest(OmniFile fileToRemove) throws IOException, InterruptedException {
         ArrayList <Object> cmdList = new ArrayList<Object>();
         cmdList.add(fileToRemove);
-        //cmdList.add(client.getUser());
         Request request = new Request(Constants.CMD.cmdDeleteFile,cmdList);
-
-        new ErrorDialog(null, fileToRemove.getFileName());
 
         // Send request to remove file with fileToRemove as an arg
         sendTCPMessage(client.getServerSocket(), request);

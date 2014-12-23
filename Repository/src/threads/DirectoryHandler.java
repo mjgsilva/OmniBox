@@ -95,9 +95,9 @@ public class DirectoryHandler extends Thread{
                                 String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
                                 tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
                                 if (tempFile != null) {
-                                    //OmniFile f = new OmniFile(tempFile.getDirectory() + fileNameWithPath);
-                                    //if (f.equals(tempFile)) // LastModified date is the same ? Then break
-                                    //    break;
+                                    OmniFile f = new OmniFile(tempFile.getDirectory() + fileNameWithPath);
+                                    if (f.equals(tempFile)) // LastModified date is the same ? Then break
+                                        break;
                                     omniRepository.getFileList().remove(tempFile);
                                     cmdTemp.getArgsList().clear();
                                     cmdTemp.getArgsList().add(Constants.OP_DELETE);
@@ -131,6 +131,9 @@ public class DirectoryHandler extends Thread{
                                 }
                             }
 
+                            // <U>ALERT</U>: When it reaches here, file has already been deleted from file,
+                            // so it adulterates the references that are saved on omniRepository.fileList.
+                            // (Java works only with references..)
                         } else if (ENTRY_DELETE == kind) {
                             Path newPath = ((WatchEvent<Path>) watchEvent).context();
                             if (!newPath.getFileName().toString().equalsIgnoreCase(".DS_Store")) {
@@ -138,12 +141,15 @@ public class DirectoryHandler extends Thread{
                                 String fileNameWithPath = OmniFile.extractFileName(child.getFileName().toString());
                                 tempFile = omniRepository.getOmniFileByName(fileNameWithPath);
                                 if (tempFile != null) {
-                                    omniRepository.getFileList().remove(tempFile);
+                                    //omniRepository.getFileList().remove(tempFile);
+                                    if (!omniRepository.customRemoveFromFileList(tempFile))
+                                        break;
                                     cmdTemp.getArgsList().clear();
                                     cmdTemp.getArgsList().add(Constants.OP_DELETE);
                                     cmdTemp.getArgsList().add(Constants.OP_S_FINISHED);
                                     cmdTemp.getArgsList().add(tempFile);
-                                    cmdTemp.getArgsList().add(userWatcher);
+                                    //cmdTemp.getArgsList().add(userWatcher);
+                                    cmdTemp.getArgsList().add(null);
                                     cmdTemp.getArgsList().add(true);
                                     cmdTemp.getArgsList().add(omniRepository);
 
