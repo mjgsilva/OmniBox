@@ -5,11 +5,14 @@ import logic.state.WaitAuthentication;
 import shared.OmniFile;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
+ * File Info Panel.
+ *
+ * This class defines the additional file info to show to user.
+ *
  * Created by OmniBox on 08-11-2014.
  */
 public class FileInfoPanel extends JPanel implements Observer {
@@ -26,6 +29,9 @@ public class FileInfoPanel extends JPanel implements Observer {
         buildLayout();
     }
 
+    /**
+     * This method defines the layout of layout components.
+     */
     private void buildLayout() {
         vertical = Box.createVerticalBox();
 
@@ -38,22 +44,14 @@ public class FileInfoPanel extends JPanel implements Observer {
         add(vertical);
     }
 
-    public void setFileName(String name) {
-        fileName.setText("Name: " + name);
-    }
-
-    public void setFileSize(String size) {
-        fileSize.setText("Size: " + size);
-    }
-
-    public void setFileExtension(String extension) {
-        fileExtension.setText("Extension: " + extension);
-    }
-
-    public void setFileLastModification(String lm) {
-        lastModification.setText("Name: " + lm);
-    }
-
+    /**
+     * This function replaces the sets methods that could be made for each variable.
+     * Is simply a ways to make it easier to update selected file information.
+     * @param fileName - File name
+     * @param fileSize - File size
+     * @param fileExTension - File extension
+     * @param lastModification - File last modification
+     */
     public void setFileInfoAttributes(String fileName, String fileSize, String fileExTension, String lastModification) {
         this.fileName.setText(fileName);
         this.fileSize.setText(fileSize);
@@ -73,7 +71,7 @@ public class FileInfoPanel extends JPanel implements Observer {
                 fileSize.setText("-");
                 fileExtension.setText("-");
                 lastModification.setText("-");
-            } else {
+            } else { // Show selected file information
                 OmniFile selectedFile = cm.getSelectedFile();
                 if (selectedFile == null)
                     return;

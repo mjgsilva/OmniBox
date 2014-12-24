@@ -14,6 +14,12 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
+ * Main Frame.
+ *
+ * This is the principal frame of the application, is constituted by the following panels:
+ *      - ButtonsPanel
+ *      - ListPanel
+ *
  * Created by OmniBox on 08-11-2014.
  */
 public class MainFrame extends JFrame implements Observer {
@@ -46,6 +52,9 @@ public class MainFrame extends JFrame implements Observer {
         cm.sendNotification();
     }
 
+    /**
+     * Sets layout configurations and add components to content Panes.
+     */
     private void setFrameLayout() {
         Container contentPane = getContentPane();
         contentPane.setLayout(new BorderLayout());
@@ -62,6 +71,12 @@ public class MainFrame extends JFrame implements Observer {
         contentPane.add(buttonsPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Authentication process is made on this update.
+     *
+     * @param observable
+     * @param o
+     */
     @Override
     public void update(Observable observable, Object o) {
         if (cm.getCurrentState() instanceof WaitAuthentication) {

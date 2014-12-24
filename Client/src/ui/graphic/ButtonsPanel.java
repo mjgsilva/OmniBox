@@ -12,6 +12,13 @@ import java.util.Observable;
 import java.util.Observer;
 
 /**
+ * Buttons Panel.
+ *
+ * This panel contains:
+ *      - Send Button
+ *      - Get Button
+ *      - Remove Button
+ *
  * Created by OmniBox on 08-11-2014.
  */
 public class ButtonsPanel extends JPanel implements Observer {
@@ -27,6 +34,10 @@ public class ButtonsPanel extends JPanel implements Observer {
         buildLayout();
     }
 
+    /**
+     * This method defines the layout of layout components.
+     * Also calls the register listeners method.
+     */
     private void buildLayout() {
         horizontal = Box.createHorizontalBox();
 
@@ -51,6 +62,7 @@ public class ButtonsPanel extends JPanel implements Observer {
      * So this method is reserved to declare static listeners of this components.
      */
     private void registerListeners() {
+        // Send button listener - OnClick
         sendButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -76,6 +88,7 @@ public class ButtonsPanel extends JPanel implements Observer {
             }
         });
 
+        // Get button listener - OnClick
         getButton.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -89,17 +102,19 @@ public class ButtonsPanel extends JPanel implements Observer {
                                 "Please select one from the list.");
                     }
                 } catch (InterruptedException e1) {
-                    // TODO - Verify if file was created, if yes then I have to delete it if there was an error.
-                    new File(filePath).delete();
+                    new File(filePath).delete(); // If file exists, deletes it
                     new ErrorDialog(null, e1.getMessage());
                 } catch (IOException e1) {
+                    new File(filePath).delete(); // If file exists, deletes it
                     new ErrorDialog(null, e1.getMessage());
                 } catch (ClassNotFoundException e1) {
+                    new File(filePath).delete(); // If file exists, deletes it
                     new ErrorDialog(null, e1.getMessage());
                 }
             }
         });
 
+        // Remove button listener - OnClick
         removeButton.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e) {
