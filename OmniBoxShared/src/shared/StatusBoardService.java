@@ -4,7 +4,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
- * Created by mario on 20/12/14.
+ * Created by Omnibox on 20/12/14.
  */
 public interface StatusBoardService extends Remote {
     public void addObserver(ServerStatusBoard observer) throws RemoteException;

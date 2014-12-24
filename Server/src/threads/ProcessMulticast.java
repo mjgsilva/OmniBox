@@ -12,7 +12,7 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 /**
- * Created by omnibox on 20-12-2014.
+ * Created by Omnibox on 20-12-2014.
  */
 public class ProcessMulticast extends Thread {
     private MulticastSocket multicastSocket;

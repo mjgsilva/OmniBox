@@ -4,7 +4,7 @@ import server.OmniServer;
 import shared.Constants;
 
 /**
- * Created by mario on 29/11/14.
+ * Created by Omnibox on 29/11/14.
  */
 public class HeartBeatHandler extends Thread {
     private final OmniServer omniServer;

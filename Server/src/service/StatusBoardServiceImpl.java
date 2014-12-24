@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by mario on 20/12/14.
+ * Created by Omnibox on 20/12/14.
  */
 public class StatusBoardServiceImpl extends UnicastRemoteObject implements StatusBoardService{
 
