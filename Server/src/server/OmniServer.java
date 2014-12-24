@@ -134,7 +134,7 @@ public class OmniServer extends CommunicationAdapter {
     }
 
     public void removeUserActivity(final User user) {
-        usersDB.remoteUserActivity(user);
+        usersDB.removeUserActivity(user);
     }
 
     public void addSocket(final User user,final Socket socket) {
@@ -196,7 +196,7 @@ public class OmniServer extends CommunicationAdapter {
         return filesDB.removeFile(omniFile);
     }
 
-    public void rebuildFileList(final OmniRepository omniRepository) { filesDB.rebuildFileList(omniRepository); }
+    public void rebuildFileSet(final OmniRepository omniRepository) { filesDB.rebuildFileSet(omniRepository); }
 
     public boolean fileBeingAccessed(final OmniFile omniFile) {
         return filesDB.isFileBeingAccessed(omniFile);
@@ -214,37 +214,6 @@ public class OmniServer extends CommunicationAdapter {
         return filesDB.fileList();
     }
 
-    /**
-     * Because delete event on watcher is catch after file is deleted from disk, it screws over
-     * the references on fileList. LastMod is created specific for this situations.
-     * We have to redo the fileList but not using the usual equals and hash code from OmniFile.
-     *
-     * <U>Note that</U> OmniFile/File lastModified saves milliseconds from epoch January first 1970
-     * til the day it was modified.
-     *
-     * <U><H2>Important</H2></U>
-     * LastMod from omniFile received, from repository, has the lastModified milliseconds from when the
-     * file was deleted from the repository. So if size is equal and value of lastModified of aux
-     * is inferior to the one on omniFile then we'll assume its the same file we're trying to delete.
-     *
-     * @param omniFile file to be excluded from file list
-     * @return flag true if file was removed, false otherwise
-     */
-    public synchronized boolean customRemoveFile(OmniFile omniFile) {
-        HashSet<OmniFile> newFileList = new HashSet<OmniFile>();
-        boolean flag = false;
-        for (OmniFile aux : filesDB.getFiles()) {
-            if (aux.getFileName().equals(OmniFile.getOriginalFileName(omniFile.getFileName())) &&
-                    aux.getFileSize() == omniFile.getFileSize() &&
-                    aux.getLastModified() <= omniFile.getLastMod()) {
-                // File to exclude, so do nothing.
-                flag = true;
-            } else
-                newFileList.add(aux);
-        }
+    public synchronized boolean customRemoveFile(OmniFile omniFile) { return filesDB.customRemoveFile(omniFile); }
 
-        filesDB.setFiles(newFileList);
-
-        return flag;
-    }
 }

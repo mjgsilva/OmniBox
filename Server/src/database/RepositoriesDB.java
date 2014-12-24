@@ -29,9 +29,20 @@ public class RepositoriesDB {
         availability = new PriorityBlockingQueue<OmniRepository>(10,new AvailabilityComparator());
     }
 
+    /**
+     * Add Repository
+     *
+     * Given an OmniRepository this method checks if the repository already
+     * exists. If not, the rebuildFileSet is executed in order to assure that
+     * the file's collection remains updated. To keep the repository's collection
+     * updated the given repository is inserted after removing the old one, instead of
+     * updating based on performance analysis.
+     *
+     * @param omniRepository
+     */
     public synchronized void addRepo(final OmniRepository omniRepository) {
         if(!repositories.contains(omniRepository)) {
-            omniServer.rebuildFileList(omniRepository);
+            omniServer.rebuildFileSet(omniRepository);
             omniServer.sendServiceNotification();
         }
         repositories.remove(omniRepository);
@@ -41,6 +52,15 @@ public class RepositoriesDB {
         availability.offer(omniRepository);
     }
 
+    /**
+     * Put Timer
+     *
+     * Given an OmniRepository this method inserts or updates the unixtime.
+     * This time represents the last communication between the repository and
+     * the server.
+     *
+     * @param omniRepository
+     */
     private synchronized void putTimer(final OmniRepository omniRepository) {
         timers.put(omniRepository, System.currentTimeMillis());
     }
@@ -51,6 +71,13 @@ public class RepositoriesDB {
 
     public synchronized HashSet<OmniRepository> getRepositories() { return repositories; }
 
+    /**
+     * Remove Expired Repositories
+     *
+     * If the last communication time between the repository and the server is above
+     * the expected time, the repository should be removed - probably the repository
+     * is down.
+     */
     public synchronized void removeExpiredRepositories() {
         Iterator<Map.Entry<OmniRepository,Long>> it = timers.entrySet().iterator();
         while(it.hasNext()) {
@@ -63,6 +90,13 @@ public class RepositoriesDB {
         }
     }
 
+    /**
+     * Delete Broadcast
+     *
+     * Notifies all the repositories to remove a file
+     *
+     * @param response
+     */
     public synchronized void deleteBroadcast(final Request response) {
         for(OmniRepository omniRepository : repositories) {
             try {
@@ -88,6 +122,16 @@ public class RepositoriesDB {
 
     }
 
+    /**
+     * Replication Process
+     *
+     * Given an OmniFile, this method selects (if exists) a source and a destination.
+     * Source is a repository that hosts the requested OmniFile, and the destination
+     * is a repository where the file does not exist. An UDP notification is sent to
+     * to the source in order to upload the file to the destination.
+     *
+     * @param omniFile
+     */
     public void replicationProcess(final OmniFile omniFile) {
         OmniRepository source;
         OmniRepository destination;
@@ -98,9 +142,7 @@ public class RepositoriesDB {
         }
 
         if(destination != null) { // == null; File already exists in all the repositories
-            if(source == null) {
-                System.out.println("* No sources available *");
-            } else {
+            if(source != null) {
                 try {
                     System.out.println(source.getLocalAddr()+":"+source.getPort() + "->" + destination.getLocalAddr()+":"+destination.getPort());
 
@@ -121,11 +163,19 @@ public class RepositoriesDB {
                     e.printStackTrace();
                 }
             }
-        } else {
-            System.out.println("* There is a possibility that the file is available on all the repositories *");
         }
     }
 
+    /**
+     * Get Download Source
+     *
+     * Checks if the less work loaded repository owns the file, and if not, checks for
+     * a repository where the file is hosted.
+     *
+     * @param omniFile
+     * @return the Repository that hosts the file and at the same time is dealing with
+     * a lower number of operations.
+     */
     public synchronized OmniRepository getDownloadSource(final OmniFile omniFile) {
         OmniRepository lessWorkLoadedRepository = getLessWorkLoadedRepository();
 
@@ -133,15 +183,20 @@ public class RepositoriesDB {
             System.out.println(lessWorkLoadedRepository.getLocalAddr()+":"+lessWorkLoadedRepository.getPort());
             return lessWorkLoadedRepository;
         } else {
-            System.out.println("Searching the sources for: " + omniFile.getFileName());
             return getSource(omniFile,true);
          }
     }
 
     /**
+     * Get Source
+     *
+     * This is a dynamic method. Given a flag it search for a less work loaded repository. True or false
+     * defines the search type.
      *
      * @param omniFile
-     * @param fileExists
+     * @param fileExists - Flag to define the search type. True means searching for a repository
+     *                   where the file exists; False means searching for a repository where the file
+     *                   does not exist.
      * @return The less workloaded Repository where the file exists or where the file not exists
      */
     private synchronized OmniRepository getSource(final OmniFile omniFile,final boolean fileExists) {
@@ -162,6 +217,13 @@ public class RepositoriesDB {
         return temporaryPQ.peek();
     }
 
+
+    /**
+     * Get Number of Replicas
+     *
+     * @param omniFile
+     * @return the number of repositories that host the file
+     */
     public synchronized int getNumberOfReplicas(final OmniFile omniFile) {
         int replicas = 0;
         for(OmniRepository omniRepository : repositories) {
@@ -175,6 +237,9 @@ public class RepositoriesDB {
         return availability.peek();
     }
 
+    /**
+     * Internal class that defines the comparator for the Priority Queue
+     */
     private class AvailabilityComparator implements Comparator<OmniRepository> {
         @Override
         public int compare(OmniRepository o1, OmniRepository o2) {

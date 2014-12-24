@@ -19,6 +19,14 @@ public class StatusBoardServiceImpl extends UnicastRemoteObject implements Statu
         observers = new ArrayList<ServerStatusBoard>();
     }
 
+    /**
+     * Add Observer
+     *
+     * Adds a new observer to the observers list
+     *
+     * @param observer
+     * @throws RemoteException
+     */
     @Override
     public synchronized void addObserver(ServerStatusBoard observer) throws RemoteException {
         if(!observers.contains(observer)) {
@@ -26,11 +34,26 @@ public class StatusBoardServiceImpl extends UnicastRemoteObject implements Statu
         }
     }
 
+    /**
+     * Remove Observer
+     *
+     * Removes an observer from the list
+     *
+     * @param observer
+     * @throws RemoteException
+     */
     @Override
     public synchronized void removeObserver(ServerStatusBoard observer) throws RemoteException {
         observers.remove(observer);
     }
 
+    /**
+     * Notify Observers
+     *
+     * In order to keep the RMI Clients updated, this method notifies all the observers
+     *
+     * @param notification
+     */
     public synchronized void notifyObservers(String notification)
     {
         int i;
