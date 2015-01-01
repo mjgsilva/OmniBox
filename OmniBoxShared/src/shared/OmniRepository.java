@@ -7,6 +7,8 @@ import java.net.*;
 import java.util.*;
 
 /**
+ * OmniRepository class.
+ *
  * Created by OmniBox on 02/11/14.
  */
 

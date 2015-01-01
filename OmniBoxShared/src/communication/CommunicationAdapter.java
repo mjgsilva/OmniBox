@@ -3,7 +3,6 @@ package communication;
 import shared.Constants;
 import shared.Request;
 
-import javax.xml.crypto.Data;
 import java.io.*;
 import java.net.*;
 
@@ -15,16 +14,6 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
     ObjectInputStream in;
     ObjectOutputStream out;
 
-    /**
-     * This method sends the only available muticast message and waits for response.
-     *
-     * Returns the reponse as a <b>String</b> object.
-     *
-     * @param messageToSend
-     * @param port
-     * @return
-     * @throws IOException
-     */
     @Override
     public String sendMulticastMessage(String messageToSend, int port) throws IOException {
         InetAddress group = InetAddress.getByName(Constants.MULTICAST_ADDRESS);
@@ -78,11 +67,6 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
             req = (Request)obj;
 
         return req;
-    }
-
-    @Override
-    public String toString(String s) {
-        return null;
     }
 
     @Override

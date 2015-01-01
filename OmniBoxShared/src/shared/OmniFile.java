@@ -25,8 +25,17 @@ public class OmniFile extends File implements Serializable {
     private final Date creationDate;
     private final String fileExtension;
     private final long fileSize;
+    // Saves last modified, real date, this reference does not change even if file is
+    // write on disk. Because OmniFile.lastMod != File.lastModified
     private long lastMod;
 
+    /**
+     * OmniFile constructor.
+     * All variables are initiated here.
+     * Notice that lastMod is filled with File.lastModified()
+     *
+     * @param pathname File path. Super (File) is called with this path.
+     */
     public OmniFile(String pathname) {
         super(pathname);
 
@@ -41,10 +50,16 @@ public class OmniFile extends File implements Serializable {
         lastMod = lastModified();
     }
 
+    /**
+     * @return file name without path.
+     */
     public String getFileName() {
         return fileName;
     }
 
+    /**
+     * @return directory where file is saved.
+     */
     public String getDirectory(){
         String absolutePath = this.getAbsolutePath();
         String filePath = absolutePath;
@@ -53,31 +68,69 @@ public class OmniFile extends File implements Serializable {
         return filePath + File.separator;
     }
 
+    /**
+     * @return last modification date
+     */
     public long getLastMod() {
         return lastMod;
     }
 
+    /**
+     * Returns file name of given path.
+     *
+     * @param path This path should include file name.
+     * @return File name as a String.
+     */
     public static String extractFileName(String path){
         String fileNameStr = path;
         return fileNameStr.substring(path.lastIndexOf(File.separator)+1,path.length()-path.lastIndexOf(File.separator)-1);
     }
 
+    /**
+     * Returns Date object with creation date of file. If file is not found on disk
+     * it returns begin of epoch.
+     * This creation date being used is las modification for compability reasons with
+     * all operation systems.
+     *
+     * @return Creation date
+     */
     public Date getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Returns file extension.
+     *
+     * @return file extension
+     */
     public String getFileExtension() {
         return fileExtension;
     }
 
+    /**
+     * Returns file size.
+     *
+     * @return file size
+     */
     public long getFileSize() {
         return fileSize;
     }
 
+    /**
+     * Returns last modified as long.
+     * This function calls File.lastModified().
+     *
+     * @return last modified date as long number
+     */
     public long getLastModified() {
         return lastModified();
     }
 
+    /**
+     * Equals only takes into account the following parameters of Omnifile:
+     *      - lastModified
+     *      - fileName (Without $'s)
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -85,14 +138,7 @@ public class OmniFile extends File implements Serializable {
 
         OmniFile omniFile = (OmniFile) o;
 
-        //if (fileSize != omniFile.fileSize) return false;
-        //if (creationDate != null ? !creationDate.equals(omniFile.creationDate) : omniFile.creationDate != null)
-        //    return false;
         if (lastModified() != omniFile.getLastModified()) return false;
-        //if (fileExtension != null ? !fileExtension.equals(omniFile.fileExtension) : omniFile.fileExtension != null)
-        //    return false;
-
-        //if (fileName != null ? !fileName.equals(omniFile.fileName) : omniFile.fileName != null) return false;
 
         String realFileName = getOriginalFileName(fileName);
         if (realFileName != null ? !realFileName.equals(getOriginalFileName(omniFile.fileName)) : getOriginalFileName(omniFile.fileName) != null)
@@ -101,17 +147,14 @@ public class OmniFile extends File implements Serializable {
         return true;
     }
 
+    /**
+     * HasCode only takes in account lastModified and fileName without dollar signs.
+     */
     @Override
     public int hashCode() {
         int result=0;
         String realFileName = getOriginalFileName(fileName);
-
         result = 31 * result + realFileName.hashCode();
-        //result = 31 * result + fileName.hashCode();
-
-        //result = 31 * result + creationDate.hashCode();
-        //result = 31 * result + fileExtension.hashCode();
-        //result = 31 * result + (int) (fileSize ^ (fileSize >>> 32));
         result = 31 * result + (int) (lastModified() ^ (lastModified() >>> 32));
 
         return result;
@@ -125,8 +168,8 @@ public class OmniFile extends File implements Serializable {
     /**
      * Returns original file name, without the $ signs that might have been added for duplicated file names.
      *
-     * @param fileName
-     * @return
+     * @param fileName OmniFile name
+     * @return file name without any dollar signs
      */
     public static String getOriginalFileName(String fileName) {
         char [] fileNameChars = fileName.toCharArray();

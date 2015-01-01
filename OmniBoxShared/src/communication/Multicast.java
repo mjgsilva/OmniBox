@@ -1,11 +1,6 @@
 package communication;
 
-import shared.Constants;
-
-import java.io.*;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
+import java.io.IOException;
 
 /**
  * Multicast method implementation
@@ -15,8 +10,12 @@ import java.net.MulticastSocket;
 public interface Multicast {
 
     /**
+     * This method sends the only available muticast message and waits for response.
+     *
+     * Returns the reponse as a <b>String</b> object.
      *
      * @param messageToSend
+     * @param port
      * @return
      * @throws IOException
      */

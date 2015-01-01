@@ -1,11 +1,9 @@
 package communication;
 
-import shared.OmniFile;
 import shared.Request;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 
 /**
  * - Interface TCP -
@@ -19,21 +17,25 @@ import java.util.NoSuchElementException;
  * Created by ©OmniBox on 01-11-2014.
  */
 public interface TCP {
-
-
+    /**
+     * Sends message via TCP socket.
+     * It's always sent a Request object.
+     *
+     * @param socket Destiny socket
+     * @param cmd Request to send
+     * @throws InterruptedException If operation is interrupted
+     * @throws IOException If there's an error associated with a socket operation
+     */
     public void sendTCPMessage(Socket socket, Request cmd) throws InterruptedException, IOException;
 
     /**
      * Gets message via TCP socket. This blocks the socket.
-     * It's always sended a serializable String object.
+     * It's always expected to receive a Request object.
      *
-     * @param socket
+     * @param socket Destiny socket
      * @return received message
-     * @throws InterruptedException
-     * @throws IOException
+     * @throws InterruptedException If operation is interrupted
+     * @throws IOException If there's an error associated with a socket operation
      */
     public Request getTCPMessage(Socket socket) throws InterruptedException, IOException, ClassNotFoundException;
-
-    // [QUESTION] What is this method supposed to do?
-    public String toString(String s);
 }

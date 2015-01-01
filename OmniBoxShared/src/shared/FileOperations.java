@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.util.Date;
 
 /**
+ * File Operations class.
  * Common file operations that are shared by all modules
  *
  * Created by OmniBox on 09-11-2014.
