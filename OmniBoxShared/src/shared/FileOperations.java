@@ -13,9 +13,7 @@ import java.util.Date;
 public class FileOperations {
 
     /**
-     * This method saves a "temp + DATE" named File to disk, and returns that File.
-     * The file name is intended to not save files with their correct name even if a exception is thrown
-     * and the file becomes corrupted.
+     * This method savesOmniFile to disk, and returns that OmniFile.
      * File is retrieved through a TCP socket.
      *
      * @param socket
