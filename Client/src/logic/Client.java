@@ -1,15 +1,12 @@
 package logic;
 
-import communication.CommunicationAdapter;
 import logic.state.StateInterface;
 import logic.state.WaitAuthentication;
-import shared.Constants;
 import shared.OmniFile;
 import shared.User;
 
-import java.io.*;
-import java.net.*;
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Observable;
 
 

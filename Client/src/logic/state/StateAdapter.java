@@ -5,12 +5,10 @@ import logic.Client;
 import shared.OmniFile;
 import shared.Request;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.NoSuchElementException;
 
 /**
  * State adapter, so classes (states), who extends from the state

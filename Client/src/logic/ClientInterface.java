@@ -1,9 +1,7 @@
 package logic;
 
-import logic.state.StateInterface;
 import shared.OmniFile;
 
-import java.io.File;
 import java.io.IOException;
 
 /**

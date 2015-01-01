@@ -3,9 +3,7 @@ package logic;
 import logic.state.StateInterface;
 import shared.OmniFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Observable;
 
 /**

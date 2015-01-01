@@ -5,10 +5,8 @@ import logic.Client;
 import shared.Constants;
 import shared.OmniFile;
 import shared.Request;
-import ui.graphic.ErrorDialog;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 
 /**

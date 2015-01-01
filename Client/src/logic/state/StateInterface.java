@@ -2,7 +2,6 @@ package logic.state;
 
 import shared.OmniFile;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
