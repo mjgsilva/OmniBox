@@ -11,7 +11,10 @@ import java.util.ArrayList;
 
 /**
  * Created by OmniBox on 29/11/14.
+ *
+ * this thread processes the server request
  */
+
 public class ProcessServer extends Thread  {
 
     private DatagramSocket dSocket = null;

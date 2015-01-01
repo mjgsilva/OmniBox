@@ -7,7 +7,10 @@ import java.net.Socket;
 
 /**
  * Created by OmniBox on 02/11/14.
+ *
+ * This thread is responsible to accept clients and launch a new thread to process their requests
  */
+
 public class AnswerClient extends Thread{
     private static OmniRepository omniRepository= null;
 

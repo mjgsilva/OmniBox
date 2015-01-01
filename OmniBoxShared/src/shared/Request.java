@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 /**
  * Created by OmniBox on 06/11/14.
+ *
+ * Request class is the base of all communication in OmniBox application
+ * One request contains one command to execute and a list of objects which is different depending on the flow of communication
  */
 public class Request implements Serializable {
     private Constants.CMD cmd;

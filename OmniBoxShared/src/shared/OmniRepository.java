@@ -109,7 +109,15 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     //END-Gets
 
 
-    //public void sendNotification(int operation, int status,String fileName,User user,Boolean isSuccessful){
+    /**
+     * Method that defines a notification to be sent to the server
+     *
+     * @param operation
+     * @param status
+     * @param omniFile
+     * @param user
+     * @param isSuccessful
+     */
     public void sendNotification(int operation, int status,OmniFile omniFile,User user,Boolean isSuccessful){
             try {
             ArrayList<Object> tempList = new ArrayList<Object>();
@@ -129,6 +137,12 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         }
     }
 
+    /**
+     * Delete file and notify the server
+     *
+     * @param omniFile
+     * @param user
+     */
     public synchronized void deleteFile(OmniFile omniFile,User user){
         notifyWatcher = false;
         oppNum++;
@@ -150,6 +164,15 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         notifyWatcher = true;
     }
 
+    /**
+     * Send a file and notify the server
+     *
+     * @param socket
+     * @param omnifile
+     * @param user
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public synchronized void sendFile(Socket socket,OmniFile omnifile,User user) throws IOException, InterruptedException {
         OmniFile auxReal = omnifile;
         oppNum++;
@@ -180,6 +203,16 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,true);
     }
 
+    /**
+     * get a file and notify the server
+     *
+     * @param socket
+     * @param fileName
+     * @param user
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ClassNotFoundException
+     */
     public synchronized void getFile(Socket socket, OmniFile fileName,User user) throws IOException, InterruptedException, ClassNotFoundException {
         // Critic section (Watcher)
         notifyWatcher = false;
@@ -213,19 +246,17 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         fileList.add(tempFile);
 
 
-        /*for (OmniFile aux : fileList)
-            if (aux.equals(tempFile)) {
-                aux.setLastModified(fileName.getLastModified());
-                break;
-            }*/
-
-
         oppNum--;
         sendNotification(Constants.OP_DOWNLOAD,Constants.OP_S_FINISHED,tempFile,user,true);
 
         notifyWatcher = true;
     }
 
+    /**
+     * verify if file exists on repository
+     * @param omniFile
+     * @return boolean
+     */
     public boolean fileExists(OmniFile omniFile) {
         return fileList.contains(omniFile);
     }

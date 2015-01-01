@@ -5,11 +5,12 @@ import shared.OmniRepository;
 import shared.Request;
 
 import java.io.IOException;
-import java.net.DatagramSocket;
 import java.util.ArrayList;
 
 /**
  * Created by OmniBox on 02/11/14.
+ *
+ * this trhead is responsible to send the Omnirepository to server every "Constants.EXPIRE_TIME"
  */
 public class HeartBeat extends Thread{
     private static OmniRepository omniRepository= null;

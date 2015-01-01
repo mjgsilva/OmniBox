@@ -10,7 +10,10 @@ import java.net.Socket;
 
 /**
  * Created by OmniBox on 02/11/14.
+ *
+ * this thread processes the client request
  */
+
 public class ProcessClient extends Thread {
     private Request request = null;
     private Socket socketToClient;

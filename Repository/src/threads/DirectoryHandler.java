@@ -10,6 +10,9 @@ import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * Created by OmniBox on 08/11/14.
+ *
+ * this thread is responsible to monitoring a directory of a respective repository
+ * if a file is deleted, modified or created, the directoryHandler has the same behavior of client.
  */
 public class DirectoryHandler extends Thread{
     OmniRepository omniRepository;
