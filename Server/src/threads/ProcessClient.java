@@ -11,6 +11,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 /**
+ * Process Client.
+ * Responsible for handling client requests. Request is made as a Request
+ * object (OmniBoxShared.Request), this request may be of the following types:
+ * authentication, download, upload or remove.
+ *
  * Created by OmniBox on 02/11/14.
  */
 public class ProcessClient extends Thread {

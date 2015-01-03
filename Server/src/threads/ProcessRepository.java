@@ -8,6 +8,11 @@ import java.net.DatagramSocket;
 import java.util.ArrayList;
 
 /**
+ * Process Repository.
+ * Responsible for handling repositories requests. Request is made as a
+ * Request object, this request may be of the following types: heartbeat
+ * or notification.
+ *
  * Created by OmniBox on 13/11/14.
  */
 public class ProcessRepository extends Thread {

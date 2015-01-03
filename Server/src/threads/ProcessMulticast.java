@@ -12,6 +12,9 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 /**
+ * Process Multicast.
+ * Responsible for handling Multicast requests. Server returns its own IP address.
+ * 
  * Created by Omnibox on 20-12-2014.
  */
 public class ProcessMulticast extends Thread {

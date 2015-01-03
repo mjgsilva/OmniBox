@@ -10,6 +10,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 /**
+ * Files Database.
+ * Abstract representation of files database. It's composed by one HashSet of
+ * OmniFile that saves files and by one HashMap that includes files being accessed
+ * at the moment and by who. The choice of a HashSet instead of a List is related
+ * to the functionality of HashSet in keeping unique objects, ensuring that we have
+ * not repeated files in the system.
+ *
  * Created by OmniBox on 08/11/14.
  */
 public class FilesDB {

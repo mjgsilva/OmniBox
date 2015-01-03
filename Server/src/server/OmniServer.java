@@ -21,6 +21,16 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * OmniServer.
+ * Abstract server representation. Stores ServerSocket and DatagramSocket for
+ * consequent communications, FilesDB, RepositoriesDB, UsersDB and StatusBoardServiceImpl
+ * to soter information about existing files, repositories, users and RMI service, respectively.
+ * When it starts, launches necessary threads to handle Multicast requests, repository
+ * notifications and repositories Heartbeats, as well RMI service. Then it waits persistently
+ * new client connections.
+ *
+ */
 public class OmniServer extends CommunicationAdapter {
     final private int port;
     private ServerSocket serverSocket;

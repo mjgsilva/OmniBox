@@ -4,6 +4,11 @@ import server.OmniServer;
 import shared.Constants;
 
 /**
+ * Heartbeat Handler.
+ * Responsible for calling existing method in RepositoriesDB in 30 seconds intervals.
+ * This method erases repositories in which last heartbeat notification has overpassed
+ * the denoted limit.
+ *
  * Created by Omnibox on 29/11/14.
  */
 public class HeartBeatHandler extends Thread {

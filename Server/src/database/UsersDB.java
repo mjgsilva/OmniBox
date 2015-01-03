@@ -13,6 +13,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 /**
+ * Users Database.
+ * Abstract representation of a users database. It's composed by a
+ * HashSet of User objects, a HashMap that contains the user and his
+ * current operation (Integer constant defined in OmniBoxShared.Constants)
+ * and another HashMap that relates users to their socket. And again,
+ * HashSet structure was chosen for uniqueness reasons.
+ *
  * Created by OmniBox on 02/11/14.
  */
 public class UsersDB {

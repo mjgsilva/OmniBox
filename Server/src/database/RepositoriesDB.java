@@ -14,6 +14,18 @@ import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
+ * Repositories Database.
+ * Abstract representation of a repository database. It's composed by a
+ * OmniRepository HasSet, a HashMap that contains OmniRepository and unixtime
+ * stamp of the last heartbeat and a PriorityQueue that keeps OmniRepositories
+ * instances based on their availability (the least oberloaded with work repository
+ * stays on top of the queue). The HashSet was chosen to ensure uniqueness on
+ * connected repositories. The PriorityQueue was chosen because it orders
+ * repositories in a crescent based on the work they are doing.
+ * As for deleteBroadcast method, emphasizes the use of building Datagram Sockets
+ * inside, it is necessary to build as it travels through the collection of repositories
+ * in order to notify all of them to remove the file.
+ *
  * Created by OmniBox on 08/11/14.
  */
 public class RepositoriesDB {

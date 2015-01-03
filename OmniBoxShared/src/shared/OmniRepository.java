@@ -8,6 +8,9 @@ import java.util.*;
 
 /**
  * OmniRepository class.
+ * This class represents the repository itself. It contains all data from an individual repository.
+ * Variables that do not implement Serializable are marked as transient, because repository sends it
+ * self to server at some situations.
  *
  * Created by OmniBox on 02/11/14.
  */

@@ -6,7 +6,10 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 /**
- * Created by mario on 20/12/14.
+ * Server Status Board Implementation.
+ * RMI Service to notify RMI clients of new notifications.
+ *
+ * Created by OmniBox on 20/12/14.
  */
 public class ServerStatusBoardImpl extends UnicastRemoteObject implements ServerStatusBoard {
 
@@ -30,7 +33,7 @@ public class ServerStatusBoardImpl extends UnicastRemoteObject implements Server
             StatusBoardService statusBoardService = (StatusBoardService) Naming.lookup(url);
             statusBoardService.addObserver(serverStatusBoard);
 
-            System.out.println("<Enter> para parar o Server Status Board");
+            System.out.println("<Enter> to stop Server Status Board");
             System.out.println();
             System.in.read();
 
