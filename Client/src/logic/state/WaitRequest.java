@@ -65,9 +65,4 @@ public class WaitRequest extends StateAdapter implements TCP {
 
         return new WaitRequest(client);
     }
-
-    @Override
-    public String toString(String s) {
-        return null;
-    }
 }

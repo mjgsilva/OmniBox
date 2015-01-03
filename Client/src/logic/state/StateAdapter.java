@@ -74,11 +74,6 @@ public abstract class StateAdapter extends CommunicationAdapter implements State
     }
 
     @Override
-    public String toString(String s) {
-        return super.toString(s);
-    }
-
-    @Override
     public void sendUDPMessage(DatagramSocket socket,InetAddress inetAddress,int port,Request cmd) throws InterruptedException, IOException {
         super.sendUDPMessage(socket,inetAddress,port,cmd);
     }
