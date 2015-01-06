@@ -1,12 +1,9 @@
 package threads;
 
-import communication.CommunicationAdapter;
 import server.OmniServer;
 import shared.*;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -119,7 +116,19 @@ public class ProcessClient extends Thread {
             args.add(omniRepository.getLocalAddr());
             args.add(omniRepository.getPort());
             args.add(Constants.FILEOK);
-            omniServer.addFile(omniFile);
+
+            OmniFile aux2= omniFile;
+            if(!omniServer.getFileList().contains(omniFile)){
+                String fileNameDelimitator="";
+
+                for (OmniFile aux : (ArrayList<OmniFile>)omniServer.getFileList())
+
+                    if (aux.getFileName().equals(omniFile.getFileName())) {
+                        while((aux2 = new OmniFile(omniFile.getDirectory() + omniFile.getFileName() + fileNameDelimitator)).exists())
+                            fileNameDelimitator += "$"; // Adds dollar signs until file is unique
+                    }
+            }
+            omniServer.addFile(aux2);
         } else {
             args.add(null);
             args.add(null);

@@ -86,7 +86,7 @@ public class ListPanel extends JPanel implements Observer {
                     fileInfoPanel.setFileInfoAttributes(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileName(),
                         "" + ((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileSize(),
                         ((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileExtension(),
-                            new Date(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getLastModified()).toString());
+                            new Date(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getLastMod()).toString());
                 else
                     fileInfoPanel.setFileInfoAttributes("", "", "", "");
             }

@@ -167,7 +167,7 @@ public class FilesDB {
         HashSet<OmniFile> newFileList = new HashSet<OmniFile>();
         boolean flag = false;
         for (OmniFile aux : getFiles()) {
-            if (aux.getFileName().equals(OmniFile.getOriginalFileName(omniFile.getFileName())) &&
+            if (aux.getFileName().equals(omniFile.getFileName()) &&
                     aux.getFileSize() == omniFile.getFileSize() &&
                     aux.getLastModified() <= omniFile.getLastMod()) {
                 // File to exclude, so do nothing.

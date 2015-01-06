@@ -243,7 +243,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
 
         // Update last file added to list, so it has the same last Modified date. Because directory watcher is
         // going to assume the setLastModified(...) bellow as a change on the directory.
-        tempFile.setLastModified(fileName.getLastModified());
+        tempFile.setLastMod(fileName.getLastMod());
         fileList.add(tempFile);
 
 
