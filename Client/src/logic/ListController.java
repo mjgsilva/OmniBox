@@ -107,10 +107,10 @@ public class ListController extends CommunicationAdapter {
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    System.exit(-1);
+                    new ErrorDialog(null, "Error on socket. Try again later.");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.exit(-1);
+                    new ErrorDialog(null, "Error on socket. Try again later.");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
