@@ -57,7 +57,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private void setUDPSocket(int port) throws SocketException, UnknownHostException {
         //Socket Udp to communicate operations
         serverAddr = InetAddress.getByName(addressServer);
-        socketUDP = new DatagramSocket(port, serverAddr);
+        socketUDP = new DatagramSocket(port);
     }
 
     //Gets
