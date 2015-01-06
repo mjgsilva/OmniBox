@@ -138,8 +138,6 @@ public class OmniFile extends File implements Serializable {
 
         OmniFile omniFile = (OmniFile) o;
 
-        if (lastModified() != omniFile.getLastModified()) return false;
-
         String realFileName = getOriginalFileName(fileName);
         if (realFileName != null ? !realFileName.equals(getOriginalFileName(omniFile.fileName)) : getOriginalFileName(omniFile.fileName) != null)
             return false;
@@ -155,7 +153,6 @@ public class OmniFile extends File implements Serializable {
         int result=0;
         String realFileName = getOriginalFileName(fileName);
         result = 31 * result + realFileName.hashCode();
-        result = 31 * result + (int) (lastModified() ^ (lastModified() >>> 32));
 
         return result;
     }

@@ -8,6 +8,7 @@ import shared.Request;
 import ui.graphic.ErrorDialog;
 import ui.graphic.ListPanel;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -104,6 +105,8 @@ public class ListController extends CommunicationAdapter {
                         default:
                             break;
                     }
+                } catch (EOFException e) {
+                    System.exit(-1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     new ErrorDialog(null, "Error on socket. Try again later.");

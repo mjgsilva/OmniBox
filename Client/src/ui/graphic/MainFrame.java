@@ -91,9 +91,9 @@ public class MainFrame extends JFrame implements Observer {
             panel.add(label, BorderLayout.WEST);
 
             JPanel controls = new JPanel(new GridLayout(0, 1, 2, 2));
-            JTextField username = new JTextField("danilo");
+            JTextField username = new JTextField("");
             controls.add(username);
-            JPasswordField password = new JPasswordField("danilo123");
+            JPasswordField password = new JPasswordField("");
             controls.add(password);
             panel.add(controls, BorderLayout.CENTER);
 
