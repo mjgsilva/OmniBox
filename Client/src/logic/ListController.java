@@ -100,7 +100,6 @@ public class ListController extends CommunicationAdapter {
                             }
                             break;
                         case cmdDeleteFile:
-                            new ErrorDialog(null, "File " + ((OmniFile)request.getArgsList().get(0)).getFileName() + " deleted? " + (Boolean)request.getArgsList().get(1));
                             break;
                         default:
                             break;
