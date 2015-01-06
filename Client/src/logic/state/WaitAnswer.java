@@ -40,11 +40,11 @@ public class WaitAnswer extends StateAdapter {
             // Error saving file, delete it
             new ErrorDialog(null, "Error saving file to disk.");
             omniFile.delete();
-            e.printStackTrace(); // TODO - DELETE THIS
+            e.printStackTrace();
         } catch (InterruptedException e) {
             new ErrorDialog(null, "Error saving file to disk.");
             omniFile.delete();
-            e.printStackTrace(); // TODO - DELETE THIS
+            e.printStackTrace();
         } finally {
             // Close repository socket when over
             try {
@@ -74,10 +74,10 @@ public class WaitAnswer extends StateAdapter {
                     // Send file to repository
                     FileOperations.readFileToSocket(s, fileToSend);
                 } catch (IOException e) {
-                    e.printStackTrace(); // TODO - DELETE THIS
+                    e.printStackTrace();
                     new ErrorDialog(null, "Error transfering file to repository");
                 } catch (InterruptedException e) {
-                    e.printStackTrace(); // TODO - DELETE THIS
+                    e.printStackTrace();
                     new ErrorDialog(null, "Error transferring file to repository");
                 } finally {
                     // Close repository socket when over

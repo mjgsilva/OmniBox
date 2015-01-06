@@ -74,8 +74,6 @@ public class ListPanel extends JPanel implements Observer {
         vertical.setAlignmentX(CENTER_ALIGNMENT);
         vertical.setAlignmentY(TOP_ALIGNMENT);
 
-        //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        //add(vertical);
         horizontal.add(vertical);
         horizontal.add(fileInfoPanel);
 
@@ -88,7 +86,6 @@ public class ListPanel extends JPanel implements Observer {
                     fileInfoPanel.setFileInfoAttributes(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileName(),
                         "" + ((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileSize(),
                         ((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getFileExtension(),
-                        //"not implemented yet");
                             new Date(((OmniFile)((JList)listSelectionEvent.getSource()).getSelectedValue()).getLastModified()).toString());
                 else
                     fileInfoPanel.setFileInfoAttributes("", "", "", "");

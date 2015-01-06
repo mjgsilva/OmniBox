@@ -56,7 +56,6 @@ public class ClientModel extends Observable implements ClientInterface {
     @Override
     public void defineRemoveRequest(OmniFile fileToRemove) throws IOException, InterruptedException {
         client.defineRemoveRequest(fileToRemove);
-        ///////////////////sendNotification();
     }
 
     @Override

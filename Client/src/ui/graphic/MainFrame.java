@@ -7,7 +7,6 @@ import logic.state.WaitAuthentication;
 import logic.state.WaitRequest;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Observable;
@@ -102,7 +101,6 @@ public class MainFrame extends JFrame implements Observer {
 
             // Validate data
             try {
-                // Even if value == JOptionPane.CANCEL_OPTION it calls defineAuthentication to notify Observers.
                 if (value == JOptionPane.CANCEL_OPTION) {
                     try {
                         cm.closeServerSocket();

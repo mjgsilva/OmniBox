@@ -31,23 +31,24 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     private int oppNum = 0;
 
     public OmniRepository(int port, String addressServer, String filesDirectory, String myIp) throws IOException {
-        this.port = port;
-        this.serverPort = 6000;//port;
+        this.serverPort = port;
         this.addressServer = addressServer;
         this.filesDirectory = filesDirectory;
         this.localAddr = myIp;
-        socket = new ServerSocket(port);
-        setUDPSocket(port);
+        socket = new ServerSocket(0);
+        this.port = socket.getLocalPort();
+        setUDPSocket(this.port);
     }
 
     public OmniRepository(int port) throws IOException {
-        this.port = port;
         this.serverPort = port;
 
         this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.serverPort);
-        this.filesDirectory = "";
-        socket = new ServerSocket(port);
-        setUDPSocket(port);
+        //get directory when multicast
+        this.filesDirectory = System.getProperty("user.dir");
+        socket = new ServerSocket(0);
+        this.port = socket.getLocalPort();
+        setUDPSocket(this.port);
     }
 
 
@@ -57,7 +58,6 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         //Socket Udp to communicate operations
         serverAddr = InetAddress.getByName(addressServer);
         socketUDP = new DatagramSocket(port, serverAddr);
-        //socketUDP.setSoTimeout(Constants.TIMEOUT);
     }
 
     //Gets
@@ -159,9 +159,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         }
 
         // Erase file from disk if it exists in this repository directory
-        // If it does not exists delete() function returns false.
         (new OmniFile(filesDirectory + omniFile.getFileName())).delete();
-        //fileList.remove(omniFile);
         customRemoveFromFileList(omniFile);
 
         oppNum--;
@@ -200,7 +198,6 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
                 socket.close();
             }catch (Exception e){
                 socket.close();
-                // sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile.getFileName(),user,false);
                 sendNotification(Constants.OP_UPLOAD,Constants.OP_S_FINISHED,omnifile,user,false);
             }
         }
@@ -228,7 +225,6 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
         OmniFile tempFile = null, aux = fileName;
         String fileNameDelimitator = ""; // To differentiate files with the same name but different modification dates
         try {
-            // If this is true, then there is a file on disk with the same name, but is different somehow
             if (new OmniFile(filesDirectory + fileName.getFileName()).exists() &&
                     !fileList.contains(fileName))
                 while((aux = new OmniFile(filesDirectory + fileName.getFileName() + fileNameDelimitator)).exists())

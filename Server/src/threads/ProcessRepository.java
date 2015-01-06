@@ -80,7 +80,6 @@ public class ProcessRepository extends Thread {
                         ArrayList args = new ArrayList();
                         args.add(omniFile);
                         Request repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-                        //if(this.omniServer.removeFile(omniFile)) {
                         if (this.omniServer.customRemoveFile(omniFile)) {
                             this.omniServer.deleteBroadcast(repositoryResponse);
                             omniServer.notifyClients();
@@ -136,15 +135,12 @@ public class ProcessRepository extends Thread {
 
     private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
         omniServer.addRepository(omniRepository);
-        //omniServer.notifyClients();
         if (user != null) {
             if (status == Constants.OP_S_STARTED) {
                 omniServer.editUserActivity(user, Constants.OP_DELETE);
             } else {
                 if (status == Constants.OP_S_FINISHED) {
                     omniServer.editUserActivity(user, Constants.INACTIVE);
-                    //if (omniServer.fileExists(omniFile))
-                    //    omniServer.removeFile(omniFile);
                     omniServer.customRemoveFile(omniFile);
                 }
             }
