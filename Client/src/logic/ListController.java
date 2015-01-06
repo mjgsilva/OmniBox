@@ -100,17 +100,16 @@ public class ListController extends CommunicationAdapter {
                             }
                             break;
                         case cmdDeleteFile:
-                            new ErrorDialog(null, "File " + ((OmniFile)request.getArgsList().get(0)).getFileName() + " deleted? " + (Boolean)request.getArgsList().get(1));
                             break;
                         default:
                             break;
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    System.exit(-1);
+                    new ErrorDialog(null, "Error on socket. Try again later.");
                 } catch (IOException e) {
                     e.printStackTrace();
-                    System.exit(-1);
+                    new ErrorDialog(null, "Error on socket. Try again later.");
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
