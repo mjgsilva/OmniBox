@@ -124,8 +124,14 @@ public class ProcessClient extends Thread {
                 for (OmniFile aux : (ArrayList<OmniFile>)omniServer.getFileList())
 
                     if (aux.getFileName().equals(omniFile.getFileName())) {
-                        while((aux2 = new OmniFile(omniFile.getDirectory() + omniFile.getFileName() + fileNameDelimitator)).exists())
+                        while((aux2 = new OmniFile(omniFile.getDirectory() + omniFile.getFileName() + fileNameDelimitator)).exists()) {
                             fileNameDelimitator += "$"; // Adds dollar signs until file is unique
+                            omniServer.addFile(aux2);
+                            Request response = new Request(Constants.CMD.cmdRepositoryAddress,args);
+                            sendMessage(response);
+                            return;
+                        }
+
                     }
             }
             omniServer.addFile(aux2);
