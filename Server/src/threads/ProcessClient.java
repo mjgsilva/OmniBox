@@ -56,6 +56,7 @@ public class ProcessClient extends Thread {
                     if(user != null) {
                         omniServer.removeUserActivity(user);
                         omniServer.removeSocket(user);
+                        omniServer.sendServiceNotification();
                     }
                     break;
                 }
