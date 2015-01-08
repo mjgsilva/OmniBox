@@ -118,7 +118,7 @@ public class ProcessClient extends Thread {
             args.add(Constants.FILEOK);
 
             OmniFile aux2= omniFile;
-            if(!omniServer.getFileList().contains(omniFile)){
+            /*if(!omniServer.getFileList().contains(omniFile)){
                 String fileNameDelimitator="";
 
                 for (OmniFile aux : (ArrayList<OmniFile>)omniServer.getFileList())
@@ -133,7 +133,7 @@ public class ProcessClient extends Thread {
                         }
 
                     }
-            }
+            }*/
             omniServer.addFile(aux2);
         } else {
             args.add(null);
