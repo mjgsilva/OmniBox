@@ -47,12 +47,11 @@ public class ProcessClient extends Thread {
                             break;
                     }
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    System.out.println("Received an invalid object");
+                    break;
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                     break;
                 } catch (IOException e) {
-                    e.printStackTrace();
                     if(user != null) {
                         omniServer.removeUserActivity(user);
                         omniServer.removeSocket(user);

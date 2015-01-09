@@ -39,11 +39,10 @@ public class ProcessRepository extends Thread {
                         }
                     }
                 } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    System.out.println("Received an invalid request from repository");
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("A problem occurred while processing the repository call");
                 }
             }
         } finally{
