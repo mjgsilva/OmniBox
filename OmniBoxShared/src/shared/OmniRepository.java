@@ -43,7 +43,7 @@ public class OmniRepository extends CommunicationAdapter implements Serializable
     public OmniRepository(int port) throws IOException {
         this.serverPort = port;
 
-        this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, this.serverPort);
+        this.addressServer = sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS);
         //get directory when multicast
         this.filesDirectory = System.getProperty("user.dir");
         socket = new ServerSocket(0);

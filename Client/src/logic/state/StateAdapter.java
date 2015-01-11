@@ -14,7 +14,7 @@ import java.net.Socket;
  * State adapter, so classes (states), who extends from the state
  * machine, don't have to implement every method.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public abstract class StateAdapter extends CommunicationAdapter implements StateInterface {
     protected Client client;
@@ -59,8 +59,8 @@ public abstract class StateAdapter extends CommunicationAdapter implements State
     // Communication methods --------------------------------------------------------------------
 
     @Override
-    public String sendMulticastMessage(String messageToSend, int port) throws IOException {
-        return super.sendMulticastMessage(messageToSend, port);
+    public String sendMulticastMessage(String messageToSend) throws IOException {
+        return super.sendMulticastMessage(messageToSend);
     }
 
     @Override

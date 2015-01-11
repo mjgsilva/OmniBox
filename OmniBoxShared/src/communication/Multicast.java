@@ -15,9 +15,8 @@ public interface Multicast {
      * Returns the reponse as a <b>String</b> object.
      *
      * @param messageToSend
-     * @param port
-     * @return
+     * @return Server's Address
      * @throws IOException
      */
-    public String sendMulticastMessage(String messageToSend, int port) throws IOException;
+    public String sendMulticastMessage(String messageToSend) throws IOException;
 }

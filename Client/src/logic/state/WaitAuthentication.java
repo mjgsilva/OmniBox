@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Represents the authentication operation made when this client starts.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public class WaitAuthentication extends StateAdapter {
     public WaitAuthentication(Client client) {
@@ -43,8 +43,8 @@ public class WaitAuthentication extends StateAdapter {
     @Override
     public StateInterface defineMulticastRequest() throws IOException {
         // If there's any error, stays in this state and then its UI responsibility to prompt an error message
-        client.setServerIP(sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS, client.getPort()));
+        client.setServerIP(sendMulticastMessage(Constants.REQUEST_SERVER_IP_ADDRESS));
 
-        return new WaitRequest(client);
+        return new WaitAuthentication(client);
     }
 }

@@ -13,24 +13,26 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
 
     ObjectInputStream in;
     ObjectOutputStream out;
+    DatagramSocket datagramSocket;
 
     @Override
-    public String sendMulticastMessage(String messageToSend, int port) throws IOException {
-        InetAddress group = InetAddress.getByName(Constants.MULTICAST_ADDRESS);
-        MulticastSocket multicastSocket = new MulticastSocket(port);
-        multicastSocket.joinGroup(group);
-        multicastSocket.setTimeToLive(1); //TTL
+    public String sendMulticastMessage(String messageToSend) throws IOException {
+        InetAddress groupAddress = InetAddress.getByName(Constants.MULTICAST_ADDRESS);
+        int port = Constants.MULTICAST_PORT;
+        datagramSocket = new DatagramSocket();
 
         // Send object
         ByteArrayOutputStream bOut = new ByteArrayOutputStream();
         ObjectOutputStream out = new ObjectOutputStream(bOut);
         out.writeObject(messageToSend); // code as a String object
-        DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), group, port);
-        multicastSocket.send(packet);
+        out.flush();
+        out.close();
+        DatagramPacket packet = new DatagramPacket(bOut.toByteArray(), bOut.size(), groupAddress, port);
+        datagramSocket.send(packet);
 
         // Receive object as a response from server
         packet = new DatagramPacket(new byte[Constants.MAX_SIZE], Constants.MAX_SIZE);
-        multicastSocket.receive(packet);
+        datagramSocket.receive(packet);
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(packet.getData(), 0,
                 packet.getLength()));
 
@@ -41,9 +43,6 @@ public abstract class CommunicationAdapter implements TCP, UDP, Multicast {
             // Just so we don't have to handle potential inner code errors on user interface
             throw new IOException("Internal error.");
         }
-
-        multicastSocket.leaveGroup(group);
-        multicastSocket.close();
 
         return response;
     }

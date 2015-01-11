@@ -53,7 +53,7 @@ public class OmniServer extends CommunicationAdapter {
         Socket socket;
 
         try {
-            ProcessMulticast processMulticast = new ProcessMulticast(port);
+            ProcessMulticast processMulticast = new ProcessMulticast();
             ProcessRepository processRepository = new ProcessRepository(this);
             HeartBeatHandler heartBeatHandler = new HeartBeatHandler(this);
             processMulticast.start();
