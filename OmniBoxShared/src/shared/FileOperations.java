@@ -18,7 +18,7 @@ public class FileOperations {
      *
      * @param socket
      * @param destinyDirectoryPath this param is the destiny folder to save file. Must end in / so the file may be named "temp"
-     * @return
+     * @return OmniFile created after transfer is finished
      * @throws IOException If there's an error with file/socket operations
      * @throws FileNotFoundException If file already exists
      */

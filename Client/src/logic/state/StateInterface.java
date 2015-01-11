@@ -9,7 +9,7 @@ import java.io.IOException;
  *
  * All method returns next state.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public interface StateInterface {
     /**

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Waits for user to choose which operation to be performed.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public class WaitRequest extends StateAdapter implements TCP {
     public WaitRequest(Client client) {

@@ -17,7 +17,7 @@ import java.util.Date;
  * Note that: HashCode and Equals use only name without $'s and modification date. Creation date
  * is not used for OS compatibility reasons.
  *
- * Created by ©OmniBox on 02-11-2014.
+ * Created by OmniBox on 02-11-2014.
  */
 public class OmniFile extends File implements Serializable {
     private final String fileName;

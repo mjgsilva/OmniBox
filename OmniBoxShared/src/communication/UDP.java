@@ -15,7 +15,7 @@ import java.net.InetAddress;
  * Commentaries simply describe what they are intended to do when overriding it.
  * This way we maintain a concise code.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public interface UDP {
 

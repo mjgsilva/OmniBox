@@ -16,7 +16,7 @@ import java.util.ArrayList;
  *
  * This might be used to prompt errors to user.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public class WaitAnswer extends StateAdapter {
     public WaitAnswer(Client client) {

@@ -15,7 +15,7 @@ import java.util.Observable;
  * It's initialized on the first state, WaitAuthentication.
  * It's part of the model.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public class Client extends Observable implements ClientInterface {
     private StateInterface currentState;
@@ -45,7 +45,7 @@ public class Client extends Observable implements ClientInterface {
      * was retrieved with a Multicast request to server.
      *
      * @param args
-     * @return
+     * @return the client instance
      */
     public static Client buildClient(String[] args) throws IOException {
         Client temp = new Client();
@@ -74,7 +74,6 @@ public class Client extends Observable implements ClientInterface {
                 }
                 // If serverIP is wrong it throws an IOException, caught on interface
                 temp.serverSocket = new Socket(temp.serverIP, temp.port);
-
                 return temp;
             default:
                 return null;

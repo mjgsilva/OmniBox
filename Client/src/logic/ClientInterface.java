@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Describes the interface for model classes.
  *
- * Created by ©OmniBox on 01-11-2014.
+ * Created by OmniBox on 01-11-2014.
  */
 public interface ClientInterface {
     /**
