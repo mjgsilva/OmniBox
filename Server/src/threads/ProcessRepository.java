@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class ProcessRepository extends Thread {
     private final OmniServer omniServer;
 
-    public ProcessRepository(DatagramSocket socket, OmniServer omniServer) throws IOException{
+    public ProcessRepository(OmniServer omniServer) throws IOException{
         this.omniServer = omniServer;
     }
 
@@ -55,6 +55,7 @@ public class ProcessRepository extends Thread {
         OmniRepository omniRepository = (OmniRepository)request.getArgsList().get(0);
         omniRepository.setLocalAdd((String) request.getArgsList().get(request.getArgsList().size() - 1));
         omniServer.addRepository(omniRepository);
+        omniServer.sendServiceNotification();
     }
 
     private void ProcessNotification(Request request) {
@@ -73,18 +74,14 @@ public class ProcessRepository extends Thread {
                 uploadToClientNotification(status, omniFile, user, omniRepository);
             } else {
                 if(operationType == Constants.OP_DELETE) {
-                    if(user != null) {
-                        deleteNotification(status, omniFile, user, omniRepository);
-                    }else{
-                        ArrayList args = new ArrayList();
-                        args.add(omniFile);
-                        Request repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
-                        if (this.omniServer.customRemoveFile(omniFile)) {
-                            this.omniServer.deleteBroadcast(repositoryResponse);
-                            omniServer.notifyClients();
-                        }
+                    ArrayList args = new ArrayList();
+                    args.add(omniFile);
+                    Request repositoryResponse = new Request(Constants.CMD.cmdDeleteFile,args);
+                    if (this.omniServer.customRemoveFile(omniFile)) {
+                        this.omniServer.deleteBroadcast(repositoryResponse);
+                        omniServer.notifyClients();
                     }
-
+                    deleteNotification(omniRepository);
                 }
             }
         }
@@ -132,18 +129,8 @@ public class ProcessRepository extends Thread {
         omniServer.sendServiceNotification();
     }
 
-    private void deleteNotification(int status,OmniFile omniFile,User user,OmniRepository omniRepository) {
+    private void deleteNotification(OmniRepository omniRepository) {
         omniServer.addRepository(omniRepository);
-        if (user != null) {
-            if (status == Constants.OP_S_STARTED) {
-                omniServer.editUserActivity(user, Constants.OP_DELETE);
-            } else {
-                if (status == Constants.OP_S_FINISHED) {
-                    omniServer.editUserActivity(user, Constants.INACTIVE);
-                    omniServer.customRemoveFile(omniFile);
-                }
-            }
-        }
         omniServer.sendServiceNotification();
     }
 }

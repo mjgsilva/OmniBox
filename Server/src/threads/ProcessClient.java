@@ -91,6 +91,7 @@ public class ProcessClient extends Thread {
             this.user = user;
             omniServer.addUserActivity(user);
             omniServer.addSocket(user,socket);
+            omniServer.sendServiceNotification();
         }
 
         args.add(validLogin);
